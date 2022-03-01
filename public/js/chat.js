@@ -6,6 +6,10 @@ document.querySelector('#message-form').addEventListener('submit', (event) => {
   socket.emit('sendMessage', message);
 });
 
+socket.on('message', (message) => {
+  console.log(message);
+})
+
 socket.on('sendMessage', (message) => {
   console.log(message);
 })

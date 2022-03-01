@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
+  socket.broadcast.emit('message', 'A new user has joined!');
   socket.on('sendMessage', (message) => {
     io.emit('sendMessage', message);
   });
