@@ -15,6 +15,12 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 app.use(express.json());
 app.use(express.static(publicDirectoryPath));
 
+io.on('connection', (socket) => {
+  socket.on('sendMessage', (message) => {
+    io.emit('sendMessage', message);
+  });
+});
+
 server.listen(PORT, () => {
   console.log('Server running on PORT', chalk.yellow(PORT));
 });
