@@ -13,3 +13,11 @@ socket.on('message', (message) => {
 socket.on('sendMessage', (message) => {
   console.log(message);
 })
+
+document.querySelector('#location-button').addEventListener('click', () => {
+  navigator.geolocation.getCurrentPosition((position) => {
+    const { latitude, longitude } = position.coords;
+    const location = { latitude, longitude };
+    socket.emit('sendLocation', location);
+  });
+})
