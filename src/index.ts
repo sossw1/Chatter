@@ -24,7 +24,10 @@ io.on('connection', (socket) => {
     io.emit('message', 'A user has left');
   });
   socket.on('sendLocation', (location) => {
-    io.emit('message', location);
+    io.emit(
+      'message',
+      `http://google.com/maps?q=${location.latitude},${location.longitude}`
+    );
   });
 });
 
