@@ -33,11 +33,13 @@ $locationButton.addEventListener('click', () => {
 })
 
 socket.on('message', (message) => {
-  const html = Mustache.render(messageTemplate, {
-    message: message.text,
-    createdAt: message.createdAt
-  });
-  $messages.insertAdjacentHTML('beforeend', html);
+  if (message.text !== '') {
+    const html = Mustache.render(messageTemplate, {
+      message: message.text,
+      createdAt: message.createdAt
+    });
+    $messages.insertAdjacentHTML('beforeend', html);
+  }
 })
 
 socket.on('locationMessage', (link) => {
