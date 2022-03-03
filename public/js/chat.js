@@ -7,6 +7,7 @@ const $locationButton = document.querySelector('#location-button');
 $messageForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const message = $message.value;
+  $message.value = '';
   socket.emit('sendMessage', message, (error) => {
     if (error) {
       return console.log(error);
