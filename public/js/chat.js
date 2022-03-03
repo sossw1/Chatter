@@ -33,7 +33,6 @@ $locationButton.addEventListener('click', () => {
 })
 
 socket.on('message', (message) => {
-  console.log(message);
   const html = Mustache.render(messageTemplate, {
     message: message.text,
     createdAt: message.createdAt
@@ -42,7 +41,6 @@ socket.on('message', (message) => {
 })
 
 socket.on('locationMessage', (link) => {
-  console.log(link);
   const html = Mustache.render(locationMessageTemplate, {
     link
   });
