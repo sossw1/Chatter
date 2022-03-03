@@ -3,6 +3,7 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
+import Filter from 'bad-words';
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app = express();
@@ -18,6 +19,11 @@ app.use(express.static(publicDirectoryPath));
 io.on('connection', (socket) => {
   socket.broadcast.emit('message', 'A new user has joined!');
   socket.on('sendMessage', (message, callback) => {
+    const filter = new Filter();
+    if (filter.isProfane(message)) {
+      return callback('Profanity is not allowed');
+    }
+
     io.emit('sendMessage', message);
     callback();
   });
