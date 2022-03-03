@@ -1,8 +1,12 @@
 const socket = io();
 
-document.querySelector('#message-form').addEventListener('submit', (event) => {
+const $message = document.querySelector('#message');
+const $messageForm = document.querySelector('#message-form');
+const $locationButton = document.querySelector('#location-button');
+
+$messageForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  const message = document.querySelector('#message').value;
+  const message = $message.value;
   socket.emit('sendMessage', message, (error) => {
     if (error) {
       return console.log(error);
@@ -11,7 +15,7 @@ document.querySelector('#message-form').addEventListener('submit', (event) => {
   });
 });
 
-document.querySelector('#location-button').addEventListener('click', () => {
+$locationButton.addEventListener('click', () => {
   navigator.geolocation.getCurrentPosition((position) => {
     const { latitude, longitude } = position.coords;
     const location = { latitude, longitude };
