@@ -1,7 +1,7 @@
 const generateMessage = (text: string) => {
   return {
     text,
-    createdAt: new Date().toLocaleTimeString()
+    createdAt: new Date().getTime()
   };
 };
 
