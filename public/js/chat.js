@@ -40,10 +40,6 @@ socket.on('message', (message) => {
   $messages.insertAdjacentHTML('beforeend', html);
 })
 
-socket.on('sendMessage', (message) => {
-  console.log(message);
-})
-
 socket.on('locationMessage', (link) => {
   console.log(link);
   const html = Mustache.render(locationMessageTemplate, {
