@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
       return callback('Profanity is not allowed');
     }
 
-    io.emit('sendMessage', message);
+    io.emit('message', message);
     callback();
   });
   socket.on('disconnect', () => {
