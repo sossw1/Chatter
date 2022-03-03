@@ -1,10 +1,15 @@
-import { generateMessage } from './utils/messages';
+import { generateLocationMessage, generateMessage } from './utils/messages';
 import chalk from 'chalk';
 import express from 'express';
 import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 import Filter from 'bad-words';
+
+export interface Location {
+  latitude: string;
+  longitude: string;
+}
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app = express();
@@ -31,11 +36,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     io.emit('message', generateMessage('A user has left'));
   });
-  socket.on('sendLocation', (location, callback) => {
-    io.emit(
-      'locationMessage',
-      `http://google.com/maps?q=${location.latitude},${location.longitude}`
-    );
+  socket.on('sendLocation', (location: Location, callback) => {
+    io.emit('locationMessage', generateLocationMessage(location));
     callback();
   });
 });
