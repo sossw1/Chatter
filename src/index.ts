@@ -1,3 +1,4 @@
+import { generateMessage } from './utils/messages';
 import chalk from 'chalk';
 import express from 'express';
 import http from 'http';
@@ -17,18 +18,18 @@ app.use(express.json());
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
-  socket.broadcast.emit('message', 'A new user has joined!');
+  socket.broadcast.emit('message', generateMessage('A new user has joined!'));
   socket.on('sendMessage', (message, callback) => {
     const filter = new Filter();
     if (filter.isProfane(message)) {
-      return callback('Profanity is not allowed');
+      return callback(generateMessage('Profanity is not allowed.'));
     }
 
-    io.emit('message', message);
+    io.emit('message', generateMessage(message));
     callback();
   });
   socket.on('disconnect', () => {
-    io.emit('message', 'A user has left');
+    io.emit('message', generateMessage('A user has left'));
   });
   socket.on('sendLocation', (location, callback) => {
     io.emit(
