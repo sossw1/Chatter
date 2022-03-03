@@ -17,17 +17,19 @@ app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
   socket.broadcast.emit('message', 'A new user has joined!');
-  socket.on('sendMessage', (message) => {
+  socket.on('sendMessage', (message, callback) => {
     io.emit('sendMessage', message);
+    callback();
   });
   socket.on('disconnect', () => {
     io.emit('message', 'A user has left');
   });
-  socket.on('sendLocation', (location) => {
+  socket.on('sendLocation', (location, callback) => {
     io.emit(
       'message',
       `http://google.com/maps?q=${location.latitude},${location.longitude}`
     );
+    callback();
   });
 });
 
