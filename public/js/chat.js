@@ -2,7 +2,7 @@ const socket = io();
 
 const $message = document.querySelector('#message');
 const $messageForm = document.querySelector('#message-form');
-const $locationButton = document.querySelector('#location-button');
+const $locationButton = document.querySelector('#send-location');
 const $messages = document.querySelector('#messages');
 
 // Templates
