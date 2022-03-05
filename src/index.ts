@@ -34,8 +34,11 @@ io.on('connection', (socket) => {
     } else {
       socket.join(user.room);
       socket.emit('message', generateMessage('Welcome to the room!'));
-      socket.to(room).emit('message', `${username} has joined`);
+      socket.broadcast
+        .to(room)
+        .emit('message', generateMessage(`${username} has joined`));
     }
+
     callback();
   });
 
