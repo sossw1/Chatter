@@ -31,6 +31,14 @@ const addUser = ({ id, username, room }: IUser) => {
   return { user };
 };
 
+const getUser = (id: number) => {
+  return users.find((user) => user.id === id);
+};
+
+const getUsersInRoom = (room: string) => {
+  return users.filter((user) => user.room === room);
+};
+
 const removeUser = (id: number) => {
   const index = users.findIndex((user) => user.id === id);
   if (index !== -1) {
@@ -38,4 +46,4 @@ const removeUser = (id: number) => {
   }
 };
 
-export { users, addUser, removeUser };
+export { users, addUser, removeUser, getUser, getUsersInRoom };
