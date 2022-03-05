@@ -55,6 +55,7 @@ socket.on('locationMessage', (location) => {
 
 socket.emit('join', { username, room }, (error) => {
   if (error) {
-    console.log(error);
+    alert(error);
+    location.href = '/';
   }
 });

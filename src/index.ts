@@ -54,11 +54,15 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     const id = parseInt(socket.id);
-    const user: any = removeUser(id);
-    io.to(user.room).emit(
-      'message',
-      generateMessage(`${user.username} has left.`)
-    );
+    const user = getUser(id);
+    if (user) {
+      const room = user.room;
+      removeUser(id);
+      io.to(room).emit(
+        'message',
+        generateMessage(`${user.username} has left.`)
+      );
+    }
   });
 
   socket.on('sendLocation', (location: Location, callback) => {
