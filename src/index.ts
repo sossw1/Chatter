@@ -23,7 +23,12 @@ app.use(express.json());
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
-  socket.broadcast.emit('message', generateMessage('A new user has joined!'));
+  socket.on('join', ({ username, room }) => {
+    socket.join(room);
+    socket.emit('message', generateMessage('Welcome to the room!'));
+    socket.to(room).emit('message', `${username} has joined`);
+  });
+
   socket.on('sendMessage', (message, callback) => {
     const filter = new Filter();
     if (filter.isProfane(message)) {
@@ -33,9 +38,11 @@ io.on('connection', (socket) => {
     io.emit('message', generateMessage(message));
     callback();
   });
+
   socket.on('disconnect', () => {
     io.emit('message', generateMessage('A user has left'));
   });
+
   socket.on('sendLocation', (location: Location, callback) => {
     io.emit('locationMessage', generateLocationMessage(location));
     callback();
