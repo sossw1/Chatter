@@ -1,4 +1,5 @@
 import { generateLocationMessage, generateMessage } from './utils/messages';
+import { addUser, getUser, getUsersInRoom, removeUser } from './utils/users';
 import chalk from 'chalk';
 import express from 'express';
 import http from 'http';
@@ -23,10 +24,19 @@ app.use(express.json());
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
-  socket.on('join', ({ username, room }) => {
-    socket.join(room);
-    socket.emit('message', generateMessage('Welcome to the room!'));
-    socket.to(room).emit('message', `${username} has joined`);
+  socket.on('join', ({ username, room }, callback) => {
+    const id = parseInt(socket.id);
+
+    const { error, user } = addUser({ id, username, room });
+
+    if (!user) {
+      callback(error);
+    } else {
+      socket.join(user.room);
+      socket.emit('message', generateMessage('Welcome to the room!'));
+      socket.to(room).emit('message', `${username} has joined`);
+    }
+    callback();
   });
 
   socket.on('sendMessage', (message, callback) => {
