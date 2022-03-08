@@ -37,6 +37,19 @@ $locationButton.addEventListener('click', () => {
   });
 })
 
+const autoScrollOnBottom = () => {
+  const $newMessage = $messages.lastElementChild;
+  const newMessageStyles = getComputedStyle($newMessage);
+  const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+  const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+  const visibleHeight = $messages.offsetHeight;
+  const containerHeight = $messages.scrollHeight;
+  const scrollOffset = $messages.scrollTop + visibleHeight;
+  if (containerHeight - newMessageHeight <= scrollOffset) {
+    $messages.scrollTop = $messages.scrollHeight;
+  }
+}
+
 socket.on('message', (message) => {
   if (message.text !== '') {
     const html = Mustache.render(messageTemplate, {
@@ -45,6 +58,7 @@ socket.on('message', (message) => {
       createdAt: moment(message.createdAt).format('h:mm A')
     });
     $messages.insertAdjacentHTML('beforeend', html);
+    autoScrollOnBottom();
   }
 })
 
