@@ -37,7 +37,10 @@ const getUser = (id: string) => {
 
 const getUsersInRoom = (room: string) => {
   room = room.trim().toLowerCase();
-  return users.filter((user) => user.room === room);
+  const unsortedUsers = users.filter((user) => user.room === room);
+  return unsortedUsers.sort((a, b) => {
+    return a.username < b.username ? -1 : 0;
+  });
 };
 
 const removeUser = (id: string) => {
