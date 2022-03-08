@@ -37,6 +37,10 @@ io.on('connection', (socket) => {
         callback(error);
       } else {
         socket.join(user.room);
+        io.to(user.room).emit('roomData', {
+          room: user.room,
+          users: getUsersInRoom(user.room)
+        });
         socket.emit(
           'message',
           generateMessage('System', 'Welcome to the room!')
@@ -84,6 +88,10 @@ io.on('connection', (socket) => {
     const user = getUser(socket.id);
     if (user) {
       removeUser(socket.id);
+      io.to(user.room).emit('roomData', {
+        room: user.room,
+        users: getUsersInRoom(user.room)
+      });
       io.to(user.room).emit(
         'message',
         generateMessage('System', `${user.username} has left.`)
