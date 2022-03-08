@@ -24,24 +24,30 @@ app.use(express.json());
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
-  socket.on('join', ({ username, room }, callback) => {
-    const id = socket.id;
-    const { error, user } = addUser({ id, username, room });
+  socket.on(
+    'join',
+    (
+      { username, room }: { username: string; room: string },
+      callback: Function
+    ) => {
+      const id = socket.id;
+      const { error, user } = addUser({ id, username, room });
 
-    if (!user) {
-      callback(error);
-    } else {
-      socket.join(user.room);
-      socket.emit('message', generateMessage('Welcome to the room!'));
-      socket.broadcast
-        .to(room)
-        .emit('message', generateMessage(`${user.username} has joined.`));
+      if (!user) {
+        callback(error);
+      } else {
+        socket.join(user.room);
+        socket.emit('message', generateMessage('Welcome to the room!'));
+        socket.broadcast
+          .to(room)
+          .emit('message', generateMessage(`${user.username} has joined.`));
+      }
+
+      callback();
     }
+  );
 
-    callback();
-  });
-
-  socket.on('sendMessage', (message, callback) => {
+  socket.on('sendMessage', (message: string, callback: Function) => {
     const filter = new Filter();
     if (filter.isProfane(message)) {
       return callback('Profanity is not allowed.');
@@ -54,16 +60,15 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     const user = getUser(socket.id);
     if (user) {
-      const room = user.room;
       removeUser(socket.id);
-      io.to(room).emit(
+      io.to(user.room).emit(
         'message',
         generateMessage(`${user.username} has left.`)
       );
     }
   });
 
-  socket.on('sendLocation', (location: Location, callback) => {
+  socket.on('sendLocation', (location: Location, callback: Function) => {
     io.emit('locationMessage', generateLocationMessage(location));
     callback();
   });
