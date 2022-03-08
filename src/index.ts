@@ -41,9 +41,8 @@ io.on('connection', (socket) => {
         socket.broadcast
           .to(room)
           .emit('message', generateMessage(`${user.username} has joined.`));
+        callback();
       }
-
-      callback();
     }
   );
 
@@ -57,8 +56,22 @@ io.on('connection', (socket) => {
     if (user) {
       io.to(user.room).emit('message', generateMessage(message));
       callback();
+    } else {
+      callback({ error: 'Undefined user' });
     }
-    callback({ error: 'Undefined user' });
+  });
+
+  socket.on('sendLocation', (location: Location, callback: Function) => {
+    const user = getUser(socket.id);
+    if (user) {
+      io.to(user.room).emit(
+        'locationMessage',
+        generateLocationMessage(location)
+      );
+      callback();
+    } else {
+      callback({ error: 'Undefined user' });
+    }
   });
 
   socket.on('disconnect', () => {
@@ -70,11 +83,6 @@ io.on('connection', (socket) => {
         generateMessage(`${user.username} has left.`)
       );
     }
-  });
-
-  socket.on('sendLocation', (location: Location, callback: Function) => {
-    io.emit('locationMessage', generateLocationMessage(location));
-    callback();
   });
 });
 
