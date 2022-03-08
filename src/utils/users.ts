@@ -1,5 +1,5 @@
 interface IUser {
-  id: number;
+  id: string;
   username: string;
   room: string;
 }
@@ -31,7 +31,7 @@ const addUser = ({ id, username, room }: IUser) => {
   return { user };
 };
 
-const getUser = (id: number) => {
+const getUser = (id: string) => {
   return users.find((user) => user.id === id);
 };
 
@@ -40,7 +40,7 @@ const getUsersInRoom = (room: string) => {
   return users.filter((user) => user.room === room);
 };
 
-const removeUser = (id: number) => {
+const removeUser = (id: string) => {
   const index = users.findIndex((user) => user.id === id);
   if (index !== -1) {
     return users.splice(index, 1)[0];
