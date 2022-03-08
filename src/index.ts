@@ -25,8 +25,7 @@ app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
   socket.on('join', ({ username, room }, callback) => {
-    const id = parseInt(socket.id);
-
+    const id = socket.id;
     const { error, user } = addUser({ id, username, room });
 
     if (!user) {
@@ -53,11 +52,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    const id = parseInt(socket.id);
-    const user = getUser(id);
+    const user = getUser(socket.id);
     if (user) {
       const room = user.room;
-      removeUser(id);
+      removeUser(socket.id);
       io.to(room).emit(
         'message',
         generateMessage(`${user.username} has left.`)
