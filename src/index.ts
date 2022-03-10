@@ -1,5 +1,6 @@
 import { generateLocationMessage, generateMessage } from './utils/messages';
 import { addUser, getUser, getUsersInRoom, removeUser } from './utils/users';
+import './db/mongoose';
 import chalk from 'chalk';
 import express from 'express';
 import http from 'http';
