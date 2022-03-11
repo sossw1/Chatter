@@ -10,6 +10,7 @@ export interface IUser {
   username: string;
   password: string;
   email: string;
+  rooms: string[];
 }
 
 export interface IUserDoc extends IUser, Document {}
@@ -17,7 +18,8 @@ export interface IUserDoc extends IUser, Document {}
 enum PropertyNames {
   USERNAME = 'username',
   PASSWORD = 'password',
-  EMAIL = 'email'
+  EMAIL = 'email',
+  ROOMS = 'rooms'
 }
 
 export interface IUserModel extends Model<IUserDoc> {
@@ -40,7 +42,14 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
     required: true,
     trim: true,
     lowercase: true
-  }
+  },
+  rooms: [
+    {
+      type: String,
+      required: true,
+      unique: true
+    }
+  ]
 };
 
 const UserSchema = new Schema(UserSchemaFields, {
