@@ -35,7 +35,8 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
   username: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    lowercase: true
   },
   password: {
     type: String,
