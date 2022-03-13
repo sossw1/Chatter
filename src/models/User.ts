@@ -6,11 +6,16 @@ import {
   SchemaDefinitionProperty
 } from 'mongoose';
 
+interface IRoomInfo {
+  roomName: string;
+  roomId: string;
+}
+
 export interface IUser {
   username: string;
   password: string;
   email: string;
-  rooms: string[];
+  rooms: IRoomInfo[];
 }
 
 export interface IUserDoc extends IUser, Document {}
@@ -45,9 +50,15 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
   },
   rooms: [
     {
-      type: String,
-      required: true,
-      unique: true
+      roomName: {
+        type: String,
+        required: true
+      },
+      roomId: {
+        type: String,
+        required: true,
+        unique: true
+      }
     }
   ]
 };
