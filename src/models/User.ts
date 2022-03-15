@@ -5,6 +5,7 @@ import {
   Schema,
   SchemaDefinitionProperty
 } from 'mongoose';
+import validator from 'validator';
 
 interface IRoomInfo {
   roomName: string;
@@ -47,7 +48,12 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
     unique: true,
     required: true,
     trim: true,
-    lowercase: true
+    lowercase: true,
+    validate: (value: string) => {
+      if (!validator.isEmail(value)) {
+        throw new Error('Invalid email');
+      }
+    }
   },
   rooms: [
     {
