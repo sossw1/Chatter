@@ -14,8 +14,25 @@ router.post('/api/users', async (req, res) => {
     const userDocument: IUserDoc = new UserCollection(user);
     await userDocument.save();
     res.status(201).send({ user: userDocument });
-  } catch (error) {
-    res.status(500).send(error);
+  } catch (error: any) {
+    if (error.name === 'ValidationError') {
+      let errorMessage = 'Invalid user data provided - ';
+      const { errors } = error;
+
+      if (errors.username) {
+        errorMessage += errors.username.message;
+      } else if (errors.email) {
+        errorMessage += errors.email.message;
+      } else if (errors.password) {
+        errorMessage += errors.password.message;
+      } else {
+        errorMessage = errorMessage.slice(0, -3);
+      }
+
+      return res.status(400).send({ error: errorMessage });
+    }
+
+    res.sendStatus(500);
   }
 });
 
