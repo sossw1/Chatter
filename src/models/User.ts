@@ -6,6 +6,7 @@ import {
   SchemaDefinitionProperty
 } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 interface IRoomInfo {
   roomName: string;
@@ -72,6 +73,16 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
 
 const UserSchema = new Schema(UserSchemaFields, {
   timestamps: true
+});
+
+UserSchema.pre('save', async function (next) {
+  const user = this;
+
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+
+  next();
 });
 
 const UserCollection = model<IUserDoc, IUserModel>('users', UserSchema);
