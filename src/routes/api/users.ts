@@ -9,11 +9,13 @@ router.post('/api/users', async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
+      tokens: [],
       rooms: []
     };
     const userDocument: IUserDoc = new UserCollection(user);
     await userDocument.save();
-    res.status(201).send({ user: userDocument });
+    const token = await userDocument.generateAuthToken();
+    res.status(201).send({ user: userDocument, token });
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       let errorMessage = 'Invalid user data provided - ';
