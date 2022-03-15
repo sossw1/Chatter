@@ -1,5 +1,6 @@
 import { generateLocationMessage, generateMessage } from './utils/messages';
 import { addUser, getUser, getUsersInRoom, removeUser } from './utils/users';
+import userRouter from './routes/api/users';
 import './db/mongoose';
 import chalk from 'chalk';
 import express from 'express';
@@ -15,6 +16,7 @@ export interface Location {
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const app = express();
+const router = express.Router();
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -23,6 +25,9 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 
 app.use(express.json());
 app.use(express.static(publicDirectoryPath));
+
+router.use(userRouter);
+app.use(router);
 
 io.on('connection', (socket) => {
   socket.on(
