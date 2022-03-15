@@ -63,4 +63,14 @@ router.post('/api/users/logout', auth, async (req, res) => {
   }
 });
 
+router.post('/api/users/logout/all', auth, async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 export default router;
