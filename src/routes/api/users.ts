@@ -8,7 +8,8 @@ router.post('/api/users', async (req, res) => {
     const user: IUser = {
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      rooms: []
     };
     const userDocument: IUserDoc = new UserCollection(user);
     await userDocument.save();
