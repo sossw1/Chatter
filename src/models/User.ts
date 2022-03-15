@@ -39,6 +39,7 @@ enum PropertyNames {
 }
 
 export interface IUserModel extends Model<IUserDoc> {
+  findByCredentials(email: string, password: string): Promise<IUserDoc>;
   PropertyNames: typeof PropertyNames;
 }
 
@@ -110,6 +111,28 @@ UserSchema.methods.toJSON = function () {
 
   return userObject;
 };
+
+UserSchema.static(
+  'findByCredentials',
+  async function findByCredentials(
+    email: string,
+    password: string
+  ): Promise<IUserDoc> {
+    const user: IUserDoc = await this.findOne({ email });
+
+    if (!user) {
+      throw new Error('Unable to login');
+    }
+
+    const isMatchingPassword = await bcrypt.compare(password, user.password);
+
+    if (!isMatchingPassword) {
+      throw new Error('Unable to login');
+    }
+
+    return user;
+  }
+);
 
 UserSchema.pre('save', async function (next) {
   const user = this;
