@@ -4,6 +4,10 @@ import express from 'express';
 
 const router = express.Router();
 
+router.get('/api/users/me', auth, async (req, res) => {
+  res.send(req.user);
+});
+
 router.post('/api/users', async (req, res) => {
   try {
     const user: IUser = {
