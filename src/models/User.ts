@@ -7,6 +7,11 @@ import {
 } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+import jwt, { Jwt } from 'jsonwebtoken';
+
+interface IToken extends Document {
+  token: string;
+}
 
 interface IRoomInfo {
   roomName: string;
@@ -18,15 +23,19 @@ export interface IUser {
   password: string;
   email: string;
   rooms: IRoomInfo[];
+  tokens: IToken[];
 }
 
-export interface IUserDoc extends IUser, Document {}
+export interface IUserDoc extends IUser, Document {
+  generateAuthToken(): Jwt;
+}
 
 enum PropertyNames {
   USERNAME = 'username',
   PASSWORD = 'password',
   EMAIL = 'email',
-  ROOMS = 'rooms'
+  ROOMS = 'rooms',
+  TOKENS = 'tokens'
 }
 
 export interface IUserModel extends Model<IUserDoc> {
@@ -68,12 +77,29 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
         unique: true
       }
     }
+  ],
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true
+      }
+    }
   ]
 };
 
 const UserSchema = new Schema(UserSchemaFields, {
   timestamps: true
 });
+
+UserSchema.methods.generateAuthToken = async function () {
+  const user = this;
+  const secret: string = process.env.JWT_SECRET || 'd^e#f@a*u$l%t';
+  const token = jwt.sign({ _id: user._id.toString() }, secret);
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
+  return token;
+};
 
 UserSchema.pre('save', async function (next) {
   const user = this;
