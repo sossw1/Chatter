@@ -1,6 +1,7 @@
 import { generateLocationMessage, generateMessage } from './utils/messages';
 import { addUser, getUser, getUsersInRoom, removeUser } from './utils/users';
 import userRouter from './routes/api/users';
+import { IUserDoc } from './models/User';
 import './db/mongoose';
 import chalk from 'chalk';
 import express from 'express';
@@ -8,6 +9,15 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 import Filter from 'bad-words';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: IUserDoc;
+      token: string;
+    }
+  }
+}
 
 export interface Location {
   latitude: string;
