@@ -25,9 +25,11 @@
   },
   "dependencies": {
     "@types/bad-words": "^3.0.1",
+    "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.13",
     "@types/validator": "^13.7.1",
     "bad-words": "^3.0.4",
+    "bcryptjs": "^2.4.3",
     "chalk": "^4.1.0",
     "env-cmd": "^10.1.0",
     "express": "^4.17.3",
