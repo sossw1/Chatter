@@ -39,7 +39,11 @@ router.post('/api/users', async (req, res) => {
       return res.status(400).send({ error: errorMessage });
     }
 
-    res.sendStatus(500);
+    if (error.code === 11000 && error.keyPattern.email) {
+      return res.status(400).send({ error: 'Email must be unique' });
+    }
+
+    res.status(500).send({ error });
   }
 });
 
