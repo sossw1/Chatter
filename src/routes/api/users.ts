@@ -128,3 +128,12 @@ router.patch('/api/users/me', auth, async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+router.delete('/api/users/me', auth, async (req, res) => {
+  try {
+    await req.user.remove();
+    res.send(req.user);
+  } catch (error: any) {
+    res.status(500).send(error);
+  }
+});
