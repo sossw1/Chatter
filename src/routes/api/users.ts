@@ -86,6 +86,14 @@ export default router;
 router.patch('/api/users/me', auth, async (req, res) => {
   try {
     const user = req.user;
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['username', 'email', 'password'];
+    const isValidOperation = updates.every((update) =>
+      allowedUpdates.includes(update)
+    );
+    if (!isValidOperation) {
+      return res.status(400).send({ error: 'Invalid updates' });
+    }
 
     const { username, email, password }: IUser = req.body;
     if (username || username === '') {
