@@ -109,6 +109,22 @@ router.patch('/api/users/me', auth, async (req, res) => {
     await user.save();
     res.send(user);
   } catch (error: any) {
-    res.send(error);
+    if (error.name === 'ValidationError') {
+      let errorMessage = 'Invalid user data provided - ';
+      const { errors } = error;
+
+      if (errors.username) {
+        errorMessage += errors.username.message;
+      } else if (errors.email) {
+        errorMessage += errors.email.message;
+      } else if (errors.password) {
+        errorMessage += errors.password.message;
+      } else {
+        errorMessage = errorMessage.slice(0, -3);
+      }
+
+      return res.status(400).send({ error: errorMessage });
+    }
+    res.sendStatus(500);
   }
 });
