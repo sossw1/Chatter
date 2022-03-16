@@ -82,3 +82,25 @@ router.post('/api/users/logout/all', auth, async (req, res) => {
 });
 
 export default router;
+
+router.patch('/api/users/me', auth, async (req, res) => {
+  try {
+    const user = req.user;
+
+    const { username, email, password }: IUser = req.body;
+    if (username || username === '') {
+      user.username = username;
+    }
+    if (email || email === '') {
+      user.email = email;
+    }
+    if (password || password === '') {
+      user.password = password;
+    }
+
+    await user.save();
+    res.send(user);
+  } catch (error: any) {
+    res.send(error);
+  }
+});
