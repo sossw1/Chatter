@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Login() {
   return (
     <div class='centered-form'>
@@ -11,7 +13,7 @@ export default function Login() {
           <button>Login</button>
         </form>
         {/* Need to make this a link below */}
-        <p>Don't have an account? Sign up here</p>
+        <p>Don't have an account? Sign up <Link to='/signup'>here</Link></p>
       </div>
     </div>
   )
