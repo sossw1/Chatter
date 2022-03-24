@@ -6,8 +6,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   return (
-    <div class='centered-form'>
-      <div class='centered-form__box'>
+    <div className='centered-form'>
+      <div className='centered-form__box'>
         <h1>Login</h1>
         <form>
           <label>Username</label>

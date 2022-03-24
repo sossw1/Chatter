@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 
 export default function Signup() {
   return (
-    <div class='centered-form'>
-      <div class='centered-form__box'>
+    <div className='centered-form'>
+      <div className='centered-form__box'>
         <h1>Sign up!</h1>
         <form action='/rooms.html'>
           <label>Username</label>
