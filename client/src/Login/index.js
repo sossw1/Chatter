@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleUsername = (e) => {
-    setUsername(e.target.value);
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
   }
 
   const handlePassword = (e) => {
@@ -18,8 +18,8 @@ export default function Login() {
       <div className='centered-form__box'>
         <h1>Login</h1>
         <form>
-          <label>Username</label>
-          <input type='text' name='username' placeholder='Username' onChange={handleUsername} required />
+          <label>Email</label>
+          <input type='text' name='email' placeholder='Email' onChange={handleEmail} required />
           <label>Password</label>
           <input type='password' name='password' placeholder='Password' onChange={handlePassword} required />
           <button>Login</button>
