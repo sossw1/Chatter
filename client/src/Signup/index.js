@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function Signup() {
+export default function Signup(props) {
+  const { setUser } = props;
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,7 +34,14 @@ export default function Signup() {
       },
       body: JSON.stringify({ username, email, password })
     });
-
+    if (response.ok) {
+      const { user } = await response.json();
+      setUser(user);
+      navigate('/rooms');
+    } else {
+      const { error } = await response.json();
+      console.log(error);
+    }
   }
 
   return (
