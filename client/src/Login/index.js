@@ -7,12 +7,17 @@ export default function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-  }
-
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
+  const handleChange = (e) => {
+    switch (e.target.id) {
+      case 'email':
+        setEmail(e.target.value);
+        break;
+      case 'password':
+        setPassword(e.target.value);
+        break;
+      default:
+        break;
+    }
   }
 
   const handleSubmit = async function (e) {
@@ -38,9 +43,9 @@ export default function Login(props) {
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
           <label>Email</label>
-          <input type='text' name='email' placeholder='Email' onChange={handleEmail} required />
+          <input id='email' type='text' name='email' placeholder='Email' onChange={handleChange} required />
           <label>Password</label>
-          <input type='password' name='password' placeholder='Password' onChange={handlePassword} required />
+          <input id='password' type='password' name='password' placeholder='Password' onChange={handleChange} required />
           <button>Login</button>
         </form>
         <p>Don't have an account? Sign up <Link to='/signup'>here</Link></p>
