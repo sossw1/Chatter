@@ -22,11 +22,24 @@ export default function Signup() {
     }
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = 'http://localhost:3000/api/users';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, email, password })
+    });
+
+  }
+
   return (
     <div className='centered-form'>
       <div className='centered-form__box'>
         <h1>Sign up!</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <label>Username</label>
           <input id='username' type='text' name='username' placeholder='Username' onChange={handleChange} required />
           <label>Email</label>
