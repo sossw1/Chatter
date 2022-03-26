@@ -26,7 +26,7 @@ export default function Signup(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = 'http://localhost:3000/api/users';
+    const url = '/api/users';
     const response = await fetch(url, {
       method: 'POST',
       headers: {

@@ -22,7 +22,7 @@ export default function Login(props) {
 
   const handleSubmit = async function (e) {
     e.preventDefault();
-    const url = 'http://localhost:3000/api/users/login';
+    const url = '/api/users/login';
     const response = await fetch(url, {
       method: 'POST',
       headers: {
