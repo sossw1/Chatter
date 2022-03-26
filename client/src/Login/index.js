@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,11 +14,26 @@ export default function Login() {
     setPassword(e.target.value);
   }
 
+  const handleSubmit = async function (e) {
+    e.preventDefault();
+    const url = 'http://localhost:3000/api/users/login';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+    if (response.ok) {
+      navigate('/rooms');
+    }
+  }
+
   return (
     <div className='centered-form'>
       <div className='centered-form__box'>
         <h1>Login</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <label>Email</label>
           <input type='text' name='email' placeholder='Email' onChange={handleEmail} required />
           <label>Password</label>
