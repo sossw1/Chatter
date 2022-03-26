@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function Login() {
+export default function Login(props) {
+  const { setUser } = props;
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +26,8 @@ export default function Login() {
       body: JSON.stringify({ email, password })
     });
     if (response.ok) {
+      const { user } = await response.json();
+      setUser(user);
       navigate('/rooms');
     }
   }
