@@ -1,3 +1,5 @@
+import { createContext, useState } from 'react';
+
 const auth = {
   isAuthenticated: false,
   async login(email, password) {
@@ -21,4 +23,29 @@ const auth = {
   logout() {
     this.isAuthenticated = false;
   }
+}
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  const login = async (email, password) => {
+    const response = await auth.login(email, password);
+    const { user } = await response.json();
+    if (response.ok) {
+      setUser(user);
+    }
+    return response;
+  }
+
+  const logout = () => {
+    return auth.logout(() => {
+      setUser(null);
+    });
+  }
+
+  let value = { user, login, logout };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
