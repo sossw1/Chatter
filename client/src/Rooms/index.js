@@ -1,5 +1,8 @@
-export default function Rooms(props) {
-  const { rooms } = props;
+import { useAuth } from '../Providers/auth';
+
+export default function Rooms() {
+  const auth = useAuth();
+  const { rooms } = auth.user;
 
   return (
     <div className="centered-form">
