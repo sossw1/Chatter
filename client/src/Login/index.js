@@ -1,10 +1,12 @@
 import { useAuth } from '../Providers/auth';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = useAuth();
+  const nextPage = location.state?.from?.pathname || '/rooms';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -25,7 +27,7 @@ export default function Login() {
     e.preventDefault();
     const response = await auth.login(email, password);
     if (response.ok) {
-      navigate('/rooms');
+      navigate(nextPage);
     } else {
       // display error to user
     }
