@@ -1,9 +1,10 @@
+import { useAuth } from '../Providers/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function Login(props) {
-  const { setUser } = props;
+export default function Login() {
   const navigate = useNavigate();
+  const auth = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,18 +23,11 @@ export default function Login(props) {
 
   const handleSubmit = async function (e) {
     e.preventDefault();
-    const url = '/api/users/login';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, password })
-    });
+    const response = await auth.login(email, password);
     if (response.ok) {
-      const { user } = await response.json();
-      setUser(user);
       navigate('/rooms');
+    } else {
+      // display error to user
     }
   }
 
