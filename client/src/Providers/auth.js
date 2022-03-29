@@ -1,4 +1,8 @@
 import { createContext, useContext, useState } from 'react';
+import {
+  useLocation,
+  Navigate
+} from 'react-router-dom';
 
 const auth = {
   isAuthenticated: false,
@@ -52,4 +56,15 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   return useContext(AuthContext);
+}
+
+export function RequireAuth({ children }) {
+  const auth = useAuth();
+  const location = useLocation();
+
+  if (!auth.user) {
+    return <Navigate to='/' state={{ from: location }} replace />;
+  }
+
+  return children;
 }
