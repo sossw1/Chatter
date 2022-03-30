@@ -6,6 +6,24 @@ import {
 
 const auth = {
   isAuthenticated: false,
+  async signup(username, email, password) {
+    try {
+      const url = '/api/users';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, email, password })
+      });
+      if (response.ok) {
+        this.isAuthenticated = true;
+      }
+      return response;
+    } catch (error) {
+      return error;
+    }
+  },
   async login(email, password) {
     try {
       const url = '/api/users/login';
@@ -34,6 +52,15 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  const signup = async (username, email, password) => {
+    const response = await auth.signup(username, email, password);
+    const { user } = await response.json();
+    if (response.ok) {
+      setUser(user);
+    }
+    return response;
+  }
+
   const login = async (email, password) => {
     const response = await auth.login(email, password);
     const { user } = await response.json();
@@ -49,7 +76,7 @@ export function AuthProvider({ children }) {
     });
   }
 
-  let value = { user, login, logout };
+  let value = { user, signup, login, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
