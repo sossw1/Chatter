@@ -1,8 +1,9 @@
+import { useAuth } from '../Providers/auth';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function Signup(props) {
-  const { setUser } = props;
+export default function Signup() {
+  const auth = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -26,21 +27,11 @@ export default function Signup(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = '/api/users';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username, email, password })
-    });
+    const response = await auth.signup(username, email, password);
     if (response.ok) {
-      const { user } = await response.json();
-      setUser(user);
       navigate('/rooms');
     } else {
-      const { error } = await response.json();
-      console.log(error);
+      // display error to user
     }
   }
 
