@@ -42,8 +42,22 @@ const auth = {
       return error;
     }
   },
-  logout() {
-    this.isAuthenticated = false;
+  async logout() {
+    try {
+      const token = localStorage.getItem('token');
+      const url = '/api/users/logout';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authentication': 'Bearer ' + token
+        }
+      });
+      localStorage.removeItem('token');
+      this.isAuthenticated = false;
+      return response;
+    } catch (error) {
+      return error;
+    }
   }
 }
 
@@ -70,10 +84,10 @@ export function AuthProvider({ children }) {
     return response;
   }
 
-  const logout = () => {
-    return auth.logout(() => {
-      setUser(null);
-    });
+  const logout = async () => {
+    const response = await auth.logout();
+    console.log(response);
+    setUser(null);
   }
 
   let value = { user, signup, login, logout };
