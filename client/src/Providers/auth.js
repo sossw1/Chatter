@@ -84,6 +84,15 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  const setUserWithToken = async () => {
+    const response = await auth.setUserWithToken();
+    const user = await response.json();
+    if (response.ok) {
+      setUser(user);
+    }
+    return response;
+  }
+
   const signup = async (username, email, password) => {
     const response = await auth.signup(username, email, password);
     const { user, token } = await response.json();
@@ -110,7 +119,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  let value = { user, signup, login, logout };
+  let value = { user, setUserWithToken, signup, login, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
