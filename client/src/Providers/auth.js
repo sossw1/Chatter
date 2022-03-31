@@ -6,6 +6,24 @@ import {
 
 const auth = {
   isAuthenticated: false,
+  async setUserWithToken() {
+    try {
+      const token = JSON.parse(localStorage.getItem('token'));
+      const url = '/api/users/me';
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        this.isAuthenticated = true;
+      }
+      return response;
+    } catch (error) {
+      return error;
+    }
+  },
   async signup(username, email, password) {
     try {
       const url = '/api/users';
