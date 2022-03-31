@@ -15,8 +15,6 @@ export default function Login() {
       const response = await auth.setUserWithToken();
       if (response.ok) {
         navigate(nextPage, { replace: true });
-      } else {
-        console.log(response);
       }
     }
     fetchUser();
