@@ -1,6 +1,6 @@
 import { useAuth } from '../Providers/auth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,6 +9,18 @@ export default function Login() {
   const nextPage = location.state?.from?.pathname || '/rooms';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await auth.setUserWithToken();
+      if (response.ok) {
+        navigate(nextPage, { replace: true });
+      } else {
+        console.log(response);
+      }
+    }
+    fetchUser();
+  }, [])
 
   const handleChange = (e) => {
     switch (e.target.id) {
