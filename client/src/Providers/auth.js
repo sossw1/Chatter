@@ -68,18 +68,20 @@ export function AuthProvider({ children }) {
 
   const signup = async (username, email, password) => {
     const response = await auth.signup(username, email, password);
-    const { user } = await response.json();
+    const { user, token } = await response.json();
     if (response.ok) {
       setUser(user);
+      localStorage.setItem('token', JSON.stringify(token));
     }
     return response;
   }
 
   const login = async (email, password) => {
     const response = await auth.login(email, password);
-    const { user } = await response.json();
+    const { user, token } = await response.json();
     if (response.ok) {
       setUser(user);
+      localStorage.setItem('token', JSON.stringify(token));
     }
     return response;
   }
