@@ -1,4 +1,4 @@
-import { useAuth } from '../Providers/auth';
+import { useAuth } from '../../Providers/auth';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 

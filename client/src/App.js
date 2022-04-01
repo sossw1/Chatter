@@ -1,6 +1,6 @@
 import './App.css';
 import Login from './Components/Login';
-import Signup from './Signup';
+import Signup from './Components/Signup';
 import Rooms from './Components/Rooms';
 import { AuthProvider, RequireAuth } from './Providers/auth';
 import React from 'react';

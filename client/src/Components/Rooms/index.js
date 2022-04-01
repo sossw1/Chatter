@@ -1,4 +1,4 @@
-import { useAuth } from '../Providers/auth';
+import { useAuth } from '../../Providers/auth';
 
 export default function Rooms() {
   const auth = useAuth();
