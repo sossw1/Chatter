@@ -1,5 +1,5 @@
 import { useAuth } from '../../Providers/auth';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Signup() {
@@ -8,6 +8,17 @@ export default function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await auth.setUserWithToken();
+      if (response.ok) {
+        navigate('/rooms', { replace: true });
+      }
+    }
+    fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleChange = (e) => {
     switch (e.target.id) {
