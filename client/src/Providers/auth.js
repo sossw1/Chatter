@@ -115,8 +115,8 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     const response = await auth.logout();
-    console.log(response);
     setUser(null);
+    return response;
   }
 
   let value = { user, setUserWithToken, signup, login, logout };
