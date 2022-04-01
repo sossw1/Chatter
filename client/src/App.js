@@ -5,6 +5,7 @@ import Rooms from './Components/Rooms';
 import { AuthProvider, RequireAuth } from './Providers/auth';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navigation from './Layouts/Navigation';
 
 function App() {
   return (
@@ -13,14 +14,16 @@ function App() {
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
-          <Route
-            path='/rooms'
-            element={
-              <RequireAuth>
-                <Rooms />
-              </RequireAuth>
-            }
-          ></Route>
+          <Route element={<Navigation />}>
+            <Route
+              path='/rooms'
+              element={
+                <RequireAuth>
+                  <Rooms />
+                </RequireAuth>
+              }
+            ></Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
