@@ -2,6 +2,7 @@ import './App.css';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
 import Rooms from './Components/Rooms';
+import NoMatch from './Components/NoMatch';
 import { AuthProvider, RequireAuth } from './Providers/auth';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -24,6 +25,7 @@ function App() {
               }
             ></Route>
           </Route>
+          <Route path='*' element={<NoMatch />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
