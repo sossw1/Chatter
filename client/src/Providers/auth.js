@@ -13,7 +13,9 @@ const auth = {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
       if (response.ok) {
@@ -30,7 +32,8 @@ const auth = {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({ username, email, password })
       });
@@ -48,7 +51,8 @@ const auth = {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({ email, password })
       });
@@ -67,7 +71,9 @@ const auth = {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Authentication': 'Bearer ' + token
+          'Authentication': 'Bearer ' + token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
       localStorage.removeItem('token');
