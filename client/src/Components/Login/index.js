@@ -1,6 +1,7 @@
 import { useAuth } from '../../Providers/auth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import './styles.css';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -42,6 +43,9 @@ export default function Login() {
       navigate(nextPage);
     } else {
       setLoginError('Invalid username/password');
+      setTimeout(() => {
+        setLoginError('');
+      }, 2000);
     }
   }
 
