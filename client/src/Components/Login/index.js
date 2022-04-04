@@ -9,6 +9,7 @@ export default function Login() {
   const nextPage = location.state?.from?.pathname || '/rooms';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,7 +41,7 @@ export default function Login() {
     if (response.ok) {
       navigate(nextPage);
     } else {
-      // display error to user
+      setLoginError('Invalid username/password');
     }
   }
 
@@ -53,6 +54,9 @@ export default function Login() {
           <input id='email' type='text' name='email' placeholder='Email' onChange={handleChange} required />
           <label>Password</label>
           <input id='password' type='password' name='password' placeholder='Password' onChange={handleChange} required />
+          {(loginError !== '') &&
+            <p className='error'>{loginError}</p>
+          }
           <button>Login</button>
         </form>
         <p>Don't have an account? Sign up <Link to='/signup'>here</Link></p>
