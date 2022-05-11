@@ -2,12 +2,12 @@
   "name": "chatter",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "env-cmd -f ./config/test.env jest --runInBand --detectOpenHandles",
     "test-watch": "env-cmd -f ./config/test.env jest --runInBand --detectOpenHandles --watchAll",
-    "start": "node build/index.js",
-    "dev": "env-cmd -f ./config/dev.env nodemon build/index.js",
+    "start": "node dist/index.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon dist/index.js",
     "postinstall": "tsc"
   },
   "keywords": [],
