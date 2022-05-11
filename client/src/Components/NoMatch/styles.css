@@ -1,9 +1,0 @@
-#no-match__box {
-  width: auto;
-  max-width: 1000px;
-}
-
-#no-match__box h2 {
-  inline-size: 900px;
-  overflow-wrap: break-word;
-}
