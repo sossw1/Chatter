@@ -11,6 +11,7 @@ class Auth {
       return this.instance;
     }
     this.instance = new Auth();
+    return this.instance;
   }
 }
 
