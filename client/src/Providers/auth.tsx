@@ -1,3 +1,5 @@
+import { createContext, useState, ReactChildren } from 'react';
+
 interface User {
   username: string;
   password: string;
@@ -43,4 +45,23 @@ class Auth {
 
 const auth = Auth.getInstance();
 
-export {};
+interface AuthContextProps {
+  user: User | null;
+  setUserWithToken(): Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextProps | null>(null);
+
+export const AuthProvider = ({ children }: { children: ReactChildren }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const setUserWithToken = async () => {
+    const fetchedUser = await auth.getUserWithToken();
+    if (!fetchedUser) return;
+    setUser(fetchedUser);
+  };
+
+  let value = { user, setUserWithToken };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
