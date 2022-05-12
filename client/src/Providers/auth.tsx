@@ -1,4 +1,4 @@
-import { createContext, useState, ReactChildren } from 'react';
+import { createContext, useState, ReactChildren, useContext } from 'react';
 
 interface User {
   username: string;
@@ -64,4 +64,8 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
   let value = { user, setUserWithToken };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext)!;
 };
