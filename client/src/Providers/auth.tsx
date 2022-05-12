@@ -1,4 +1,5 @@
 import { createContext, useState, ReactChildren, useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
 interface User {
   username: string;
@@ -68,4 +69,15 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
 
 export const useAuth = () => {
   return useContext(AuthContext)!;
+};
+
+export const RequireAuth = ({ children }: { children: ReactChildren }) => {
+  const auth = useAuth();
+  const location = useLocation();
+
+  if (!auth.user) {
+    return <Navigate to='/' state={{ from: location }} replace />;
+  }
+
+  return children;
 };
