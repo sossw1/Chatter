@@ -92,7 +92,6 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
 
   const signUp = async (username: string, email: string, password: string) => {
     const response = await auth.postSignUp(username, email, password);
-    if (!response) return;
     if (response.ok) {
       const { user, token }: { user: User; token: Jwt } = await response.json();
       setUser(user);
