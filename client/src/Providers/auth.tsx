@@ -19,7 +19,7 @@ interface AuthContextProps {
     username: string,
     email: string,
     password: string
-  ) => Promise<Error | undefined>;
+  ) => Promise<User | ApiError>;
   login: (email: string, password: string) => Promise<User | ApiError>;
 }
 
@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
       setUser(user);
       return user;
     } else {
-      const error: { error: string } = await response.json();
+      const error: ApiError = await response.json();
       return error;
     }
   };
@@ -117,8 +117,9 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
       const { user, token }: { user: User; token: Jwt } = await response.json();
       setUser(user);
       localStorage.setItem('token', JSON.stringify(token));
+      return user;
     } else {
-      const error: Error = await response.json();
+      const error: ApiError = await response.json();
       return error;
     }
   };
@@ -136,7 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
     }
   };
 
-  let value = { user, setUserWithToken, signUp, login };
+  let value: AuthContextProps = { user, setUserWithToken, signUp, login };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
