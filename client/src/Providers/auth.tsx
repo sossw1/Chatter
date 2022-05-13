@@ -12,6 +12,10 @@ interface ApiError {
   error: string;
 }
 
+interface ApiConfirmation {
+  confirmation: string;
+}
+
 interface AuthContextProps {
   user: User | null;
   setUserWithToken: () => Promise<User | ApiError>;
@@ -21,6 +25,7 @@ interface AuthContextProps {
     password: string
   ) => Promise<User | ApiError>;
   login: (email: string, password: string) => Promise<User | ApiError>;
+  logout: () => Promise<ApiConfirmation | ApiError>;
 }
 
 class Auth {
@@ -89,6 +94,22 @@ class Auth {
     }
     return response;
   }
+
+  async postLogout() {
+    const token = localStorage.getItem('token');
+    const url = '/api/users/logout';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authentication: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    });
+    localStorage.removeItem('token');
+    this.isAuthenticated = false;
+    return response;
+  }
 }
 
 const auth = Auth.getInstance();
@@ -137,7 +158,27 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
     }
   };
 
-  let value: AuthContextProps = { user, setUserWithToken, signUp, login };
+  const logout = async () => {
+    const response = await auth.postLogout();
+    setUser(null);
+    if (response.ok) {
+      const confirmation: ApiConfirmation = {
+        confirmation: 'Logout successful'
+      };
+      return confirmation;
+    } else {
+      const error: ApiError = { error: 'Logout error' };
+      return error;
+    }
+  };
+
+  let value: AuthContextProps = {
+    user,
+    setUserWithToken,
+    signUp,
+    login,
+    logout
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
