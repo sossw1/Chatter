@@ -8,14 +8,19 @@ interface User {
   email: string;
 }
 
+interface ApiError {
+  error: string;
+}
+
 interface AuthContextProps {
   user: User | null;
-  setUserWithToken: () => Promise<User | { error: string }>;
+  setUserWithToken: () => Promise<User | ApiError>;
   signUp: (
     username: string,
     email: string,
     password: string
   ) => Promise<Error | undefined>;
+  login: (email: string, password: string) => Promise<User | ApiError>;
 }
 
 class Auth {
@@ -68,6 +73,22 @@ class Auth {
     }
     return response;
   }
+
+  async login(email: string, password: string) {
+    const url = '/api/users/login';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+    if (response.ok) {
+      this.isAuthenticated = true;
+    }
+    return response;
+  }
 }
 
 const auth = Auth.getInstance();
@@ -102,7 +123,20 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
     }
   };
 
-  let value = { user, setUserWithToken, signUp };
+  const login = async (email: string, password: string) => {
+    const response = await auth.login(email, password);
+    if (response.ok) {
+      const { user, token }: { user: User; token: Jwt } = await response.json();
+      setUser(user);
+      localStorage.setItem('token', JSON.stringify(token));
+      return user;
+    } else {
+      const error: ApiError = await response.json();
+      return error;
+    }
+  };
+
+  let value = { user, setUserWithToken, signUp, login };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
