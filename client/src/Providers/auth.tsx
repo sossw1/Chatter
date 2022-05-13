@@ -74,7 +74,7 @@ class Auth {
     return response;
   }
 
-  async login(email: string, password: string) {
+  async postLogin(email: string, password: string) {
     const url = '/api/users/login';
     const response = await fetch(url, {
       method: 'POST',
@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
   };
 
   const login = async (email: string, password: string) => {
-    const response = await auth.login(email, password);
+    const response = await auth.postLogin(email, password);
     if (response.ok) {
       const { user, token }: { user: User; token: Jwt } = await response.json();
       setUser(user);
