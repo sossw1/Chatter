@@ -8,6 +8,16 @@ interface User {
   email: string;
 }
 
+interface AuthContextProps {
+  user: User | null;
+  setUserWithToken: () => Promise<User | { error: string }>;
+  signUp: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<Error | undefined>;
+}
+
 class Auth {
   private isAuthenticated: boolean;
   private static instance: Auth;
@@ -37,11 +47,10 @@ class Auth {
         Accept: 'application/json'
       }
     });
-    if (!response || !response.ok) return;
-    const user: User = await response.json();
-    if (!user) return;
-    this.isAuthenticated = true;
-    return user;
+    if (response.ok) {
+      this.isAuthenticated = true;
+    }
+    return response;
   }
 
   async postSignUp(username: string, email: string, password: string) {
@@ -63,20 +72,22 @@ class Auth {
 
 const auth = Auth.getInstance();
 
-interface AuthContextProps {
-  user: User | null;
-  setUserWithToken(): Promise<void>;
-}
-
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactChildren }) => {
   const [user, setUser] = useState<User | null>(null);
 
   const setUserWithToken = async () => {
-    const fetchedUser = await auth.getUserWithToken();
-    if (!fetchedUser) return;
-    setUser(fetchedUser);
+    const response = await auth.getUserWithToken();
+    if (!response) return { error: 'No token' };
+    if (response.ok) {
+      const { user }: { user: User } = await response.json();
+      setUser(user);
+      return user;
+    } else {
+      const error: { error: string } = await response.json();
+      return error;
+    }
   };
 
   const signUp = async (username: string, email: string, password: string) => {
