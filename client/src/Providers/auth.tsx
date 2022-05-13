@@ -1,5 +1,6 @@
 import { createContext, useState, ReactChildren, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { Jwt } from 'jsonwebtoken';
 
 interface User {
   username: string;
@@ -42,6 +43,22 @@ class Auth {
     this.isAuthenticated = true;
     return user;
   }
+
+  async postSignUp(username: string, email: string, password: string) {
+    const url = '/api/users';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({ username, email, password })
+    });
+    if (response.ok) {
+      this.isAuthenticated = true;
+    }
+    return response;
+  }
 }
 
 const auth = Auth.getInstance();
@@ -62,7 +79,20 @@ export const AuthProvider = ({ children }: { children: ReactChildren }) => {
     setUser(fetchedUser);
   };
 
-  let value = { user, setUserWithToken };
+  const signUp = async (username: string, email: string, password: string) => {
+    const response = await auth.postSignUp(username, email, password);
+    if (!response) return;
+    if (response.ok) {
+      const { user, token }: { user: User; token: Jwt } = await response.json();
+      setUser(user);
+      localStorage.setItem('token', JSON.stringify(token));
+    } else {
+      const error: Error = await response.json();
+      return error;
+    }
+  };
+
+  let value = { user, setUserWithToken, signUp };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
