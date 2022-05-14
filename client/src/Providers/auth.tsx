@@ -1,4 +1,4 @@
-import { createContext, useState, ReactChildren, useContext } from 'react';
+import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
 
@@ -116,7 +116,7 @@ const auth = Auth.getInstance();
 
 const AuthContext = createContext<AuthContextProps | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactChildren }) => {
+export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const [user, setUser] = useState<User | null>(null);
 
   const setUserWithToken = async () => {
@@ -187,7 +187,7 @@ export const useAuth = () => {
   return useContext(AuthContext)!;
 };
 
-export const RequireAuth = ({ children }: { children: ReactChildren }) => {
+export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const auth = useAuth();
   const location = useLocation();
 
