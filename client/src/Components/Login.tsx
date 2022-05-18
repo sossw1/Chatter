@@ -2,17 +2,20 @@ import { FormEvent } from 'react';
 import {
   Box,
   Button,
-  TextField,
-  FormControlLabel,
   Checkbox,
-  Link,
+  Container,
+  FormControlLabel,
   Grid,
+  Link,
+  TextField,
   Typography,
-  Container
+  useMediaQuery
 } from '@mui/material';
 import theme from '../Providers/theme';
 
 export default function SignIn() {
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
@@ -24,7 +27,7 @@ export default function SignIn() {
         minHeight: '100vh'
       }}
     >
-      <Container maxWidth='sm'>
+      <Container maxWidth='sm' sx={{ width: smDown ? '85%' : '70%' }}>
         <Box
           sx={{
             backgroundColor: theme.palette.common.white,
