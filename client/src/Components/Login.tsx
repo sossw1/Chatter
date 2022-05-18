@@ -73,6 +73,7 @@ export default function SignIn() {
                     />
                   }
                   label='Remember me'
+                  sx={{ mr: 0 }}
                 />
                 <Button
                   type='submit'
