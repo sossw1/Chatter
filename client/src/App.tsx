@@ -3,6 +3,7 @@ import { ThemeProvider } from '@emotion/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './Providers/auth';
 import theme from './Providers/theme';
+import Login from './Components/Login';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              <Route path='/' element={<h1>Login</h1>} />
+              <Route path='/' element={<Login />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>
