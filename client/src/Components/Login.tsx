@@ -1,4 +1,5 @@
 import { FormEvent } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -13,7 +14,20 @@ import {
 } from '@mui/material';
 import theme from '../Providers/theme';
 
+interface LocationState {
+  from: {
+    pathname: string;
+  };
+}
+
 export default function SignIn() {
+  const location = useLocation();
+
+  const { from } = (location.state as LocationState) || {
+    from: { pathname: '/rooms' }
+  };
+  const nextPage = from.pathname;
+
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
 
