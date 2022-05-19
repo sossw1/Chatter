@@ -15,6 +15,7 @@ import theme from '../Providers/theme';
 
 export default function SignIn() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
+  const down450 = useMediaQuery(theme.breakpoints.down(450));
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -83,13 +84,19 @@ export default function SignIn() {
                 >
                   Sign In
                 </Button>
-                <Grid container sx={{ mt: '.5rem' }}>
-                  <Grid item xs>
+                <Grid
+                  container
+                  sx={{
+                    mt: '.5rem'
+                  }}
+                  direction={down450 ? 'column' : 'row'}
+                >
+                  <Grid item xs textAlign={down450 ? 'center' : 'left'}>
                     <Link href='#' variant='subtitle1' underline='hover'>
                       Forgot password
                     </Link>
                   </Grid>
-                  <Grid item>
+                  <Grid item xs textAlign={down450 ? 'center' : 'right'}>
                     <Link href='#' variant='subtitle1' underline='hover'>
                       Sign Up
                     </Link>
