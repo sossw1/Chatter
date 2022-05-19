@@ -9,22 +9,27 @@ interface User {
 }
 
 interface ApiError {
+  type: 'error';
   error: string;
 }
 
 interface ApiConfirmation {
+  type: 'confirmation';
   confirmation: string;
 }
 
 interface AuthContextProps {
   user: User | null;
-  setUserWithToken: () => Promise<User | ApiError>;
+  setUserWithToken: () => Promise<ApiConfirmation | ApiError>;
   signUp: (
     username: string,
     email: string,
     password: string
-  ) => Promise<User | ApiError>;
-  login: (email: string, password: string) => Promise<User | ApiError>;
+  ) => Promise<ApiConfirmation | ApiError>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<ApiConfirmation | ApiError>;
   logout: () => Promise<ApiConfirmation | ApiError>;
 }
 
@@ -121,14 +126,26 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
   const setUserWithToken = async () => {
     const response = await auth.getUserWithToken();
-    if (!response) return { error: 'No token' };
+    // No token was present
+    if (!response) {
+      return {
+        type: 'error',
+        error: 'Not authenticated'
+      } as ApiError;
+    }
+
     if (response.ok) {
       const { user }: { user: User } = await response.json();
       setUser(user);
-      return user;
+      return {
+        type: 'confirmation',
+        confirmation: 'Successful login with token'
+      } as ApiConfirmation;
     } else {
-      const error: ApiError = await response.json();
-      return error;
+      return {
+        type: 'error',
+        error: 'Not authenticated'
+      } as ApiError;
     }
   };
 
@@ -138,9 +155,13 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: User; token: Jwt } = await response.json();
       setUser(user);
       localStorage.setItem('token', JSON.stringify(token));
-      return user;
+      return {
+        type: 'confirmation',
+        confirmation: 'Sign up successful'
+      } as ApiConfirmation;
     } else {
       const error: ApiError = await response.json();
+      error.type = 'error';
       return error;
     }
   };
@@ -151,9 +172,13 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: User; token: Jwt } = await response.json();
       setUser(user);
       localStorage.setItem('token', JSON.stringify(token));
-      return user;
+      return {
+        type: 'confirmation',
+        confirmation: 'Login successful'
+      } as ApiConfirmation;
     } else {
       const error: ApiError = await response.json();
+      error.type = 'error';
       return error;
     }
   };
@@ -162,13 +187,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     const response = await auth.postLogout();
     setUser(null);
     if (response.ok) {
-      const confirmation: ApiConfirmation = {
+      return {
+        type: 'confirmation',
         confirmation: 'Logout successful'
-      };
-      return confirmation;
+      } as ApiConfirmation;
     } else {
-      const error: ApiError = { error: 'Logout error' };
-      return error;
+      return { type: 'error', error: 'Logout unsuccessful' } as ApiError;
     }
   };
 
