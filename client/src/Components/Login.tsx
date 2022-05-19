@@ -24,7 +24,7 @@ export default function SignIn() {
   return (
     <Box
       sx={{
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.dark,
         minHeight: '100vh'
       }}
     >
