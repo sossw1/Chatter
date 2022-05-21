@@ -46,8 +46,12 @@ export default function SignIn() {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const response = await auth.login(email, password);
+    if (response.type === 'confirmation') {
+      navigate(nextPage);
+    }
   };
 
   return (
