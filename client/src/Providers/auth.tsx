@@ -176,9 +176,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         confirmation: 'Login successful'
       } as ApiConfirmation;
     } else {
-      const error: ApiError = await response.json();
-      error.type = 'error';
-      return error;
+      return { type: 'error', error: 'Invalid email/password' } as ApiError;
     }
   };
 
