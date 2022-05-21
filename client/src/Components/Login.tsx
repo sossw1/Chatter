@@ -1,5 +1,5 @@
-import { FormEvent } from 'react';
-import { useLocation } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -12,6 +12,8 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
+
+import { useAuth } from '../Providers/auth';
 import theme from '../Providers/theme';
 
 interface LocationState {
@@ -21,6 +23,8 @@ interface LocationState {
 }
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const auth = useAuth();
   const location = useLocation();
 
   const { from } = (location.state as LocationState) || {
@@ -30,6 +34,17 @@ export default function SignIn() {
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setPassword(event.target.value);
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,6 +82,7 @@ export default function SignIn() {
                   name='email'
                   autoComplete='email'
                   autoFocus
+                  onChange={handleEmailOnChange}
                 />
                 <TextField
                   margin='normal'
@@ -77,6 +93,7 @@ export default function SignIn() {
                   type='password'
                   id='password'
                   autoComplete='current-password'
+                  onChange={handlePasswordOnChange}
                 />
                 <FormControlLabel
                   control={
