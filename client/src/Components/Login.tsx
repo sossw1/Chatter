@@ -41,10 +41,12 @@ export default function SignIn() {
 
   const handleEmailOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setEmail(event.target.value);
+    setLoginError('');
   };
 
   const handlePasswordOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setPassword(event.target.value);
+    setLoginError('');
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
