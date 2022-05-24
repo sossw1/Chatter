@@ -96,7 +96,9 @@ const UserSchema = new Schema(UserSchemaFields, {
 UserSchema.methods.generateAuthToken = async function () {
   const user = this;
   const secret: string = process.env.JWT_SECRET || 'd^e#f@a*u$l%t';
-  const token = jwt.sign({ _id: user._id.toString() }, secret);
+  const token = jwt.sign({ _id: user._id.toString() }, secret, {
+    expiresIn: '7d'
+  });
   user.tokens = user.tokens.concat({ token });
   await user.save();
   return token;
