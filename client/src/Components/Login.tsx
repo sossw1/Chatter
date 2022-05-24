@@ -37,6 +37,7 @@ export default function SignIn() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   const handleEmailOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setEmail(event.target.value);
@@ -51,6 +52,8 @@ export default function SignIn() {
     const response = await auth.login(email, password);
     if (response.type === 'confirmation') {
       navigate(nextPage);
+    } else {
+      setLoginError(response.error);
     }
   };
 
@@ -111,6 +114,16 @@ export default function SignIn() {
                   label='Remember me'
                   sx={{ mr: 0 }}
                 />
+                {loginError !== '' && (
+                  <Typography
+                    textAlign='center'
+                    variant='subtitle1'
+                    color='error'
+                    sx={{ mb: '.5rem' }}
+                  >
+                    {loginError}
+                  </Typography>
+                )}
                 <Button
                   type='submit'
                   fullWidth
