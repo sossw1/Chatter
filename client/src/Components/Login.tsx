@@ -3,9 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  FormControlLabel,
   Grid,
   Link,
   TextField,
@@ -103,18 +101,7 @@ export default function SignIn() {
                   id='password'
                   autoComplete='current-password'
                   onChange={handlePasswordOnChange}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      value='remember'
-                      color='primary'
-                      disableRipple
-                      sx={{ '&:hover': { backgroundColor: 'transparent' } }}
-                    />
-                  }
-                  label='Remember me'
-                  sx={{ mr: 0 }}
+                  sx={{ mb: loginError ? '.5rem' : '1.5rem' }}
                 />
                 {loginError !== '' && (
                   <Typography
