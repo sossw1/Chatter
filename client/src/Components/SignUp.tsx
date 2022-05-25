@@ -1,5 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
   Container,
@@ -10,6 +12,7 @@ import {
   useMediaQuery
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { useAuth } from '../Providers/auth';
 import theme from '../Providers/theme';
 import { validate, ValidationError } from '../validation/signup';
@@ -21,12 +24,14 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [displayAlert, setDisplayAlert] = useState<boolean>(false);
   const [inputErrors, setInputErrors] = useState<ValidationError[]>([]);
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setDisplayAlert(false);
     switch (event.target.id) {
       case 'username':
         setUsername(event.target.value);
@@ -56,6 +61,7 @@ export default function Signup() {
       }
     } else {
       setInputErrors(errors);
+      setDisplayAlert(true);
     }
   };
 
@@ -124,6 +130,17 @@ export default function Signup() {
                   onChange={handleChange}
                   sx={{ mb: '1rem' }}
                 />
+                {displayAlert && (
+                  <Alert severity='error' sx={{ mb: '1rem' }}>
+                    <AlertTitle>Error</AlertTitle>
+                    <ul style={{ paddingLeft: '1rem' }}>
+                      {inputErrors.map((error) => {
+                        const key = uuid();
+                        return <li key={key}>{error.error}</li>;
+                      })}
+                    </ul>
+                  </Alert>
+                )}
                 <Button
                   type='submit'
                   fullWidth
