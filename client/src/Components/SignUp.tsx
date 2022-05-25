@@ -109,7 +109,7 @@ export default function Signup() {
                   fullWidth
                   name='password2'
                   label='Re-enter password'
-                  type='password2'
+                  type='password'
                   id='password2'
                   onChange={handleChange}
                   sx={{ mb: '1rem' }}
