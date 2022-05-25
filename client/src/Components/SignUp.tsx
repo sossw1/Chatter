@@ -35,6 +35,9 @@ export default function Signup() {
       case 'password':
         setPassword(event.target.value);
         break;
+      case 'password2':
+        setPassword2(event.target.value);
+        break;
       default:
         break;
     }
