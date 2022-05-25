@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Providers/auth';
 import theme from '../Providers/theme';
+import { validate, ValidationError } from '../validation/signup';
 
 export default function Signup() {
   const auth = useAuth();
@@ -20,6 +21,7 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [inputErrors, setInputErrors] = useState<ValidationError[]>([]);
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
@@ -45,10 +47,15 @@ export default function Signup() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await auth.signUp(username, email, password);
-    if (response.type === 'confirmation') {
-      navigate('/rooms');
+    const { isValid, errors } = validate(username, email, password, password2);
+    if (isValid) {
+      const response = await auth.signUp(username, email, password);
+      if (response.type === 'confirmation') {
+        navigate('/rooms');
+      } else {
+      }
     } else {
+      setInputErrors(errors);
     }
   };
 
