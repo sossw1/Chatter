@@ -19,6 +19,7 @@ export default function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
@@ -100,6 +101,16 @@ export default function Signup() {
                   label='Password'
                   type='password'
                   id='password'
+                  onChange={handleChange}
+                />
+                <TextField
+                  margin='normal'
+                  required
+                  fullWidth
+                  name='password2'
+                  label='Re-enter password'
+                  type='password2'
+                  id='password2'
                   onChange={handleChange}
                   sx={{ mb: '1rem' }}
                 />
