@@ -1,17 +1,17 @@
 import validator from 'validator';
 
-interface validationError {
+export interface ValidationError {
   field: 'username' | 'email' | 'password' | 'password2';
   error: string;
 }
 
-export default function validate(
+export function validate(
   username: string,
   email: string,
   password: string,
   password2: string
 ) {
-  const errors: validationError[] = [];
+  const errors: ValidationError[] = [];
   if (validator.isEmpty(username)) {
     errors.push({ field: 'username', error: 'Username is required' });
   }
