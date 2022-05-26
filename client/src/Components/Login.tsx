@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -101,17 +102,12 @@ export default function SignIn() {
                   id='password'
                   autoComplete='current-password'
                   onChange={handlePasswordOnChange}
-                  sx={{ mb: loginError ? '.5rem' : '1.5rem' }}
+                  sx={{ mb: '1rem' }}
                 />
                 {loginError !== '' && (
-                  <Typography
-                    textAlign='center'
-                    variant='subtitle1'
-                    color='error'
-                    sx={{ mb: '.5rem' }}
-                  >
+                  <Alert severity='error' sx={{ mb: '1rem' }}>
                     {loginError}
-                  </Typography>
+                  </Alert>
                 )}
                 <Button
                   type='submit'
