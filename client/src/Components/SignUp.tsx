@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import validator from 'validator';
 import { useAuth } from '../Providers/auth';
 import theme from '../Providers/theme';
 import { validate, ValidationError } from '../validation/signup';
@@ -27,6 +28,7 @@ export default function Signup() {
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
   const [inputErrors, setInputErrors] = useState<ValidationError[]>([]);
   const [usernameHelperText, setUsernameHelperText] = useState('');
+  const [emailHelperText, setEmailHelperText] = useState('');
   const [passwordHelperText, setPasswordHelperText] = useState('');
   const [password2HelperText, setPassword2HelperText] = useState('');
 
@@ -46,6 +48,11 @@ export default function Signup() {
         setUsername(event.target.value);
         break;
       case 'email':
+        if (!validator.isEmail(event.target.value)) {
+          setEmailHelperText('Invalid email address');
+        } else {
+          setEmailHelperText('');
+        }
         setEmail(event.target.value);
         break;
       case 'password':
@@ -131,6 +138,7 @@ export default function Signup() {
                   name='email'
                   autoComplete='email'
                   onChange={handleChange}
+                  helperText={emailHelperText}
                 />
                 <TextField
                   margin='normal'
