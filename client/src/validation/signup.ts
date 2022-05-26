@@ -18,7 +18,7 @@ export function validate(
   if (!validator.isLength(username, { min: 8, max: 20 })) {
     errors.push({
       field: 'username',
-      error: 'Username must be between 8 and 20 characters in length'
+      error: 'Username must be between 8 and 20 characters'
     });
   }
   if (validator.isEmpty(email)) {
@@ -36,7 +36,7 @@ export function validate(
   if (!validator.isLength(password, { min: 8, max: 20 })) {
     errors.push({
       field: 'password',
-      error: 'Password must be between 8 and 20 characters in length'
+      error: 'Password must be between 8 and 20 characters'
     });
   }
   if (!validator.equals(password, password2)) {
