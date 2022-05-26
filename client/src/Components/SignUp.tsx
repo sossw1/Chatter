@@ -26,6 +26,8 @@ export default function Signup() {
   const [password2, setPassword2] = useState('');
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
   const [inputErrors, setInputErrors] = useState<ValidationError[]>([]);
+  const [usernameHelperText, setUsernameHelperText] = useState('');
+  const [passwordHelperText, setPasswordHelperText] = useState('');
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
@@ -34,12 +36,24 @@ export default function Signup() {
     setDisplayAlert(false);
     switch (event.target.id) {
       case 'username':
+        const usernameInput = event.target.value;
+        if (usernameInput.length < 8 || usernameInput.length > 20) {
+          setUsernameHelperText('Must be between 8 and 20 characters');
+        } else {
+          setUsernameHelperText('');
+        }
         setUsername(event.target.value);
         break;
       case 'email':
         setEmail(event.target.value);
         break;
       case 'password':
+        const passwordInput = event.target.value;
+        if (passwordInput.length < 8 || passwordInput.length > 20) {
+          setPasswordHelperText('Must be between 8 and 20 characters');
+        } else {
+          setPasswordHelperText('');
+        }
         setPassword(event.target.value);
         break;
       case 'password2':
@@ -99,6 +113,7 @@ export default function Signup() {
                   autoFocus
                   inputProps={{ maxLength: 20 }}
                   onChange={handleChange}
+                  helperText={usernameHelperText}
                 />
                 <TextField
                   margin='normal'
@@ -120,6 +135,7 @@ export default function Signup() {
                   id='password'
                   inputProps={{ maxLength: 20 }}
                   onChange={handleChange}
+                  helperText={passwordHelperText}
                 />
                 <TextField
                   margin='normal'
