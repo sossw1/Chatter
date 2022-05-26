@@ -97,6 +97,7 @@ export default function Signup() {
                   name='username'
                   autoComplete='username'
                   autoFocus
+                  inputProps={{ maxLength: 20 }}
                   onChange={handleChange}
                 />
                 <TextField
@@ -117,6 +118,7 @@ export default function Signup() {
                   label='Password'
                   type='password'
                   id='password'
+                  inputProps={{ maxLength: 20 }}
                   onChange={handleChange}
                 />
                 <TextField
@@ -127,6 +129,7 @@ export default function Signup() {
                   label='Re-enter password'
                   type='password'
                   id='password2'
+                  inputProps={{ maxLength: 20 }}
                   onChange={handleChange}
                   sx={{ mb: '1rem' }}
                 />
