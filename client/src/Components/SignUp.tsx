@@ -28,6 +28,7 @@ export default function Signup() {
   const [inputErrors, setInputErrors] = useState<ValidationError[]>([]);
   const [usernameHelperText, setUsernameHelperText] = useState('');
   const [passwordHelperText, setPasswordHelperText] = useState('');
+  const [password2HelperText, setPassword2HelperText] = useState('');
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
@@ -57,6 +58,12 @@ export default function Signup() {
         setPassword(event.target.value);
         break;
       case 'password2':
+        const password2Input = event.target.value;
+        if (password !== password2Input) {
+          setPassword2HelperText('Passwords must match');
+        } else {
+          setPassword2HelperText('');
+        }
         setPassword2(event.target.value);
         break;
       default:
@@ -148,6 +155,7 @@ export default function Signup() {
                   inputProps={{ maxLength: 20 }}
                   onChange={handleChange}
                   sx={{ mb: '1rem' }}
+                  helperText={password2HelperText}
                 />
                 {displayAlert && (
                   <Alert severity='error' sx={{ mb: '1rem' }}>
