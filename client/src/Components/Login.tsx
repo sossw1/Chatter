@@ -134,7 +134,7 @@ export default function SignIn() {
                     </Link>
                   </Grid>
                   <Grid item xs textAlign={down450 ? 'center' : 'right'}>
-                    <Link href='#' variant='subtitle1' underline='hover'>
+                    <Link href='/signup' variant='subtitle1' underline='hover'>
                       Sign Up
                     </Link>
                   </Grid>
