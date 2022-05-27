@@ -74,8 +74,7 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
       },
       roomId: {
         type: String,
-        required: true,
-        unique: true
+        required: true
       }
     }
   ],
