@@ -39,10 +39,15 @@ router.post('/api/users', async (req, res) => {
       return res.status(400).send({ error: errorMessage });
     }
 
-    if (error.code === 11000 && error.keyPattern.email) {
-      return res.status(400).send({ error: 'Email already in use' });
+    if (error.code === 11000) {
+      if (error.keyPattern.email) {
+        return res.status(400).send({ error: 'Email already in use' });
+      } else if (error.keyPattern.username) {
+        return res.status(400).send({ error: 'Username already in use' });
+      }
     }
 
+    console.log(error);
     res.status(500).send({ error });
   }
 });
