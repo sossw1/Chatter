@@ -86,6 +86,9 @@ export default function Signup() {
       if (response.type === 'confirmation') {
         navigate('/rooms');
       } else {
+        const inputErrors = [{ error: response.error }];
+        setInputErrors(inputErrors);
+        setDisplayAlert(true);
       }
     } else {
       setInputErrors(errors);
