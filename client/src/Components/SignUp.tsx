@@ -1,7 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import {
   Alert,
-  AlertTitle,
   Box,
   Button,
   Container,
@@ -168,17 +167,21 @@ export default function Signup() {
                   sx={{ mb: '1rem' }}
                   helperText={password2HelperText}
                 />
-                {displayAlert && (
-                  <Alert severity='error' sx={{ mb: '1rem' }}>
-                    <AlertTitle>Error</AlertTitle>
-                    <ul style={{ paddingLeft: '1rem' }}>
-                      {inputErrors.map((error) => {
-                        const key = uuid();
-                        return <li key={key}>{error.error}</li>;
-                      })}
-                    </ul>
-                  </Alert>
-                )}
+                {displayAlert &&
+                  (inputErrors.length === 1 ? (
+                    <Alert severity='error' sx={{ mb: '1rem' }}>
+                      {inputErrors[0].error}
+                    </Alert>
+                  ) : (
+                    <Alert severity='error' sx={{ mb: '1rem' }}>
+                      <ul>
+                        {inputErrors.map((error) => {
+                          const key = uuid();
+                          return <li key={key}>{error.error}</li>;
+                        })}
+                      </ul>
+                    </Alert>
+                  ))}
                 <Button
                   type='submit'
                   fullWidth
