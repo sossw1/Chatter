@@ -46,6 +46,7 @@ export interface IUserModel extends Model<IUserDoc> {
 const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
   username: {
     type: String,
+    unique: true,
     required: true,
     trim: true,
     lowercase: true
