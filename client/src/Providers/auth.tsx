@@ -27,7 +27,7 @@ interface AuthContextProps {
     password: string
   ) => Promise<ApiConfirmation | ApiError>;
   login: (
-    email: string,
+    username: string,
     password: string
   ) => Promise<ApiConfirmation | ApiError>;
   logout: () => Promise<ApiConfirmation | ApiError>;
@@ -83,7 +83,7 @@ class Auth {
     return response;
   }
 
-  async postLogin(email: string, password: string) {
+  async postLogin(username: string, password: string) {
     const url = '/api/users/login';
     const response = await fetch(url, {
       method: 'POST',
@@ -91,7 +91,7 @@ class Auth {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ username, password })
     });
     if (response.ok) {
       this.isAuthenticated = true;
@@ -165,8 +165,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
   };
 
-  const login = async (email: string, password: string) => {
-    const response = await auth.postLogin(email, password);
+  const login = async (username: string, password: string) => {
+    const response = await auth.postLogin(username, password);
     if (response.ok) {
       const { user, token }: { user: User; token: Jwt } = await response.json();
       setUser(user);
@@ -176,7 +176,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         confirmation: 'Login successful'
       } as ApiConfirmation;
     } else {
-      return { type: 'error', error: 'Invalid email/password' } as ApiError;
+      return { type: 'error', error: 'Invalid username/password' } as ApiError;
     }
   };
 
