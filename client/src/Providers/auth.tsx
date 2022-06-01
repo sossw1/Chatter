@@ -52,11 +52,12 @@ class Auth {
   async getUserWithToken() {
     const token = localStorage.getItem('token');
     if (!token) return;
+    const parsedToken = JSON.parse(token);
     const url = '/api/users/me';
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${parsedToken}`,
         'Content-Type': 'application/json',
         Accept: 'application/json'
       }
