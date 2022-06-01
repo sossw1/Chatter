@@ -102,11 +102,13 @@ class Auth {
 
   async postLogout() {
     const token = localStorage.getItem('token');
+    if (!token) return;
+    const parsedToken = JSON.parse(token);
     const url = '/api/users/logout';
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authentication: 'Bearer ' + token,
+        Authentication: 'Bearer ' + parsedToken,
         'Content-Type': 'application/json',
         Accept: 'application/json'
       }
@@ -184,7 +186,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const logout = async () => {
     const response = await auth.postLogout();
     setUser(null);
-    if (response.ok) {
+    if (response && response.ok) {
       return {
         type: 'confirmation',
         confirmation: 'Logout successful'
