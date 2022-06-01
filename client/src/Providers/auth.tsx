@@ -108,7 +108,7 @@ class Auth {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        Authentication: 'Bearer ' + parsedToken,
+        Authorization: 'Bearer ' + parsedToken,
         'Content-Type': 'application/json',
         Accept: 'application/json'
       }
