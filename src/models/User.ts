@@ -117,10 +117,10 @@ UserSchema.methods.toJSON = function () {
 UserSchema.static(
   'findByCredentials',
   async function findByCredentials(
-    email: string,
+    username: string,
     password: string
   ): Promise<IUserDoc> {
-    const user: IUserDoc = await this.findOne({ email });
+    const user: IUserDoc = await this.findOne({ username });
 
     if (!user) {
       throw new Error('Unable to login');
