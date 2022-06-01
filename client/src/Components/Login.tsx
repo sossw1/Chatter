@@ -34,12 +34,12 @@ export default function SignIn() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const down450 = useMediaQuery(theme.breakpoints.down(450));
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const handleEmailOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setEmail(event.target.value);
+  const handleUsernameOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setUsername(event.target.value);
     setLoginError('');
   };
 
@@ -50,7 +50,7 @@ export default function SignIn() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await auth.login(email, password);
+    const response = await auth.login(username, password);
     if (response.type === 'confirmation') {
       navigate(nextPage);
     } else {
@@ -85,12 +85,12 @@ export default function SignIn() {
                   margin='normal'
                   required
                   fullWidth
-                  id='email'
-                  label='Email Address'
-                  name='email'
-                  autoComplete='email'
+                  id='username'
+                  label='Username'
+                  name='username'
+                  autoComplete='username'
                   autoFocus
-                  onChange={handleEmailOnChange}
+                  onChange={handleUsernameOnChange}
                 />
                 <TextField
                   margin='normal'
