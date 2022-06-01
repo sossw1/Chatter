@@ -27,7 +27,7 @@ export default function SignIn() {
   const location = useLocation();
 
   const { from } = (location.state as LocationState) || {
-    from: { pathname: '/rooms' }
+    from: { pathname: '/chat' }
   };
   const nextPage = from.pathname;
 

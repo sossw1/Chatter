@@ -83,7 +83,7 @@ export default function Signup() {
     if (isValid) {
       const response = await auth.signUp(username, email, password);
       if (response.type === 'confirmation') {
-        navigate('/rooms');
+        navigate('/chat');
       } else {
         const inputErrors = [{ error: response.error }];
         setInputErrors(inputErrors);
