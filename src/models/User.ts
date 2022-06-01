@@ -57,7 +57,6 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
   },
   email: {
     type: String,
-    unique: true,
     required: true,
     trim: true,
     lowercase: true,
