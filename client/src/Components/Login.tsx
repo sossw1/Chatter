@@ -49,14 +49,16 @@ export default function SignIn() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleUsernameOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setUsername(event.target.value);
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setLoginError('');
-  };
-
-  const handlePasswordOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setPassword(event.target.value);
-    setLoginError('');
+    switch (event.target.id) {
+      case 'username':
+        setUsername(event.target.value);
+        break;
+      case 'password':
+        setPassword(event.target.value);
+        break;
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -101,7 +103,7 @@ export default function SignIn() {
                   name='username'
                   autoComplete='username'
                   autoFocus
-                  onChange={handleUsernameOnChange}
+                  onChange={handleChange}
                 />
                 <TextField
                   margin='normal'
@@ -112,7 +114,7 @@ export default function SignIn() {
                   type='password'
                   id='password'
                   autoComplete='current-password'
-                  onChange={handlePasswordOnChange}
+                  onChange={handleChange}
                   sx={{ mb: '1rem' }}
                 />
                 {loginError !== '' && (
