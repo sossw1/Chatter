@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Alert,
@@ -37,6 +37,17 @@ export default function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await auth.setUserWithToken();
+      if (response.type === 'confirmation') {
+        navigate(nextPage, { replace: true });
+      }
+    };
+    fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleUsernameOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setUsername(event.target.value);
