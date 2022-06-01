@@ -31,6 +31,7 @@ interface AuthContextProps {
     password: string
   ) => Promise<ApiConfirmation | ApiError>;
   logout: () => Promise<ApiConfirmation | ApiError>;
+  passwordChange: (password: string) => Promise<ApiConfirmation | ApiError>;
 }
 
 class Auth {
@@ -213,12 +214,32 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
   };
 
+  const passwordChange = async (password: string) => {
+    const response = await auth.patchPasswordChange(password);
+    if (!response) {
+      return { type: 'error', error: 'Not authenticated' } as ApiError;
+    }
+    if (response.ok) {
+      return {
+        type: 'confirmation',
+        confirmation: 'Password changed successfully'
+      } as ApiConfirmation;
+    } else {
+      const error = await response.json();
+      return {
+        type: 'error',
+        error
+      } as ApiError;
+    }
+  };
+
   let value: AuthContextProps = {
     user,
     setUserWithToken,
     signUp,
     login,
-    logout
+    logout,
+    passwordChange
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
