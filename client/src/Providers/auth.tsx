@@ -117,6 +117,23 @@ class Auth {
     this.isAuthenticated = false;
     return response;
   }
+
+  async patchPasswordChange(password: string) {
+    const url = '/api/users/me';
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const parsedToken = JSON.parse(token);
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({ password })
+    });
+    return response;
+  }
 }
 
 const auth = Auth.getInstance();
