@@ -92,7 +92,7 @@ router.patch('/api/users/me', auth, async (req, res) => {
   try {
     const user = req.user;
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['username', 'email', 'password'];
+    const allowedUpdates = ['email', 'password'];
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
     );
@@ -100,10 +100,7 @@ router.patch('/api/users/me', auth, async (req, res) => {
       return res.status(400).send({ error: 'Invalid updates' });
     }
 
-    const { username, email, password }: IUser = req.body;
-    if (username || username === '') {
-      user.username = username;
-    }
+    const { email, password }: IUser = req.body;
     if (email || email === '') {
       user.email = email;
     }
@@ -118,9 +115,7 @@ router.patch('/api/users/me', auth, async (req, res) => {
       let errorMessage = 'Invalid user data provided - ';
       const { errors } = error;
 
-      if (errors.username) {
-        errorMessage += errors.username.message;
-      } else if (errors.email) {
+      if (errors.email) {
         errorMessage += errors.email.message;
       } else if (errors.password) {
         errorMessage += errors.password.message;
