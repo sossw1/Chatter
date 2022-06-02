@@ -155,7 +155,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
 
     if (response.ok) {
-      const { user }: { user: User } = await response.json();
+      const user = await response.json();
       setUser(user);
       return {
         type: 'confirmation',
