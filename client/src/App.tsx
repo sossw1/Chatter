@@ -6,6 +6,7 @@ import theme from './Providers/theme';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';
 import Chat from './Components/Chat';
+import NoMatch from './Components/NoMatch';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
                   </RequireAuth>
                 }
               />
+              <Route path='*' element={<NoMatch />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>
