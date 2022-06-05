@@ -5,6 +5,7 @@ import { AuthProvider, RequireAuth } from './Providers/auth';
 import theme from './Providers/theme';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';
+import Navigation from './Components/Navigation';
 import Chat from './Components/Chat';
 import NoMatch from './Components/NoMatch';
 
@@ -19,13 +20,14 @@ function App() {
               <Route path='/' element={<Login />} />
               <Route path='/signup' element={<SignUp />} />
               <Route
-                path='/chat'
                 element={
                   <RequireAuth>
-                    <Chat />
+                    <Navigation />
                   </RequireAuth>
                 }
-              />
+              >
+                <Route path='/chat' element={<Chat />} />
+              </Route>
               <Route path='*' element={<NoMatch />} />
             </Routes>
           </BrowserRouter>
