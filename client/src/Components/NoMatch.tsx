@@ -1,4 +1,11 @@
-import { Button, Box, Grid, Paper, Typography } from '@mui/material';
+import {
+  Button,
+  Box,
+  Grid,
+  Paper,
+  useMediaQuery,
+  Typography
+} from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import theme from '../Providers/theme';
 
@@ -14,21 +21,28 @@ export default function NoMatch() {
     from: { pathname: '/chat' }
   };
   const prevPage = from.pathname;
+  const smDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box
       sx={{
         backgroundColor: theme.palette.primary.dark,
         minHeight: '100vh',
-        p: '10rem 5rem'
+        p: smDown ? '3rem 1.5rem' : '10rem 5rem'
       }}
     >
-      <Paper sx={{ p: '5rem' }}>
+      <Paper sx={{ p: smDown ? '2rem' : '5rem' }}>
         <Grid container direction='column' alignItems='center'>
           <Grid item textAlign='center'>
             <Typography variant='h3' sx={{ mb: '0.5rem' }}>
               Oops!{' '}
-              <span style={{ color: 'red', fontWeight: 'bold' }}>
+              <span
+                style={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                  whiteSpace: 'nowrap'
+                }}
+              >
                 Error 404
               </span>
             </Typography>
