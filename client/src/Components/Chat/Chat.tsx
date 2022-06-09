@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Drawer, IconButton, Toolbar, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import theme from '../Providers/theme';
+import theme from '../../Providers/theme';
 
 export default function Chat() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -14,7 +14,7 @@ export default function Chat() {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = <div></div>;
+  const drawerContent = <div></div>;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -41,7 +41,7 @@ export default function Chat() {
           }}
         >
           <Toolbar />
-          {drawer}
+          {drawerContent}
         </Drawer>
         <Drawer
           variant='permanent'
@@ -55,7 +55,7 @@ export default function Chat() {
           open
         >
           <Toolbar />
-          {drawer}
+          {drawerContent}
         </Drawer>
       </Box>
       <Box

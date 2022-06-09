@@ -6,7 +6,7 @@ import theme from './Providers/theme';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';
 import Navigation from './Components/Navigation';
-import Chat from './Components/Chat';
+import Chat from './Components/Chat/Chat';
 import NoMatch from './Components/NoMatch';
 
 function App() {
