@@ -11,15 +11,7 @@ export default function Chat() {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = (
-    <div>
-      Dolor non ipsum in consectetur. Aliqua est eiusmod non esse officia
-      occaecat cupidatat amet occaecat occaecat laborum Lorem. Tempor labore
-      sint laboris enim esse irure dolor consequat aliquip ullamco est aute ex
-      dolore. Dolore nisi elit anim ut tempor irure exercitation ex est labore
-      mollit cupidatat Lorem ut.
-    </div>
-  );
+  const drawer = <div></div>;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -78,11 +70,6 @@ export default function Chat() {
         >
           <MenuIcon />
         </IconButton>
-        Enim anim cillum nisi eu fugiat ad nostrud sint ad adipisicing sit.
-        Culpa pariatur et consequat cillum aliqua amet anim aliquip exercitation
-        quis. Qui aliqua est esse nisi in. Ipsum velit velit elit non in duis
-        labore sint. Sit ad est adipisicing magna consectetur reprehenderit
-        excepteur elit Lorem dolor.
       </Box>
     </Box>
   );
