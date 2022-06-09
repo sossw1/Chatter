@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Box, Drawer, IconButton, Toolbar } from '@mui/material';
+import { Box, Drawer, IconButton, Toolbar, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
-
-const drawerWidth = '15rem';
+import theme from '../Providers/theme';
 
 export default function Chat() {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
+  const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
+  const drawerWidth = smDown ? '15rem' : mdDown ? '20rem' : '30rem';
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
