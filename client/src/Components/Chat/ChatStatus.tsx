@@ -5,6 +5,7 @@ import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 
 export default function ChatStatus() {
+  const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
   const [statusColor, setStatusColor] = useState<
     'success' | 'warning' | 'error'
   >('success');
@@ -55,7 +56,7 @@ export default function ChatStatus() {
                   />
                 </Grid>
                 <Grid item>
-                  <Typography variant='subtitle2'>Online</Typography>
+                  <Typography variant='subtitle2'>{status}</Typography>
                 </Grid>
               </Grid>
             </Grid>
