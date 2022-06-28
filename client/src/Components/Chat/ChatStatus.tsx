@@ -48,7 +48,7 @@ export default function ChatStatus() {
               {username}
             </Typography>
             <Grid item>
-              <Grid container direction='row'>
+              <Grid container direction='row' alignItems='center'>
                 <Grid item sx={{ mr: '0.25rem' }}>
                   <Circle
                     sx={{ width: '0.75rem', height: '0.75rem' }}
