@@ -19,7 +19,7 @@ export default function ChatStatus() {
   return (
     <Box
       sx={{
-        padding: '.5rem',
+        padding: '1.25rem 1.25rem',
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
       }}
     >
@@ -29,17 +29,15 @@ export default function ChatStatus() {
         sx={{ height: '100%' }}
         alignItems='center'
       >
-        <Grid item sx={{ mr: '0.5rem' }}>
+        <Grid item sx={{ mr: '1rem' }}>
           <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
         </Grid>
         <Grid item>
           <Grid container direction='column'>
             <Typography
-              variant='subtitle1'
+              variant='body1'
               sx={{
-                lineHeight: '1.5rem',
-                fontWeight: 300,
-                width: mdDown ? (smDown ? '10rem' : '15rem') : '25rem',
+                width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
@@ -56,7 +54,9 @@ export default function ChatStatus() {
                   />
                 </Grid>
                 <Grid item>
-                  <Typography variant='subtitle2'>{status}</Typography>
+                  <Typography variant='body2' color='text.secondary'>
+                    {status}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
