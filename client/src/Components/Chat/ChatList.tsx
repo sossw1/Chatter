@@ -25,7 +25,7 @@ export default function ChatList() {
           </Typography>
           <List sx={{ mb: '1rem' }}>
             <ListItem sx={{ p: 0 }}>
-              <ListItemButton>
+              <ListItemButton sx={{ borderRadius: '5px' }}>
                 <ListItemAvatar>
                   <Avatar />
                 </ListItemAvatar>
@@ -68,7 +68,7 @@ export default function ChatList() {
           </Typography>
           <List>
             <ListItem sx={{ p: 0 }}>
-              <ListItemButton>
+              <ListItemButton sx={{ borderRadius: '5px' }}>
                 <ListItemAvatar>
                   <Avatar />
                 </ListItemAvatar>
