@@ -1,5 +1,6 @@
 import { Box, Drawer, Toolbar } from '@mui/material';
 import ChatStatus from './ChatStatus';
+import ChatList from './ChatList';
 
 interface Props {
   drawerWidth: string;
@@ -7,7 +8,12 @@ interface Props {
   handleDrawerToggle: () => void;
 }
 
-const drawerContent = <ChatStatus />;
+const drawerContent = (
+  <>
+    <ChatStatus />
+    <ChatList />
+  </>
+);
 
 export default function ChatDrawer({
   drawerWidth,
