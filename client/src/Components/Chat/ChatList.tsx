@@ -6,10 +6,15 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
+import theme from '../../Providers/theme';
 
 export default function ChatList() {
+  const smDown = useMediaQuery(theme.breakpoints.down('md'));
+  const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
+
   return (
     <Box sx={{ padding: '1.5rem .5rem .5rem' }}>
       <Grid container direction='column'>
@@ -23,10 +28,31 @@ export default function ChatList() {
                 <Avatar />
               </ListItemAvatar>
               <ListItemText
-                primary='username/roomname'
+                primary={
+                  <Typography
+                    sx={{
+                      width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    username/roomname
+                  </Typography>
+                }
                 secondary={
-                  <Typography variant='body2' color='text.secondary'>
-                    Laboris est sint velit Lorem adipisicing et.
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    sx={{
+                      width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Laboris est sint velit Lorem adipisicing et. Pariatur
+                    eiusmod labore esse excepteur in veniam enim ipsum sunt.
                   </Typography>
                 }
               ></ListItemText>
@@ -43,11 +69,31 @@ export default function ChatList() {
                 <Avatar />
               </ListItemAvatar>
               <ListItemText
-                primary='username'
+                primary={
+                  <Typography
+                    sx={{
+                      width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    username
+                  </Typography>
+                }
                 secondary={
-                  <Typography variant='body2' color='text.secondary'>
-                    Qui aliqua Lorem proident nisi officia aliquip adipisicing
-                    commodo nulla amet ad incididunt ipsum.
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    sx={{
+                      width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Duis do consequat est ut ex mollit sunt fugiat
+                    pariatur.Veniam sit id do deserunt et.
                   </Typography>
                 }
               ></ListItemText>
