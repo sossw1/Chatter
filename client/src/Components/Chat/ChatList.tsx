@@ -25,7 +25,20 @@ export default function ChatList() {
           </Typography>
           <List sx={{ mb: '1rem' }}>
             <ListItem sx={{ p: 0 }}>
-              <ListItemButton disableRipple sx={{ borderRadius: '5px' }}>
+              <ListItemButton
+                disableRipple
+                sx={{
+                  borderRadius: '5px',
+                  '&.Mui-selected': {
+                    backgroundColor: theme.palette.primary.light,
+                    color: 'common.white'
+                  },
+                  '&.Mui-selected:hover': {
+                    backgroundColor: theme.palette.primary.light,
+                    opacity: 0.8
+                  }
+                }}
+              >
                 <ListItemAvatar>
                   <Avatar />
                 </ListItemAvatar>
@@ -45,9 +58,9 @@ export default function ChatList() {
                   secondary={
                     <Typography
                       variant='body2'
-                      color='text.secondary'
                       sx={{
                         width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                        opacity: 0.8,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap'
@@ -68,7 +81,20 @@ export default function ChatList() {
           </Typography>
           <List>
             <ListItem sx={{ p: 0 }}>
-              <ListItemButton disableRipple sx={{ borderRadius: '5px' }}>
+              <ListItemButton
+                disableRipple
+                sx={{
+                  borderRadius: '5px',
+                  '&.Mui-selected': {
+                    backgroundColor: theme.palette.primary.light,
+                    color: 'common.white'
+                  },
+                  '&.Mui-selected:hover': {
+                    backgroundColor: theme.palette.primary.light,
+                    opacity: 0.8
+                  }
+                }}
+              >
                 <ListItemAvatar>
                   <Avatar />
                 </ListItemAvatar>
@@ -88,9 +114,9 @@ export default function ChatList() {
                   secondary={
                     <Typography
                       variant='body2'
-                      color='text.secondary'
                       sx={{
                         width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                        opacity: 0.8,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap'
