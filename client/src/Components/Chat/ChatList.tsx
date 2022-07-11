@@ -1,20 +1,29 @@
-import {
-  Avatar,
-  Box,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  Typography,
-  useMediaQuery
-} from '@mui/material';
-import theme from '../../Providers/theme';
+import { useState, MouseEvent } from 'react';
+import { Box, Grid, List, Typography } from '@mui/material';
+import { v4 as uuid } from 'uuid';
+import ChatListItem from './ChatListItem';
+
+interface Chat {
+  name: string;
+  _id: string;
+  type: string;
+}
+
+const chats: Chat[] = [
+  { name: 'user1', _id: uuid(), type: 'direct' },
+  { name: 'user2', _id: uuid(), type: 'direct' },
+  { name: 'group1', _id: uuid(), type: 'group' },
+  { name: 'group2', _id: uuid(), type: 'group' },
+  { name: 'group3', _id: uuid(), type: 'group' }
+];
 
 export default function ChatList() {
-  const smDown = useMediaQuery(theme.breakpoints.down('md'));
-  const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+
+  const handleChatSelection = (event: MouseEvent<HTMLDivElement>) => {
+    const id = event.currentTarget.id;
+    setSelectedChatId(id);
+  };
 
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
@@ -24,55 +33,16 @@ export default function ChatList() {
             Chats
           </Typography>
           <List sx={{ mb: '1rem' }}>
-            <ListItem sx={{ p: 0 }}>
-              <ListItemButton
-                disableRipple
-                sx={{
-                  borderRadius: '5px',
-                  '&.Mui-selected': {
-                    backgroundColor: theme.palette.primary.light,
-                    color: 'common.white'
-                  },
-                  '&.Mui-selected:hover': {
-                    backgroundColor: theme.palette.primary.light,
-                    opacity: 0.8
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography
-                      sx={{
-                        width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      username/roomname
-                    </Typography>
-                  }
-                  secondary={
-                    <Typography
-                      variant='body2'
-                      sx={{
-                        width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
-                        opacity: 0.8,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      Laboris est sint velit Lorem adipisicing et. Pariatur
-                      eiusmod labore esse excepteur in veniam enim ipsum sunt.
-                    </Typography>
-                  }
-                ></ListItemText>
-              </ListItemButton>
-            </ListItem>
+            {chats
+              .filter((chat) => chat.type === 'group')
+              .map((chat) => (
+                <ChatListItem
+                  chat={chat}
+                  selectedChatId={selectedChatId}
+                  handleChatSelection={handleChatSelection}
+                  key={chat._id}
+                />
+              ))}
           </List>
         </Grid>
         <Grid item>
@@ -80,55 +50,16 @@ export default function ChatList() {
             Friends
           </Typography>
           <List>
-            <ListItem sx={{ p: 0 }}>
-              <ListItemButton
-                disableRipple
-                sx={{
-                  borderRadius: '5px',
-                  '&.Mui-selected': {
-                    backgroundColor: theme.palette.primary.light,
-                    color: 'common.white'
-                  },
-                  '&.Mui-selected:hover': {
-                    backgroundColor: theme.palette.primary.light,
-                    opacity: 0.8
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography
-                      sx={{
-                        width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      username
-                    </Typography>
-                  }
-                  secondary={
-                    <Typography
-                      variant='body2'
-                      sx={{
-                        width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
-                        opacity: 0.8,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      Duis do consequat est ut ex mollit sunt fugiat
-                      pariatur.Veniam sit id do deserunt et.
-                    </Typography>
-                  }
-                ></ListItemText>
-              </ListItemButton>
-            </ListItem>
+            {chats
+              .filter((chat) => chat.type === 'direct')
+              .map((chat) => (
+                <ChatListItem
+                  chat={chat}
+                  selectedChatId={selectedChatId}
+                  handleChatSelection={handleChatSelection}
+                  key={chat._id}
+                />
+              ))}
           </List>
         </Grid>
       </Grid>
