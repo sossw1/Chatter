@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Input, Paper, useMediaQuery } from '@mui/material';
+import { Button, Grid, Input, Paper, useMediaQuery } from '@mui/material';
 import { FormEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import theme from '../../Providers/theme';
