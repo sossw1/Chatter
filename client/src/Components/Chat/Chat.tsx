@@ -3,6 +3,7 @@ import { Box, IconButton, useMediaQuery } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import theme from '../../Providers/theme';
 import ChatDrawer from './ChatDrawer';
+import ChatInput from './ChatInput';
 
 export default function Chat() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -24,8 +25,8 @@ export default function Chat() {
       <Box
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}` }
+          p: '1rem',
+          width: `calc(100% - ${drawerWidth}`
         }}
       >
         <IconButton
@@ -36,6 +37,7 @@ export default function Chat() {
         >
           <MenuIcon />
         </IconButton>
+        <ChatInput drawerWidth={drawerWidth} />
       </Box>
     </Box>
   );
