@@ -1,4 +1,4 @@
-import { Button, Grid, Input, Paper, useMediaQuery } from '@mui/material';
+import { Box, Button, Grid, Input, Paper, useMediaQuery } from '@mui/material';
 import { FormEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import theme from '../../Providers/theme';
@@ -18,9 +18,10 @@ export default function ChatInput(props: Props) {
     <Paper
       component='form'
       sx={{
+        m: '1rem',
         p: '0.75rem',
         position: 'fixed',
-        bottom: '1rem',
+        bottom: 0,
         width: smDown
           ? 'calc(100% - 2rem)'
           : `calc(100% - ${props.drawerWidth} - 2rem)`
