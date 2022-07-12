@@ -1,4 +1,5 @@
 import { Button, Grid, Input, Paper, useMediaQuery } from '@mui/material';
+import { FormEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import theme from '../../Providers/theme';
 
@@ -8,6 +9,10 @@ interface Props {
 
 export default function ChatInput(props: Props) {
   const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+  };
 
   return (
     <Paper
@@ -20,6 +25,7 @@ export default function ChatInput(props: Props) {
           ? 'calc(100% - 2rem)'
           : `calc(100% - ${props.drawerWidth} - 2rem)`
       }}
+      onSubmit={handleSubmit}
     >
       <Grid container direction='row'>
         <Grid item sx={{ mr: '1rem', width: 'calc(100% - 7rem)' }}>
@@ -28,10 +34,10 @@ export default function ChatInput(props: Props) {
             name='message'
             placeholder='Type a message here...'
             disableUnderline
-          ></Input>
+          />
         </Grid>
         <Grid item>
-          <Button variant='contained' endIcon={<SendIcon />}>
+          <Button variant='contained' type='submit' endIcon={<SendIcon />}>
             send
           </Button>
         </Grid>
