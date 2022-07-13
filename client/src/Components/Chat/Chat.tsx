@@ -17,7 +17,7 @@ export default function Chat() {
   };
 
   return (
-    <Box sx={{ display: 'flex', backgroundColor: theme.palette.grey[300] }}>
+    <Box sx={{ display: 'flex', backgroundColor: theme.palette.grey[100] }}>
       <ChatDrawer
         drawerWidth={drawerWidth}
         drawerOpen={drawerOpen}
