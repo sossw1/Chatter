@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
 import ChatDrawer from './ChatDrawer';
-import ChatInput from './ChatInput';
 import ChatHeader from './ChatHeader';
+import ChatHistory from './ChatHistory';
+import ChatInput from './ChatInput';
 
 export default function Chat() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -29,6 +30,7 @@ export default function Chat() {
         }}
       >
         <ChatHeader handleDrawerToggle={handleDrawerToggle} />
+        <ChatHistory />
         <ChatInput drawerWidth={drawerWidth} />
       </Box>
     </Box>
