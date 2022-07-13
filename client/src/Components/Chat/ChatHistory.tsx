@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import ChatMessage from './ChatMessage';
-
-const sentByUser = false;
+import { useAuth } from '../../Providers/auth';
+import { v4 as uuid } from 'uuid';
 
 interface Message {
   username: string;
@@ -21,7 +21,7 @@ const messages: Message[] = [
     timestamp: '3:51 PM'
   },
   {
-    username: 'jason',
+    username: 'username',
     text: 'Eiusmod nisi ullamco pariatur consequat sint.',
     timestamp: '3:53 PM'
   },
@@ -51,40 +51,53 @@ const groupMessagesByUsername = (messages: Message[]) => {
 };
 
 export default function ChatHistory() {
+  const { user } = useAuth();
+  const username = user ? user.username : '';
+  const groupedMessages = groupMessagesByUsername(messages);
+
   return (
     <Box sx={{ p: '1.25rem 1.25rem 5.25rem', height: '49.5rem' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: sentByUser ? 'row-reverse' : 'row',
-          mb: '1rem'
-        }}
-      >
-        <Avatar
-          sx={{
-            width: '2.25rem',
-            height: '2.25rem',
-            ml: sentByUser ? '1rem' : undefined,
-            mr: sentByUser ? undefined : '1rem'
-          }}
-        />
-        <Box sx={{ maxWidth: '65%' }}>
-          <ChatMessage
-            sentByUser={sentByUser}
-            text={'Est labore ipsum sint ex.'}
-          />
-          <Typography
-            variant='body2'
+      {groupedMessages.map((groupOfMessages) => {
+        const sentByUser = groupOfMessages[0].username === username;
+        return (
+          <Box
+            key={uuid()}
             sx={{
-              textAlign: sentByUser ? 'right' : 'left',
-              fontWeight: 400,
-              opacity: '70%'
+              display: 'flex',
+              flexDirection: sentByUser ? 'row-reverse' : 'row',
+              mb: '1rem'
             }}
           >
-            12:00 PM
-          </Typography>
-        </Box>
-      </Box>
+            <Avatar
+              sx={{
+                width: '2.25rem',
+                height: '2.25rem',
+                ml: sentByUser ? '1rem' : undefined,
+                mr: sentByUser ? undefined : '1rem'
+              }}
+            />
+            <Box sx={{ maxWidth: '65%' }}>
+              {groupOfMessages.map((message) => (
+                <ChatMessage
+                  key={uuid()}
+                  sentByUser={sentByUser}
+                  text={message.text}
+                />
+              ))}
+              <Typography
+                variant='body2'
+                sx={{
+                  textAlign: sentByUser ? 'right' : 'left',
+                  fontWeight: 400,
+                  opacity: '70%'
+                }}
+              >
+                12:00 PM
+              </Typography>
+            </Box>
+          </Box>
+        );
+      })}
     </Box>
   );
 }
