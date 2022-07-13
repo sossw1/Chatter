@@ -3,6 +3,35 @@ import ChatMessage from './ChatMessage';
 
 const sentByUser = false;
 
+interface Message {
+  username: string;
+  text: string;
+  timestamp: string;
+}
+
+const messages: Message[] = [
+  {
+    username: 'asdfasdf',
+    text: 'Nulla cillum quis est velit reprehenderit fugiat mollit aliqua dolore cupidatat.',
+    timestamp: '3:50 PM'
+  },
+  {
+    username: 'asdfasdf',
+    text: 'Consequat nulla amet ut qui.',
+    timestamp: '3:51 PM'
+  },
+  {
+    username: 'jason',
+    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
+    timestamp: '3:53 PM'
+  },
+  {
+    username: 'asdfasdf',
+    text: 'Veniam aute duis et in nostrud ipsum.',
+    timestamp: '3:55 PM'
+  }
+];
+
 export default function ChatHistory() {
   return (
     <Box sx={{ p: '1.25rem 1.25rem 5.25rem', height: '49.5rem' }}>
