@@ -92,7 +92,7 @@ export default function ChatHistory() {
                   opacity: '70%'
                 }}
               >
-                12:00 PM
+                {groupOfMessages[0].timestamp}
               </Typography>
             </Box>
           </Box>
