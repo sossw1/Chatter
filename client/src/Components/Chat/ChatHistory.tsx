@@ -1,7 +1,8 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
 import ChatMessage from './ChatMessage';
 import { useAuth } from '../../Providers/auth';
 import { v4 as uuid } from 'uuid';
+import theme from '../../Providers/theme';
 
 interface Message {
   username: string;
@@ -29,6 +30,41 @@ const messages: Message[] = [
     username: 'asdfasdf',
     text: 'Veniam aute duis et in nostrud ipsum.',
     timestamp: '3:55 PM'
+  },
+  {
+    username: 'username',
+    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
+    timestamp: '3:57 PM'
+  },
+  {
+    username: 'asdfasdf',
+    text: 'Veniam aute duis et in nostrud ipsum.',
+    timestamp: '3:59 PM'
+  },
+  {
+    username: 'username',
+    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
+    timestamp: '4:00 PM'
+  },
+  {
+    username: 'asdfasdf',
+    text: 'Veniam aute duis et in nostrud ipsum.',
+    timestamp: '4:01 PM'
+  },
+  {
+    username: 'asdfasdf',
+    text: 'Veniam aute duis et in nostrud ipsum.',
+    timestamp: '4:02 PM'
+  },
+  {
+    username: 'username',
+    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
+    timestamp: '4:02 PM'
+  },
+  {
+    username: 'asdfasdf',
+    text: 'Veniam aute duis et in nostrud ipsum.',
+    timestamp: '4:03 PM'
   }
 ];
 
@@ -55,8 +91,16 @@ export default function ChatHistory() {
   const username = user ? user.username : '';
   const groupedMessages = groupMessagesByUsername(messages);
 
+  const xs = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <Box sx={{ p: '1.25rem 1.25rem 5.25rem', height: '49.5rem' }}>
+    <Box
+      sx={{
+        p: '1.25rem 1.25rem 0',
+        height: `calc(100vh - 5.5rem - 94px - ${xs ? '56' : '64'}px)`,
+        overflowY: 'scroll'
+      }}
+    >
       {groupedMessages.map((groupOfMessages) => {
         const sentByUser = groupOfMessages[0].username === username;
         return (
