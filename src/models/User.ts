@@ -1,4 +1,4 @@
-import {
+import mongoose, {
   Document,
   model,
   Model,
@@ -13,16 +13,11 @@ interface IToken extends Document {
   token: string;
 }
 
-interface IRoomInfo {
-  roomName: string;
-  roomId: string;
-}
-
 export interface IUser {
   username: string;
   password: string;
   email: string;
-  rooms: IRoomInfo[];
+  rooms: mongoose.Types.ObjectId[];
   tokens: IToken[];
 }
 
@@ -66,18 +61,7 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
       }
     }
   },
-  rooms: [
-    {
-      roomName: {
-        type: String,
-        required: true
-      },
-      roomId: {
-        type: String,
-        required: true
-      }
-    }
-  ],
+  rooms: [mongoose.Types.ObjectId],
   tokens: [
     {
       token: {
