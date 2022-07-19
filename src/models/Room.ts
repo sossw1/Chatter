@@ -9,13 +9,19 @@ import {
 export interface IRoom {
   name: string;
   users: string[];
+  messages: {
+    username: string;
+    text: string;
+    timestamp: string;
+  }[];
 }
 
 export interface IRoomDoc extends IRoom, Document {}
 
 enum PropertyNames {
   NAME = 'name',
-  USERS = 'users'
+  USERS = 'users',
+  MESSAGES = 'messages'
 }
 
 export interface IRoomModel extends Model<IRoomDoc> {
@@ -33,12 +39,11 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
       required: true,
       unique: true
     }
-  ]
+  ],
+  messages: [{ username: String, text: String, timestamp: String }]
 };
 
-const RoomSchema = new Schema(RoomSchemaFields, {
-  timestamps: true
-});
+const RoomSchema = new Schema(RoomSchemaFields);
 
 const RoomCollection = model<IRoomDoc, IRoomModel>('rooms', RoomSchema);
 
