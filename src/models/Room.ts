@@ -36,8 +36,7 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
   users: [
     {
       type: String,
-      required: true,
-      unique: true
+      required: true
     }
   ],
   messages: [{ username: String, text: String, timestamp: String }]
