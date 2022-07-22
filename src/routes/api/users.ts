@@ -15,7 +15,8 @@ router.post('/api/users', async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       tokens: [],
-      rooms: []
+      rooms: [],
+      currentSocketId: ''
     };
     const userDocument: IUserDoc = new UserCollection(user);
     await userDocument.save();
