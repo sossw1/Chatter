@@ -6,27 +6,49 @@ import {
   SchemaDefinitionProperty
 } from 'mongoose';
 
+export interface IMessage {
+  username: string;
+  text: string;
+}
+
 export interface IRoom {
   name: string;
   users: string[];
-  messages: {
-    username: string;
-    text: string;
-    timestamp: string;
-  }[];
+  messages: IMessage[];
 }
+
+export interface IMessageDoc extends IMessage, Document {}
 
 export interface IRoomDoc extends IRoom, Document {}
 
-enum PropertyNames {
+enum MessagePropertyNames {
+  USERNAME = 'username',
+  TEXT = 'text'
+}
+
+enum RoomPropertyNames {
   NAME = 'name',
   USERS = 'users',
   MESSAGES = 'messages'
 }
 
-export interface IRoomModel extends Model<IRoomDoc> {
-  PropertyNames: typeof PropertyNames;
+export interface IMessageModel extends Model<IMessageDoc> {
+  PropertyNames: typeof MessagePropertyNames;
 }
+
+export interface IRoomModel extends Model<IRoomDoc> {
+  PropertyNames: typeof RoomPropertyNames;
+}
+
+const MessageSchemaFields: Record<keyof IMessage, SchemaDefinitionProperty> = {
+  username: {
+    type: String,
+    required: true
+  },
+  text: String
+};
+
+const MessageSchema = new Schema(MessageSchemaFields, { timestamps: true });
 
 const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
   name: {
@@ -39,7 +61,7 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
       required: true
     }
   ],
-  messages: [{ username: String, text: String, timestamp: String }]
+  messages: [MessageSchema]
 };
 
 const RoomSchema = new Schema(RoomSchemaFields);
