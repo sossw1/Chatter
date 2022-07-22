@@ -83,8 +83,6 @@ router.post('/api/users/logout/all', auth, async (req, res) => {
   }
 });
 
-export default router;
-
 router.patch('/api/users/me', auth, async (req, res) => {
   try {
     const user = req.user;
@@ -134,3 +132,5 @@ router.delete('/api/users/me', auth, async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+export default router;
