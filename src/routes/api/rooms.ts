@@ -23,6 +23,10 @@ router.post('/api/rooms', auth, async (req, res) => {
       users: req.body.users,
       messages: []
     };
+    if (!room.users.includes(req.user.username))
+      return res
+        .status(400)
+        .send({ error: 'Room users must contain own username' });
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
     res.status(201).send(roomDocument);
