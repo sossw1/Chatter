@@ -1,6 +1,7 @@
 import RoomCollection, { IRoom, IRoomDoc } from '../../models/Room';
 import express from 'express';
 import auth from '../../middleware/auth';
+import Filter from 'bad-words';
 
 const router = express.Router();
 
@@ -27,6 +28,9 @@ router.post('/api/rooms', auth, async (req, res) => {
       return res
         .status(400)
         .send({ error: 'Room users must contain own username' });
+    const filter = new Filter();
+    if (filter.isProfane(room.name))
+      return res.status(400).send({ error: 'Room name fails profanity check' });
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
     res.status(201).send(roomDocument);
