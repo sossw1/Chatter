@@ -4,6 +4,17 @@ import auth from '../../middleware/auth';
 
 const router = express.Router();
 
+router.get('/api/rooms/:id', auth, async (req, res) => {
+  try {
+    const roomId = req.params.id;
+    const room = await RoomCollection.findById(roomId);
+    if (!room) return res.sendStatus(404);
+    res.status(200).send(room);
+  } catch (error) {
+    res.status(400).send({ error });
+  }
+});
+
 router.post('/api/rooms', auth, async (req, res) => {
   try {
     const room: IRoom = {
