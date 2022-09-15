@@ -1,6 +1,7 @@
 import UserCollection, { IUser, IUserDoc } from '../../models/User';
 import auth from '../../middleware/auth';
 import express from 'express';
+import Filter from 'bad-words';
 
 const router = express.Router();
 
@@ -18,6 +19,9 @@ router.post('/api/users', async (req, res) => {
       rooms: [],
       currentSocketId: ''
     };
+    const filter = new Filter();
+    if (filter.isProfane(user.username))
+      return res.status(400).send({ error: 'Username fails profanity check' });
     const userDocument: IUserDoc = new UserCollection(user);
     await userDocument.save();
     const token = await userDocument.generateAuthToken();
