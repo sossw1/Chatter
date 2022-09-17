@@ -48,6 +48,7 @@ router.patch('/api/rooms/:id', auth, async (req, res) => {
     const roomId: string = req.params.id;
     const room = await RoomCollection.findById(roomId);
     if (!room) return res.sendStatus(404);
+    if (!room.users.includes(req.user.username)) return res.sendStatus(404);
     room.name = name;
     await room.save();
     res.sendStatus(200);
