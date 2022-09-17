@@ -2,6 +2,7 @@ import RoomCollection, { IRoom, IRoomDoc } from '../../models/Room';
 import express from 'express';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
+import { users } from '../../utils/users';
 
 const router = express.Router();
 
@@ -36,6 +37,22 @@ router.post('/api/rooms', auth, async (req, res) => {
     res.status(201).send(roomDocument);
   } catch (error) {
     res.status(400).send(error);
+  }
+});
+
+router.patch('/api/rooms/:id', auth, async (req, res) => {
+  try {
+    const name: string = req.body.name;
+    if (!name && name !== '')
+      return res.status(400).send({ error: 'Invalid updates' });
+    const roomId: string = req.params.id;
+    const room = await RoomCollection.findById(roomId);
+    if (!room) return res.sendStatus(404);
+    room.name = name;
+    await room.save();
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(400).send({ error });
   }
 });
 
