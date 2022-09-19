@@ -66,9 +66,11 @@ router.patch('/api/rooms/:id/add', auth, async (req, res) => {
     const room = await RoomCollection.findById(roomId);
     if (!room) return res.sendStatus(404);
     if (!room.users.includes(req.user.username)) return res.sendStatus(404);
-    room.users.push(newRoomMember);
+    if (room.users.includes(newRoomMember))
+      return res.status(400).send({ error: 'User already member of room' });
     const user = await UserCollection.findOne({ username: newRoomMember });
     if (!user) return res.sendStatus(404);
+    room.users.push(newRoomMember);
     await room.save();
     res.sendStatus(200);
   } catch (error) {
