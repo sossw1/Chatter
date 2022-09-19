@@ -2,7 +2,7 @@ import RoomCollection, { IRoom, IRoomDoc } from '../../models/Room';
 import express from 'express';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
-import { users } from '../../utils/users';
+import UserCollection from '../../models/User';
 
 const router = express.Router();
 
@@ -67,6 +67,8 @@ router.patch('/api/rooms/:id/add', auth, async (req, res) => {
     if (!room) return res.sendStatus(404);
     if (!room.users.includes(req.user.username)) return res.sendStatus(404);
     room.users.push(newRoomMember);
+    const user = await UserCollection.findOne({ username: newRoomMember });
+    if (!user) return res.sendStatus(404);
     await room.save();
     res.sendStatus(200);
   } catch (error) {
