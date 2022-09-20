@@ -32,6 +32,14 @@ router.post('/api/rooms', auth, async (req, res) => {
     const filter = new Filter();
     if (filter.isProfane(room.name))
       return res.status(400).send({ error: 'Room name fails profanity check' });
+    const otherUsers = room.users.filter((user) => user !== req.user.username);
+    for (let i = 0; i < otherUsers.length; i++) {
+      const dbUser = await UserCollection.findOne({ username: otherUsers[i] });
+      if (!dbUser)
+        return res
+          .status(404)
+          .send({ error: `User '${otherUsers[i]}' not found` });
+    }
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
     res.status(201).send(roomDocument);
