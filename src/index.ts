@@ -10,12 +10,14 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 import Filter from 'bad-words';
+import { IRoomDoc } from './models/Room';
 
 declare global {
   namespace Express {
     interface Request {
       user: IUserDoc;
       token: string;
+      room: IRoomDoc;
     }
   }
 }
