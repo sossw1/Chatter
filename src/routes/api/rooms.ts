@@ -41,15 +41,12 @@ router.post('/api/rooms', auth, async (req, res) => {
   }
 });
 
-router.patch('/api/rooms/:id', auth, async (req, res) => {
+router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
   try {
+    const { room } = req;
     const name: string = req.body.name;
     if (!name && name !== '')
       return res.status(400).send({ error: 'Invalid updates' });
-    const roomId: string = req.params.id;
-    const room = await RoomCollection.findById(roomId);
-    if (!room) return res.sendStatus(404);
-    if (!room.users.includes(req.user.username)) return res.sendStatus(404);
     room.name = name;
     await room.save();
     res.sendStatus(200);
