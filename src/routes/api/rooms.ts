@@ -55,15 +55,12 @@ router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
   }
 });
 
-router.patch('/api/rooms/:id/add', auth, async (req, res) => {
+router.patch('/api/rooms/:roomId/add', auth, inRoom, async (req, res) => {
   try {
     const newRoomMember: string = req.body.username;
     if (!newRoomMember)
       return res.status(400).send({ error: 'Invalid updates' });
-    const roomId: string = req.params.id;
-    const room = await RoomCollection.findById(roomId);
-    if (!room) return res.sendStatus(404);
-    if (!room.users.includes(req.user.username)) return res.sendStatus(404);
+    const { room } = req;
     if (room.users.includes(newRoomMember))
       return res.status(400).send({ error: 'User already member of room' });
     const user = await UserCollection.findOne({ username: newRoomMember });
