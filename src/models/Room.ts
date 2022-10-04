@@ -14,6 +14,7 @@ export interface IMessage {
 export interface IRoom {
   name: string;
   users: string[];
+  invitedUsers: string[];
   messages: IMessage[];
 }
 
@@ -29,6 +30,7 @@ enum MessagePropertyNames {
 enum RoomPropertyNames {
   NAME = 'name',
   USERS = 'users',
+  INVITED_USERS = 'invitedUsers',
   MESSAGES = 'messages'
 }
 
@@ -56,6 +58,12 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
     required: true
   },
   users: [
+    {
+      type: String,
+      required: true
+    }
+  ],
+  invitedUsers: [
     {
       type: String,
       required: true

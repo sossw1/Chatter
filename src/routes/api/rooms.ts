@@ -20,6 +20,7 @@ router.post('/api/rooms', auth, async (req, res) => {
     const room: IRoom = {
       name: req.body.name,
       users: req.body.users,
+      invitedUsers: [],
       messages: []
     };
 
