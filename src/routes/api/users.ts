@@ -5,9 +5,13 @@ import Filter from 'bad-words';
 
 const router = express.Router();
 
+// Get own user data
+
 router.get('/api/users/me', auth, async (req, res) => {
   res.send(req.user);
 });
+
+// Create new user
 
 router.post('/api/users', async (req, res) => {
   try {
@@ -19,12 +23,16 @@ router.post('/api/users', async (req, res) => {
       rooms: [],
       currentSocketId: ''
     };
+
     const filter = new Filter();
     if (filter.isProfane(user.username))
       return res.status(400).send({ error: 'Username fails profanity check' });
+
     const userDocument: IUserDoc = new UserCollection(user);
     await userDocument.save();
+
     const token = await userDocument.generateAuthToken();
+
     res.status(201).send({ user: userDocument, token });
   } catch (error: any) {
     if (error.name === 'ValidationError') {
@@ -52,17 +60,23 @@ router.post('/api/users', async (req, res) => {
   }
 });
 
+// Log in
+
 router.post('/api/users/login', async (req, res) => {
   try {
     const { username, password }: { username: string; password: string } =
       req.body;
     const user = await UserCollection.findByCredentials(username, password);
+
     const token = await user.generateAuthToken();
+
     res.send({ user, token });
   } catch (error) {
     res.status(400).send({ error: 'Invalid username/password' });
   }
 });
+
+// Log out
 
 router.post('/api/users/logout', auth, async (req, res) => {
   try {
@@ -77,20 +91,26 @@ router.post('/api/users/logout', auth, async (req, res) => {
   }
 });
 
+// Log out of all devices
+
 router.post('/api/users/logout/all', auth, async (req, res) => {
   try {
     req.user.tokens = [];
     await req.user.save();
+
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(500);
   }
 });
 
+// Update email or password
+
 router.patch('/api/users/me', auth, async (req, res) => {
   try {
     const user = req.user;
     const updates = Object.keys(req.body);
+
     const allowedUpdates = ['email', 'password'];
     const isValidOperation = updates.every((update) =>
       allowedUpdates.includes(update)
@@ -108,6 +128,7 @@ router.patch('/api/users/me', auth, async (req, res) => {
     }
 
     await user.save();
+
     res.send(user);
   } catch (error: any) {
     if (error.name === 'ValidationError') {
@@ -128,9 +149,12 @@ router.patch('/api/users/me', auth, async (req, res) => {
   }
 });
 
+// Delete own user data
+
 router.delete('/api/users/me', auth, async (req, res) => {
   try {
     await req.user.remove();
+
     res.send(req.user);
   } catch (error: any) {
     res.sendStatus(500);
