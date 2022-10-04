@@ -21,6 +21,7 @@ router.post('/api/users', async (req, res) => {
       password: req.body.password,
       tokens: [],
       rooms: [],
+      invites: [],
       currentSocketId: ''
     };
 
