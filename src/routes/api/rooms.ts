@@ -73,9 +73,9 @@ router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
   }
 });
 
-// Add user to room
+// Invite user to room
 
-router.patch('/api/rooms/:roomId/add', auth, inRoom, async (req, res) => {
+router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
   try {
     const newRoomMember: string = req.body.username;
     if (!newRoomMember)
@@ -88,8 +88,11 @@ router.patch('/api/rooms/:roomId/add', auth, inRoom, async (req, res) => {
     const user = await UserCollection.findOne({ username: newRoomMember });
     if (!user) return res.sendStatus(404);
 
-    room.users.push(newRoomMember);
+    room.invitedUsers.push(newRoomMember);
     await room.save();
+
+    user.invites.push(room._id);
+    await user.save();
 
     res.sendStatus(200);
   } catch (error) {
