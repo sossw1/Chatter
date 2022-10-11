@@ -100,4 +100,38 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
   }
 });
 
+// Accept room invite
+
+router.patch('/api/rooms/:roomId/accept', auth, async (req, res) => {
+  try {
+    const roomId = req.params.roomId;
+    if (!roomId) return res.status(400).send({ error: 'Invalid updates' });
+
+    const room = await RoomCollection.findById(roomId);
+    if (!room) return res.sendStatus(404);
+
+    if (
+      !req.user.invites.includes(room._id) ||
+      !room.invitedUsers.includes(req.user.username)
+    )
+      return res.sendStatus(401);
+
+    req.user.invites = req.user.invites.filter(
+      (invite) => !invite.equals(room._id)
+    );
+    req.user.rooms.push(room._id);
+    req.user.save();
+
+    room.invitedUsers = room.invitedUsers.filter(
+      (user) => user !== req.user.username
+    );
+    room.users.push(req.user.username);
+    room.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(400).send({ error });
+  }
+});
+
 export default router;
