@@ -4,6 +4,7 @@ import auth from '../../middleware/auth';
 import Filter from 'bad-words';
 import UserCollection from '../../models/User';
 import inRoom from '../../middleware/inRoom';
+import { IUserDoc } from '../../models/User';
 
 const router = express.Router();
 
@@ -37,16 +38,24 @@ router.post('/api/rooms', auth, async (req, res) => {
     const otherUsers: string[] = room.users.filter(
       (user) => user !== req.user.username
     );
+    let roomUsers: IUserDoc[] = [req.user];
     for (let i = 0; i < otherUsers.length; i++) {
       const dbUser = await UserCollection.findOne({ username: otherUsers[i] });
       if (!dbUser)
         return res
           .status(404)
           .send({ error: `User '${otherUsers[i]}' not found` });
+      roomUsers.push(dbUser);
     }
 
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
+
+    for (let j = 0; j < roomUsers.length; j++) {
+      const user = roomUsers[j];
+      user.rooms.push(roomDocument._id);
+      await user.save();
+    }
 
     res.status(201).send(roomDocument);
   } catch (error) {
