@@ -34,7 +34,6 @@ router.post('/api/rooms', auth, async (req, res) => {
     if (filter.isProfane(room.name))
       return res.status(400).send({ error: 'Room name fails profanity check' });
 
-    // Ensure all users exist
     const otherUsers: string[] = room.users.filter(
       (user) => user !== req.user.username
     );
