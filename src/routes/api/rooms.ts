@@ -37,16 +37,20 @@ router.post('/api/rooms', auth, async (req, res) => {
     const otherUsers: string[] = room.users.filter(
       (user) => user !== req.user.username
     );
-    let roomUsers: IUserDoc[] = [req.user];
-    for (let i = 0; i < otherUsers.length; i++) {
-      const dbUser = await UserCollection.findOne({ username: otherUsers[i] });
+    const otherUniqueUsers = [...new Set(otherUsers)];
+    let roomUsers = [req.user];
+    for (let i = 0; i < otherUniqueUsers.length; i++) {
+      const dbUser = await UserCollection.findOne({
+        username: otherUniqueUsers[i]
+      });
       if (!dbUser)
         return res
           .status(404)
-          .send({ error: `User '${otherUsers[i]}' not found` });
+          .send({ error: `User '${otherUniqueUsers[i]}' not found` });
       roomUsers.push(dbUser);
     }
 
+    room.users = [req.user.username, ...otherUniqueUsers];
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
 
