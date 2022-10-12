@@ -149,13 +149,13 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
       (invite) => !invite.equals(room._id)
     );
     req.user.rooms.push(room._id);
-    req.user.save();
+    await req.user.save();
 
     room.invitedUsers = room.invitedUsers.filter(
       (user) => user !== req.user.username
     );
     room.users.push(req.user.username);
-    room.save();
+    await room.save();
 
     res.sendStatus(200);
   } catch (error) {
