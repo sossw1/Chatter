@@ -179,7 +179,8 @@ router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
   try {
     const message = {
       username: req.user.username,
-      text: '' + req.body.text
+      text: '' + req.body.text,
+      roomId: req.room._id
     };
 
     const messageDocument = new MessageCollection(message);
