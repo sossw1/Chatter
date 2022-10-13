@@ -162,7 +162,9 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
   }
 });
 
-router.post('/api/rooms/:roomId/message', auth, inRoom, async (req, res) => {
+// Send message to room
+
+router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
   const message = {
     username: req.user.username,
     text: '' + req.body.text
