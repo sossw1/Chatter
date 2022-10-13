@@ -11,14 +11,14 @@ export interface IMessage {
   text: string;
 }
 
+export interface IMessageDoc extends IMessage, Document {}
+
 export interface IRoom {
   name: string;
   users: string[];
   invitedUsers: string[];
-  messages: IMessage[];
+  messages: IMessageDoc[];
 }
-
-export interface IMessageDoc extends IMessage, Document {}
 
 export interface IRoomDoc extends IRoom, Document {}
 
@@ -75,5 +75,9 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
 const RoomSchema = new Schema(RoomSchemaFields);
 
 const RoomCollection = model<IRoomDoc, IRoomModel>('rooms', RoomSchema);
+const MessageCollection = model<IMessageDoc, IMessageModel>(
+  'messages',
+  MessageSchema
+);
 
-export default RoomCollection;
+export { RoomCollection, MessageCollection };
