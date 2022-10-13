@@ -4,7 +4,6 @@ import auth from '../../middleware/auth';
 import Filter from 'bad-words';
 import UserCollection from '../../models/User';
 import inRoom from '../../middleware/inRoom';
-import { IUserDoc } from '../../models/User';
 
 const router = express.Router();
 
@@ -161,6 +160,18 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
   } catch (error) {
     res.status(400).send({ error });
   }
+});
+
+router.post('/api/rooms/:roomId/message', auth, inRoom, async (req, res) => {
+  const message = {
+    username: req.user.username,
+    text: '' + req.body.text
+  };
+
+  req.room.messages.push(message);
+  await req.room.save();
+
+  res.sendStatus(200);
 });
 
 export default router;
