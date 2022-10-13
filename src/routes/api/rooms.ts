@@ -1,4 +1,9 @@
-import RoomCollection, { IRoom, IRoomDoc } from '../../models/Room';
+import {
+  IRoom,
+  IRoomDoc,
+  RoomCollection,
+  MessageCollection
+} from '../../models/Room';
 import express from 'express';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
@@ -171,15 +176,22 @@ router.get('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
 // Send message to room
 
 router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
-  const message = {
-    username: req.user.username,
-    text: '' + req.body.text
-  };
+  try {
+    const message = {
+      username: req.user.username,
+      text: '' + req.body.text
+    };
 
-  req.room.messages.push(message);
-  await req.room.save();
+    const messageDocument = new MessageCollection(message);
+    await messageDocument.save();
 
-  res.sendStatus(200);
+    req.room.messages.push(messageDocument);
+    await req.room.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
 });
 
 export default router;
