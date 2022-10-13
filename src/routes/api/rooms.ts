@@ -195,4 +195,32 @@ router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
   }
 });
 
+// Delete message from history
+
+router.delete(
+  '/api/rooms/:roomId/messages/:messageId',
+  auth,
+  inRoom,
+  async (req, res) => {
+    const messageId = req.params.messageId;
+    if (!messageId) return res.sendStatus(404);
+
+    const message = await MessageCollection.findById(messageId);
+    if (!message) return res.sendStatus(404);
+
+    if (!message.roomId.equals(req.room._id)) return res.sendStatus(404);
+
+    if (message.username !== req.user.username) return res.sendStatus(401);
+
+    const result = await MessageCollection.findByIdAndDelete(messageId);
+
+    req.room.messages = req.room.messages.filter(
+      (message) => !message._id.equals(messageId)
+    );
+    await req.room.save();
+
+    res.send(result);
+  }
+);
+
 export default router;
