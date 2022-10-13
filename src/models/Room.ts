@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import {
   Document,
   model,
@@ -9,6 +10,7 @@ import {
 export interface IMessage {
   username: string;
   text: string;
+  roomId: mongoose.Types.ObjectId;
 }
 
 export interface IMessageDoc extends IMessage, Document {}
@@ -24,7 +26,8 @@ export interface IRoomDoc extends IRoom, Document {}
 
 enum MessagePropertyNames {
   USERNAME = 'username',
-  TEXT = 'text'
+  TEXT = 'text',
+  ROOM_ID = 'roomId'
 }
 
 enum RoomPropertyNames {
@@ -47,7 +50,11 @@ const MessageSchemaFields: Record<keyof IMessage, SchemaDefinitionProperty> = {
     type: String,
     required: true
   },
-  text: String
+  text: String,
+  roomId: {
+    type: mongoose.Types.ObjectId,
+    required: true
+  }
 };
 
 const MessageSchema = new Schema(MessageSchemaFields, { timestamps: true });
