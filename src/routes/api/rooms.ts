@@ -162,6 +162,12 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
   }
 });
 
+// Read messages in room
+
+router.get('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
+  res.status(200).send(req.room.messages);
+});
+
 // Send message to room
 
 router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
