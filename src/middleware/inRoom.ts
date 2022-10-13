@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import RoomCollection from '../models/Room';
+import { RoomCollection } from '../models/Room';
 
 const inRoom = async (req: Request, res: Response, next: NextFunction) => {
   try {
