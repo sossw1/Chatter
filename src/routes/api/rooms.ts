@@ -167,6 +167,20 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
   }
 });
 
+// Leave room
+
+router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
+  req.room.users = req.room.users.filter((user) => user !== req.user.username);
+  await req.room.save();
+
+  req.user.rooms = req.user.rooms.filter(
+    (room) => !room.equals(req.params.roomId)
+  );
+  await req.user.save();
+
+  res.sendStatus(200);
+});
+
 // Read messages in room
 
 router.get('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
