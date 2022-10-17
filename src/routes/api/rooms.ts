@@ -181,6 +181,27 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
   res.sendStatus(200);
 });
 
+// Delete room
+
+router.delete('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
+  const { users } = req.room;
+
+  for (let user of users) {
+    const userDocument = await UserCollection.findOne({ username: user });
+    if (!userDocument) continue;
+
+    userDocument.rooms = userDocument.rooms.filter(
+      (room) => !room.equals(req.params.roomId)
+    );
+
+    await userDocument.save();
+  }
+
+  const deletedRoom = await req.room.remove();
+
+  res.status(200).send(deletedRoom);
+});
+
 // Read messages in room
 
 router.get('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
