@@ -97,6 +97,8 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
     if (!newRoomMember)
       return res.status(400).send({ error: 'Invalid updates' });
 
+    if (newRoomMember === req.user.username) return res.status(400).send({ error: 'Cannot invite self' });
+
     const { room } = req;
     if (room.users.includes(newRoomMember))
       return res.status(400).send({ error: 'User already member of room' });
