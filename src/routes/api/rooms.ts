@@ -18,12 +18,13 @@ router.get('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
   res.status(200).send(req.room);
 });
 
-// Create a room
+// Create a group room
 
 router.post('/api/rooms', auth, async (req, res) => {
   try {
     const room: IRoom = {
       name: req.body.name,
+      isDirect: false,
       users: req.body.users,
       invitedUsers: [],
       messages: []
@@ -97,7 +98,8 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
     if (!newRoomMember)
       return res.status(400).send({ error: 'Invalid updates' });
 
-    if (newRoomMember === req.user.username) return res.status(400).send({ error: 'Cannot invite self' });
+    if (newRoomMember === req.user.username)
+      return res.status(400).send({ error: 'Cannot invite self' });
 
     const { room } = req;
     if (room.users.includes(newRoomMember))

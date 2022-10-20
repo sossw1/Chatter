@@ -17,6 +17,7 @@ export interface IMessageDoc extends IMessage, Document {}
 
 export interface IRoom {
   name: string;
+  isDirect: boolean;
   users: string[];
   invitedUsers: string[];
   messages: IMessageDoc[];
@@ -32,6 +33,7 @@ enum MessagePropertyNames {
 
 enum RoomPropertyNames {
   NAME = 'name',
+  IS_DIRECT = 'isDirect',
   USERS = 'users',
   INVITED_USERS = 'invitedUsers',
   MESSAGES = 'messages'
@@ -64,6 +66,7 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
     type: String,
     required: true
   },
+  isDirect: Boolean,
   users: [
     {
       type: String,
