@@ -94,6 +94,11 @@ router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
 
 router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
   try {
+    if (req.room.isDirect)
+      return res
+        .status(400)
+        .send({ error: 'Cannot invite new users to direct message' });
+
     const newRoomMember: string = req.body.username;
     if (!newRoomMember)
       return res.status(400).send({ error: 'Invalid updates' });
