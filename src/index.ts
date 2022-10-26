@@ -2,6 +2,7 @@ import { generateLocationMessage, generateMessage } from './utils/messages';
 import { addUser, getUser, getUsersInRoom, removeUser } from './utils/users';
 import userRouter from './routes/api/users';
 import roomRouter from './routes/api/rooms';
+import messageRouter from './routes/api/messages';
 import { IUserDoc } from './models/User';
 import './db/mongoose';
 import chalk from 'chalk';
@@ -41,6 +42,7 @@ app.use(express.static(publicDirectoryPath));
 
 router.use(userRouter);
 router.use(roomRouter);
+router.use(messageRouter);
 app.use(router);
 
 io.on('connection', (socket) => {
