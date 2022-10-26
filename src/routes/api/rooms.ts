@@ -67,7 +67,7 @@ router.post('/api/rooms', auth, async (req, res) => {
 
     res.status(201).send(roomDocument);
   } catch (error) {
-    res.status(400).send(error);
+    res.sendStatus(500);
   }
 });
 
@@ -86,7 +86,7 @@ router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    res.status(400).send({ error });
+    res.sendStatus(500);
   }
 });
 
@@ -121,7 +121,7 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    res.status(400).send({ error });
+    res.sendStatus(500);
   }
 });
 
@@ -172,52 +172,62 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    res.status(400).send({ error });
+    res.sendStatus(500);
   }
 });
 
 // Leave room
 
 router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
-  if (req.room.isDirect)
-    return res
-      .status(400)
-      .send({ error: 'Unable to leave direct room, remove friend instead' });
+  try {
+    if (req.room.isDirect)
+      return res
+        .status(400)
+        .send({ error: 'Unable to leave direct room, remove friend instead' });
 
-  req.room.users = req.room.users.filter((user) => user !== req.user.username);
-  if (req.room.users.length < 1) {
-    await req.room.remove();
-  } else {
-    await req.room.save();
+    req.room.users = req.room.users.filter(
+      (user) => user !== req.user.username
+    );
+    if (req.room.users.length < 1) {
+      await req.room.remove();
+    } else {
+      await req.room.save();
+    }
+
+    req.user.rooms = req.user.rooms.filter(
+      (room) => !room.equals(req.params.roomId)
+    );
+    await req.user.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
   }
-
-  req.user.rooms = req.user.rooms.filter(
-    (room) => !room.equals(req.params.roomId)
-  );
-  await req.user.save();
-
-  res.sendStatus(200);
 });
 
 // Delete room
 
 router.delete('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
-  const { users } = req.room;
+  try {
+    const { users } = req.room;
 
-  for (let user of users) {
-    const userDocument = await UserCollection.findOne({ username: user });
-    if (!userDocument) continue;
+    for (let user of users) {
+      const userDocument = await UserCollection.findOne({ username: user });
+      if (!userDocument) continue;
 
-    userDocument.rooms = userDocument.rooms.filter(
-      (room) => !room.equals(req.params.roomId)
-    );
+      userDocument.rooms = userDocument.rooms.filter(
+        (room) => !room.equals(req.params.roomId)
+      );
 
-    await userDocument.save();
+      await userDocument.save();
+    }
+
+    const deletedRoom = await req.room.remove();
+
+    res.status(200).send(deletedRoom);
+  } catch (error) {
+    res.sendStatus(500);
   }
-
-  const deletedRoom = await req.room.remove();
-
-  res.status(200).send(deletedRoom);
 });
 
 // Read messages in room
@@ -255,24 +265,28 @@ router.delete(
   auth,
   inRoom,
   async (req, res) => {
-    const messageId = req.params.messageId;
-    if (!messageId) return res.sendStatus(404);
+    try {
+      const messageId = req.params.messageId;
+      if (!messageId) return res.sendStatus(404);
 
-    const message = await MessageCollection.findById(messageId);
-    if (!message) return res.sendStatus(404);
+      const message = await MessageCollection.findById(messageId);
+      if (!message) return res.sendStatus(404);
 
-    if (!message.roomId.equals(req.room._id)) return res.sendStatus(404);
+      if (!message.roomId.equals(req.room._id)) return res.sendStatus(404);
 
-    if (message.username !== req.user.username) return res.sendStatus(401);
+      if (message.username !== req.user.username) return res.sendStatus(401);
 
-    const result = await MessageCollection.findByIdAndDelete(messageId);
+      const result = await MessageCollection.findByIdAndDelete(messageId);
 
-    req.room.messages = req.room.messages.filter(
-      (message) => !message._id.equals(messageId)
-    );
-    await req.room.save();
+      req.room.messages = req.room.messages.filter(
+        (message) => !message._id.equals(messageId)
+      );
+      await req.room.save();
 
-    res.send(result);
+      res.send(result);
+    } catch (error) {
+      res.sendStatus(500);
+    }
   }
 );
 

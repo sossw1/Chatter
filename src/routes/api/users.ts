@@ -57,7 +57,7 @@ router.post('/api/users', async (req, res) => {
       return res.status(400).send({ error: 'Username already in use' });
     }
 
-    res.status(500).send({ error: error });
+    res.sendStatus(500);
   }
 });
 
