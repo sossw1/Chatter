@@ -179,6 +179,11 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
 // Leave room
 
 router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
+  if (req.room.isDirect)
+    return res
+      .status(400)
+      .send({ error: 'Unable to leave direct room, remove friend instead' });
+
   req.room.users = req.room.users.filter((user) => user !== req.user.username);
   if (req.room.users.length < 1) {
     await req.room.remove();
