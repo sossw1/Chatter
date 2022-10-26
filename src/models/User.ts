@@ -18,7 +18,7 @@ export interface IUser {
   password: string;
   email: string;
   rooms: mongoose.Types.ObjectId[];
-  invites: mongoose.Types.ObjectId[];
+  roomInvites: mongoose.Types.ObjectId[];
   currentSocketId: string;
   tokens: IToken[];
 }
@@ -32,7 +32,7 @@ enum PropertyNames {
   PASSWORD = 'password',
   EMAIL = 'email',
   ROOMS = 'rooms',
-  INVITES = 'invites',
+  ROOM_INVITES = 'roomInvites',
   CURRENT_SOCKET_ID = 'currentSocketId',
   TOKENS = 'tokens'
 }
@@ -66,7 +66,7 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
     }
   },
   rooms: [mongoose.Types.ObjectId],
-  invites: [mongoose.Types.ObjectId],
+  roomInvites: [mongoose.Types.ObjectId],
   currentSocketId: String,
   tokens: [
     {

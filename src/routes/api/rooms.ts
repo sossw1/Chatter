@@ -111,7 +111,7 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
     room.invitedUsers.push(newRoomMember);
     await room.save();
 
-    user.invites.push(room._id);
+    user.roomInvites.push(room._id);
     await user.save();
 
     res.sendStatus(200);
@@ -134,7 +134,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
     if (!room) return res.sendStatus(404);
 
     if (!accept) {
-      req.user.invites = req.user.invites.filter(
+      req.user.roomInvites = req.user.roomInvites.filter(
         (invite) => !invite.equals(room._id)
       );
       await req.user.save();
@@ -148,12 +148,12 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
     }
 
     if (
-      !req.user.invites.includes(room._id) ||
+      !req.user.roomInvites.includes(room._id) ||
       !room.invitedUsers.includes(req.user.username)
     )
       return res.sendStatus(401);
 
-    req.user.invites = req.user.invites.filter(
+    req.user.roomInvites = req.user.roomInvites.filter(
       (invite) => !invite.equals(room._id)
     );
     req.user.rooms.push(room._id);
