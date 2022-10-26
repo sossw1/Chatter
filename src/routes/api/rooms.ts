@@ -180,7 +180,11 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
 
 router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
   req.room.users = req.room.users.filter((user) => user !== req.user.username);
-  await req.room.save();
+  if (req.room.users.length < 1) {
+    await req.room.remove();
+  } else {
+    await req.room.save();
+  }
 
   req.user.rooms = req.user.rooms.filter(
     (room) => !room.equals(req.params.roomId)
