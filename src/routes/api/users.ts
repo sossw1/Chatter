@@ -236,6 +236,10 @@ router.post('/api/users/friend-request/reply', auth, async (req, res) => {
       const roomDocument: IRoomDoc = new RoomCollection(room);
 
       await roomDocument.save();
+
+      req.user.rooms.push(roomDocument._id);
+      userDocument.rooms.push(roomDocument._id);
+
       await req.user.save();
       await userDocument.save();
 
