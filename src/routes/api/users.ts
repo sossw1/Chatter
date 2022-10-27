@@ -1,4 +1,5 @@
 import UserCollection, { IUser, IUserDoc } from '../../models/User';
+import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
 import express from 'express';
 import Filter from 'bad-words';
@@ -214,19 +215,34 @@ router.post('/api/users/friend-request/reply', auth, async (req, res) => {
     if (!userDocument)
       return res.status(404).send({ error: 'Cannot find user' });
 
-    if (accept) {
-      req.user.friends.push(username);
-      userDocument.friends.push(req.user.username);
-    }
-
     req.user.friendInvites = req.user.friendInvites.filter(
       (user) => user !== username
     );
-    await req.user.save();
 
     userDocument.friendInvites = userDocument.friendInvites.filter(
       (user) => user !== req.user.username
     );
+
+    if (accept) {
+      req.user.friends.push(username);
+      userDocument.friends.push(req.user.username);
+
+      const room: IRoom = {
+        isDirect: true,
+        users: [req.user.username, username],
+        messages: []
+      };
+
+      const roomDocument: IRoomDoc = new RoomCollection(room);
+
+      await roomDocument.save();
+      await req.user.save();
+      await userDocument.save();
+
+      return res.status(201).send(roomDocument);
+    }
+
+    await req.user.save();
     await userDocument.save();
 
     res.sendStatus(200);
