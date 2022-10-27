@@ -81,6 +81,18 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
 
 const RoomSchema = new Schema(RoomSchemaFields);
 
+RoomSchema.methods.toJSON = function () {
+  const room: any = this;
+  const roomObject = room.toObject();
+
+  if (roomObject.isDirect) {
+    delete roomObject.name;
+    delete roomObject.invitedUsers;
+  }
+
+  return roomObject;
+};
+
 const RoomCollection = model<IRoomDoc, IRoomModel>('rooms', RoomSchema);
 const MessageCollection = model<IMessageDoc, IMessageModel>(
   'messages',
