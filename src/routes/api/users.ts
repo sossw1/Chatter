@@ -172,6 +172,9 @@ router.post('/api/users/friend-request', auth, async (req, res) => {
     if (!username || typeof username !== 'string')
       return res.status(400).send({ error: 'Please provide a username' });
 
+    if (username === req.user.username)
+      return res.status(400).send({ error: 'Cannot invite self' });
+
     if (req.user.friends.includes(username))
       return res.status(400).send({ error: 'Already friends' });
 
