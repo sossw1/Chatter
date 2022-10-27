@@ -175,6 +175,9 @@ router.post('/api/users/friend-request', auth, async (req, res) => {
     const userDocument = await UserCollection.findOne({ username });
     if (!userDocument) return res.status(404).send({ error: 'User not found' });
 
+    if (userDocument.friendInvites.includes(req.user.username))
+      return res.status(400).send({ error: 'Already invited' });
+
     userDocument.friendInvites.push(req.user.username);
     await userDocument.save();
 
