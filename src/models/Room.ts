@@ -62,10 +62,7 @@ const MessageSchemaFields: Record<keyof IMessage, SchemaDefinitionProperty> = {
 const MessageSchema = new Schema(MessageSchemaFields, { timestamps: true });
 
 const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
-  name: {
-    type: String,
-    required: true
-  },
+  name: String,
   isDirect: Boolean,
   users: [
     {
