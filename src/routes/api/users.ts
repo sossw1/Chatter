@@ -164,4 +164,24 @@ router.delete('/api/users/me', auth, async (req, res) => {
   }
 });
 
+// Invite user to be friends
+
+router.post('/api/users/friend-request', auth, async (req, res) => {
+  try {
+    const username = req.body.username;
+    if (!username || typeof username !== 'string')
+      return res.status(400).send({ error: 'Please provide a username' });
+
+    const userDocument = await UserCollection.findOne({ username });
+    if (!userDocument) return res.status(404).send({ error: 'User not found' });
+
+    userDocument.friendInvites.push(req.user.username);
+    await userDocument.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 export default router;
