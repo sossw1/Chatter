@@ -31,7 +31,7 @@ router.post('/api/rooms', auth, async (req, res) => {
         .send({ error: 'Room users must contain own username' });
 
     const filter = new Filter();
-    if (filter.isProfane(room.name))
+    if (room.name && filter.isProfane(room.name))
       return res.status(400).send({ error: 'Room name fails profanity check' });
 
     const otherUsers: string[] = room.users.filter(
@@ -108,8 +108,10 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
     const user = await UserCollection.findOne({ username: newRoomMember });
     if (!user) return res.sendStatus(404);
 
-    room.invitedUsers.push(newRoomMember);
-    await room.save();
+    if (room.invitedUsers) {
+      room.invitedUsers.push(newRoomMember);
+      await room.save();
+    }
 
     user.roomInvites.push(room._id);
     await user.save();
@@ -139,17 +141,19 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
       );
       await req.user.save();
 
-      room.invitedUsers = room.invitedUsers.filter(
-        (user) => user !== req.user.username
-      );
-      await room.save();
+      if (room.invitedUsers) {
+        room.invitedUsers = room.invitedUsers.filter(
+          (user) => user !== req.user.username
+        );
+        await room.save();
+      }
 
       return res.sendStatus(200);
     }
 
     if (
       !req.user.roomInvites.includes(room._id) ||
-      !room.invitedUsers.includes(req.user.username)
+      (room.invitedUsers && !room.invitedUsers.includes(req.user.username))
     )
       return res.sendStatus(401);
 
@@ -159,11 +163,13 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
     req.user.rooms.push(room._id);
     await req.user.save();
 
-    room.invitedUsers = room.invitedUsers.filter(
-      (user) => user !== req.user.username
-    );
-    room.users.push(req.user.username);
-    await room.save();
+    if (room.invitedUsers) {
+      room.invitedUsers = room.invitedUsers.filter(
+        (user) => user !== req.user.username
+      );
+      room.users.push(req.user.username);
+      await room.save();
+    }
 
     res.sendStatus(200);
   } catch (error) {

@@ -16,10 +16,10 @@ export interface IMessage {
 export interface IMessageDoc extends IMessage, Document {}
 
 export interface IRoom {
-  name: string;
+  name?: string;
   isDirect: boolean;
   users: string[];
-  invitedUsers: string[];
+  invitedUsers?: string[];
   messages: IMessageDoc[];
 }
 
