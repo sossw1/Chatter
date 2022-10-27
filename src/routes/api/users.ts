@@ -22,6 +22,8 @@ router.post('/api/users', async (req, res) => {
       tokens: [],
       rooms: [],
       roomInvites: [],
+      friendInvites: [],
+      friends: [],
       currentSocketId: ''
     };
 
