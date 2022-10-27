@@ -167,7 +167,7 @@ router.delete('/api/users/me', auth, async (req, res) => {
 
 // Invite user to be friends
 
-router.post('/api/users/friend-request', auth, async (req, res) => {
+router.post('/api/users/friend/invite', auth, async (req, res) => {
   try {
     const username = req.body.username;
     if (!username || typeof username !== 'string')
@@ -196,7 +196,7 @@ router.post('/api/users/friend-request', auth, async (req, res) => {
 
 // Accept/Decline friend request
 
-router.post('/api/users/friend-request/reply', auth, async (req, res) => {
+router.post('/api/users/friend/reply', auth, async (req, res) => {
   try {
     const { username, accept } = req.body;
 
