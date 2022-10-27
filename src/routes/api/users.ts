@@ -193,4 +193,46 @@ router.post('/api/users/friend-request', auth, async (req, res) => {
   }
 });
 
+// Accept/Decline friend request
+
+router.post('/api/users/friend-request/reply', auth, async (req, res) => {
+  try {
+    const { username, accept } = req.body;
+
+    if (!username || typeof username !== 'string')
+      return res.status(400).send({ error: 'Please provide a username' });
+
+    if (!req.user.friendInvites.includes(username))
+      return res.status(404).send({ error: 'Cannot find invite' });
+
+    if (accept !== true && accept !== false)
+      return res
+        .status(400)
+        .send({ error: 'Property `accept` must be a boolean value' });
+
+    const userDocument = await UserCollection.findOne({ username });
+    if (!userDocument)
+      return res.status(404).send({ error: 'Cannot find user' });
+
+    if (accept) {
+      req.user.friends.push(username);
+      userDocument.friends.push(req.user.username);
+    }
+
+    req.user.friendInvites = req.user.friendInvites.filter(
+      (user) => user !== username
+    );
+    await req.user.save();
+
+    userDocument.friendInvites = userDocument.friendInvites.filter(
+      (user) => user !== req.user.username
+    );
+    await userDocument.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 export default router;
