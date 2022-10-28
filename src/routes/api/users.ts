@@ -255,4 +255,32 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
   }
 });
 
+// Remove friend
+
+router.delete('/api/users/friend', auth, async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!username || typeof username !== 'string')
+      return res.status(400).send({ error: 'Please provide a username' });
+
+    if (!req.user.friends.includes(username))
+      return res.status(404).send({ error: 'Friend not found' });
+
+    const userDocument = await UserCollection.findOne({ username });
+    if (!userDocument) return res.status(404).send({ error: 'User not found' });
+
+    req.user.friends = req.user.friends.filter((user) => user !== username);
+    await req.user.save();
+
+    userDocument.friends = userDocument.friends.filter(
+      (user) => user !== req.user.username
+    );
+    await userDocument.save();
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 export default router;
