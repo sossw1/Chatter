@@ -230,7 +230,8 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
       const room: IRoom = {
         isDirect: true,
         users: [req.user.username, username],
-        messages: []
+        messages: [],
+        disabled: false
       };
 
       const roomDocument: IRoomDoc = new RoomCollection(room);

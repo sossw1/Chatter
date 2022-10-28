@@ -21,6 +21,7 @@ export interface IRoom {
   users: string[];
   invitedUsers?: string[];
   messages: IMessageDoc[];
+  disabled: boolean;
 }
 
 export interface IRoomDoc extends IRoom, Document {}
@@ -36,7 +37,8 @@ enum RoomPropertyNames {
   IS_DIRECT = 'isDirect',
   USERS = 'users',
   INVITED_USERS = 'invitedUsers',
-  MESSAGES = 'messages'
+  MESSAGES = 'messages',
+  DISABLED = 'disabled'
 }
 
 export interface IMessageModel extends Model<IMessageDoc> {
@@ -76,7 +78,8 @@ const RoomSchemaFields: Record<keyof IRoom, SchemaDefinitionProperty> = {
       required: true
     }
   ],
-  messages: [MessageSchema]
+  messages: [MessageSchema],
+  disabled: Boolean
 };
 
 const RoomSchema = new Schema(RoomSchemaFields);
@@ -89,6 +92,8 @@ RoomSchema.methods.toJSON = function () {
     delete roomObject.name;
     delete roomObject.invitedUsers;
   }
+
+  delete roomObject.disabled;
 
   return roomObject;
 };

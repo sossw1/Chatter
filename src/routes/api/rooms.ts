@@ -22,7 +22,8 @@ router.post('/api/rooms', auth, async (req, res) => {
       isDirect: false,
       users: req.body.users,
       invitedUsers: [],
-      messages: []
+      messages: [],
+      disabled: false
     };
 
     if (!room.users.includes(req.user.username))
