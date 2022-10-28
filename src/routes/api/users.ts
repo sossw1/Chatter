@@ -270,6 +270,23 @@ router.delete('/api/users/friend', auth, async (req, res) => {
     const userDocument = await UserCollection.findOne({ username });
     if (!userDocument) return res.status(404).send({ error: 'User not found' });
 
+    const directRooms = await RoomCollection.find({ isDirect: true })
+      .where('users')
+      .all([username, req.user.username])
+      .size(2);
+
+    for (let currentRoom of directRooms) {
+      req.user.rooms = req.user.rooms.filter(
+        (room) => !room.equals(currentRoom._id)
+      );
+      userDocument.rooms = userDocument.rooms.filter(
+        (room) => !room.equals(currentRoom._id)
+      );
+      currentRoom.users = [];
+      currentRoom.disabled = true;
+      await currentRoom.save();
+    }
+
     req.user.friends = req.user.friends.filter((user) => user !== username);
     await req.user.save();
 

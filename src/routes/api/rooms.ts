@@ -191,7 +191,8 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
       (user) => user !== req.user.username
     );
     if (req.room.users.length < 1) {
-      await req.room.remove();
+      req.room.disabled = true;
+      await req.room.save();
     } else {
       await req.room.save();
     }
@@ -202,31 +203,6 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
     await req.user.save();
 
     res.sendStatus(200);
-  } catch (error) {
-    res.sendStatus(500);
-  }
-});
-
-// Delete room
-
-router.delete('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
-  try {
-    const { users } = req.room;
-
-    for (let user of users) {
-      const userDocument = await UserCollection.findOne({ username: user });
-      if (!userDocument) continue;
-
-      userDocument.rooms = userDocument.rooms.filter(
-        (room) => !room.equals(req.params.roomId)
-      );
-
-      await userDocument.save();
-    }
-
-    const deletedRoom = await req.room.remove();
-
-    res.status(200).send(deletedRoom);
   } catch (error) {
     res.sendStatus(500);
   }
