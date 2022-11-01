@@ -157,6 +157,17 @@ router.patch('/api/users/me', auth, async (req, res) => {
 
 router.delete('/api/users/me', auth, async (req, res) => {
   try {
+    const friends = req.user.friends;
+    for (let friend of friends) {
+      const friendDocument = await UserCollection.findOne({ username: friend });
+      if (!friendDocument) continue;
+
+      friendDocument.friends = friendDocument.friends.filter(
+        (user) => user !== req.user.username
+      );
+      await friendDocument.save();
+    }
+
     const roomIds = req.user.rooms;
     for (let id of roomIds) {
       const roomDocument = await RoomCollection.findById(id);
