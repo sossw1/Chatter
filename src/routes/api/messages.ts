@@ -1,4 +1,5 @@
 import express from 'express';
+import Filter from 'bad-words';
 
 import { MessageCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
@@ -21,6 +22,10 @@ router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
       text: '' + req.body.text,
       roomId: req.room._id
     };
+
+    const filter = new Filter();
+    if (filter.isProfane(message.text))
+      return res.status(400).send({ error: 'Message fails profanity check' });
 
     const messageDocument = new MessageCollection(message);
     await messageDocument.save();
