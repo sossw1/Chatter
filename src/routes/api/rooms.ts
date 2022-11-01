@@ -193,6 +193,16 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
         req.room.disabled = true;
         req.room.invitedUsers = [];
         await req.room.save();
+
+        const usersWithInvites = await UserCollection.find()
+          .where('roomInvites')
+          .all([req.room._id]);
+        for (let user of usersWithInvites) {
+          user.roomInvites = user.roomInvites.filter(
+            (invite) => !invite.equals(req.room._id)
+          );
+          await user.save();
+        }
       }
     } else {
       await req.room.save();
