@@ -48,6 +48,13 @@ router.post('/api/rooms', auth, async (req, res) => {
         return res
           .status(404)
           .send({ error: `User '${otherUniqueUsers[i]}' not found` });
+      if (
+        !req.user.friends.includes(dbUser.username) ||
+        !dbUser.friends.includes(req.user.username)
+      )
+        return res
+          .status(400)
+          .send({ error: `Not friends with user ${dbUser.username}` });
       roomUsers.push(dbUser);
     }
 
