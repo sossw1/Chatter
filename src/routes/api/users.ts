@@ -193,7 +193,7 @@ router.delete('/api/users/me', auth, async (req, res) => {
     await req.user.remove();
 
     res.send(req.user);
-  } catch (error: any) {
+  } catch (error) {
     res.sendStatus(500);
   }
 });
