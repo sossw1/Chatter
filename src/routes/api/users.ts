@@ -175,6 +175,22 @@ router.delete('/api/users/me', auth, async (req, res) => {
 
       if (roomDocument.isDirect) {
         roomDocument.disabled = true;
+
+        const friend = roomDocument.users.find(
+          (user) => user !== req.user.username
+        );
+        if (friend) {
+          const friendDocument = await UserCollection.findOne({
+            username: friend
+          });
+          if (friendDocument) {
+            friendDocument.rooms = friendDocument.rooms.filter(
+              (room) => !room.equals(roomDocument._id)
+            );
+            await friendDocument.save();
+          }
+        }
+
         roomDocument.users = [];
       } else {
         roomDocument.users = roomDocument.users.filter(
