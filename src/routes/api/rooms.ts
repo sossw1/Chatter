@@ -77,6 +77,10 @@ router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
     if (!name && name !== '')
       return res.status(400).send({ error: 'Invalid updates' });
 
+    const filter = new Filter();
+    if (filter.isProfane(name))
+      return res.status(400).send({ error: 'Room name fails profanity check' });
+
     room.name = name;
     await room.save();
 
