@@ -168,6 +168,16 @@ router.delete('/api/users/me', auth, async (req, res) => {
       await friendDocument.save();
     }
 
+    const usersInvitedToBeFriends = await UserCollection.find()
+      .where('friendInvites')
+      .all([req.user.username]);
+    for (let user of usersInvitedToBeFriends) {
+      user.friendInvites = user.friendInvites.filter(
+        (invite) => invite !== req.user.username
+      );
+      await user.save();
+    }
+
     const roomIds = req.user.rooms;
     for (let id of roomIds) {
       const roomDocument = await RoomCollection.findById(id);
