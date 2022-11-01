@@ -20,53 +20,24 @@ router.post('/api/rooms', auth, async (req, res) => {
     const room: IRoom = {
       name: req.body.name,
       isDirect: false,
-      users: req.body.users,
+      users: [req.user.username],
       invitedUsers: [],
       messages: [],
       disabled: false
     };
 
-    if (!room.users.includes(req.user.username))
-      return res
-        .status(400)
-        .send({ error: 'Room users must contain own username' });
+    if (!room.name)
+      return res.status(400).send({ error: 'Must provide room name' });
 
     const filter = new Filter();
     if (room.name && filter.isProfane(room.name))
       return res.status(400).send({ error: 'Room name fails profanity check' });
 
-    const otherUsers: string[] = room.users.filter(
-      (user) => user !== req.user.username
-    );
-    const otherUniqueUsers = [...new Set(otherUsers)];
-    let roomUsers = [req.user];
-    for (let i = 0; i < otherUniqueUsers.length; i++) {
-      const dbUser = await UserCollection.findOne({
-        username: otherUniqueUsers[i]
-      });
-      if (!dbUser)
-        return res
-          .status(404)
-          .send({ error: `User '${otherUniqueUsers[i]}' not found` });
-      if (
-        !req.user.friends.includes(dbUser.username) ||
-        !dbUser.friends.includes(req.user.username)
-      )
-        return res
-          .status(400)
-          .send({ error: `Not friends with user ${dbUser.username}` });
-      roomUsers.push(dbUser);
-    }
-
-    room.users = [req.user.username, ...otherUniqueUsers];
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
 
-    for (let j = 0; j < roomUsers.length; j++) {
-      const user = roomUsers[j];
-      user.rooms.push(roomDocument._id);
-      await user.save();
-    }
+    req.user.rooms.push(roomDocument._id);
+    await req.user.save();
 
     res.status(201).send(roomDocument);
   } catch (error) {
