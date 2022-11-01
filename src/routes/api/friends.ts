@@ -122,9 +122,14 @@ router.delete('/api/users/friend', auth, async (req, res) => {
       userDocument.rooms = userDocument.rooms.filter(
         (room) => !room.equals(currentRoom._id)
       );
-      currentRoom.users = [];
-      currentRoom.disabled = true;
-      await currentRoom.save();
+
+      if (currentRoom.messages.length === 0) {
+        await currentRoom.remove();
+      } else {
+        currentRoom.users = [];
+        currentRoom.disabled = true;
+        await currentRoom.save();
+      }
     }
 
     req.user.friends = req.user.friends.filter((user) => user !== username);
