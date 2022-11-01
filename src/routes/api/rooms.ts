@@ -179,8 +179,12 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
       (user) => user !== req.user.username
     );
     if (req.room.users.length < 1) {
-      req.room.disabled = true;
-      await req.room.save();
+      if (req.room.messages.length === 0) {
+        await req.room.remove();
+      } else {
+        req.room.disabled = true;
+        await req.room.save();
+      }
     } else {
       await req.room.save();
     }
