@@ -2,6 +2,7 @@ import UserCollection, { IUser, IUserDoc } from '../../models/User';
 import auth from '../../middleware/auth';
 import express from 'express';
 import Filter from 'bad-words';
+import { RoomCollection } from '../../models/Room';
 
 const router = express.Router();
 
@@ -156,6 +157,23 @@ router.patch('/api/users/me', auth, async (req, res) => {
 
 router.delete('/api/users/me', auth, async (req, res) => {
   try {
+    const roomIds = req.user.rooms;
+    for (let id of roomIds) {
+      const roomDocument = await RoomCollection.findById(id);
+      if (!roomDocument) continue;
+
+      if (roomDocument.isDirect) {
+        roomDocument.disabled = true;
+        roomDocument.users = [];
+      } else {
+        roomDocument.users = roomDocument.users.filter(
+          (user) => user !== req.user.username
+        );
+      }
+
+      await roomDocument.save();
+    }
+
     await req.user.remove();
 
     res.send(req.user);
