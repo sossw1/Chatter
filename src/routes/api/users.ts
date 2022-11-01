@@ -1,5 +1,4 @@
 import UserCollection, { IUser, IUserDoc } from '../../models/User';
-import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
 import express from 'express';
 import Filter from 'bad-words';
