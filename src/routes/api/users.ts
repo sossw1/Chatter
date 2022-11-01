@@ -174,6 +174,22 @@ router.delete('/api/users/me', auth, async (req, res) => {
       await roomDocument.save();
     }
 
+    const invitedRoomIds = req.user.roomInvites;
+    for (let id of invitedRoomIds) {
+      const roomDocument = await RoomCollection.findById(id);
+      if (!roomDocument) continue;
+
+      if (!roomDocument.isDirect) {
+        if (roomDocument.invitedUsers) {
+          roomDocument.invitedUsers = roomDocument.invitedUsers.filter(
+            (user) => user !== req.user.username
+          );
+
+          await roomDocument.save();
+        }
+      }
+    }
+
     await req.user.remove();
 
     res.send(req.user);
