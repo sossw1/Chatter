@@ -124,6 +124,14 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
     const room = await RoomCollection.findById(roomId);
     if (!room) return res.sendStatus(404);
 
+    if (room.disabled) {
+      req.user.roomInvites = req.user.roomInvites.filter(
+        (invite) => !invite.equals(room._id)
+      );
+      req.user.save();
+      return res.status(400).send({ error: 'Invalid invite' });
+    }
+
     if (!accept) {
       req.user.roomInvites = req.user.roomInvites.filter(
         (invite) => !invite.equals(room._id)
@@ -183,6 +191,7 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
         await req.room.remove();
       } else {
         req.room.disabled = true;
+        req.room.invitedUsers = [];
         await req.room.save();
       }
     } else {
