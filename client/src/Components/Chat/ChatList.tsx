@@ -1,7 +1,28 @@
 import { useState, MouseEvent } from 'react';
 import { Box, Grid, List, Typography } from '@mui/material';
 import { v4 as uuid } from 'uuid';
+import mongoose, { Document } from 'mongoose';
 import ChatListItem from './ChatListItem';
+
+export interface IMessage {
+  username: string;
+  text: string;
+  roomId: mongoose.Types.ObjectId;
+  hidden: boolean;
+}
+
+export interface IMessageDoc extends IMessage, Document {}
+
+export interface IRoom {
+  name?: string;
+  isDirect: boolean;
+  users: string[];
+  invitedUsers?: string[];
+  messages: IMessageDoc[];
+  disabled: boolean;
+}
+
+export interface IRoomDoc extends IRoom, Document {}
 
 interface Chat {
   name: string;
