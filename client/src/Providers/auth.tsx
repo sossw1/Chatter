@@ -1,11 +1,26 @@
 import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
+import mongoose, { Document } from 'mongoose';
 
-interface User {
+interface IToken extends Document {
+  token: string;
+}
+
+export interface IUser {
   username: string;
   password: string;
   email: string;
+  rooms: mongoose.Types.ObjectId[];
+  roomInvites: mongoose.Types.ObjectId[];
+  friendInvites: string[];
+  friends: string[];
+  currentSocketId: string;
+  tokens: IToken[];
+}
+
+export interface IUserDoc extends IUser, Document {
+  generateAuthToken(): Jwt;
 }
 
 interface ApiError {
@@ -19,7 +34,7 @@ interface ApiConfirmation {
 }
 
 interface AuthContextProps {
-  user: User | null;
+  user: IUserDoc | null;
   setUserWithToken: () => Promise<ApiConfirmation | ApiError>;
   signUp: (
     username: string,
@@ -142,7 +157,7 @@ const auth = Auth.getInstance();
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<IUserDoc | null>(null);
 
   const setUserWithToken = async () => {
     const response = await auth.getUserWithToken();
@@ -172,7 +187,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const signUp = async (username: string, email: string, password: string) => {
     const response = await auth.postSignUp(username, email, password);
     if (response.ok) {
-      const { user, token }: { user: User; token: Jwt } = await response.json();
+      const { user, token }: { user: IUserDoc; token: Jwt } =
+        await response.json();
       setUser(user);
       localStorage.setItem('token', JSON.stringify(token));
       return {
@@ -189,7 +205,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const login = async (username: string, password: string) => {
     const response = await auth.postLogin(username, password);
     if (response.ok) {
-      const { user, token }: { user: User; token: Jwt } = await response.json();
+      const { user, token }: { user: IUserDoc; token: Jwt } =
+        await response.json();
       setUser(user);
       localStorage.setItem('token', JSON.stringify(token));
       return {
