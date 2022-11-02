@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import {
+import mongoose, {
   Document,
   model,
   Model,
