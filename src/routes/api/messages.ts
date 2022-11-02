@@ -1,7 +1,7 @@
 import express from 'express';
 import Filter from 'bad-words';
 
-import { MessageCollection } from '../../models/Room';
+import { MessageCollection, IMessage } from '../../models/Room';
 import auth from '../../middleware/auth';
 import inRoom from '../../middleware/inRoom';
 
@@ -17,10 +17,11 @@ router.get('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
 
 router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
   try {
-    const message = {
+    const message: IMessage = {
       username: req.user.username,
       text: '' + req.body.text,
-      roomId: req.room._id
+      roomId: req.room._id,
+      hidden: false
     };
 
     const filter = new Filter();
@@ -50,21 +51,27 @@ router.delete(
       const messageId = req.params.messageId;
       if (!messageId) return res.sendStatus(404);
 
-      const message = await MessageCollection.findById(messageId);
-      if (!message) return res.sendStatus(404);
+      const messageDocument = await MessageCollection.findById(messageId);
+      if (!messageDocument) return res.sendStatus(404);
 
-      if (!message.roomId.equals(req.room._id)) return res.sendStatus(404);
+      if (!messageDocument.roomId.equals(req.room._id))
+        return res.sendStatus(404);
 
-      if (message.username !== req.user.username) return res.sendStatus(401);
+      if (messageDocument.username !== req.user.username)
+        return res.sendStatus(401);
 
-      const result = await MessageCollection.findByIdAndDelete(messageId);
+      messageDocument.hidden = true;
+      await messageDocument.save();
 
-      req.room.messages = req.room.messages.filter(
-        (message) => !message._id.equals(messageId)
+      const roomMessage = req.room.messages.find((message) =>
+        message._id.equals(messageId)
       );
-      await req.room.save();
+      if (roomMessage) {
+        roomMessage.hidden = true;
+        await req.room.save();
+      }
 
-      res.send(result);
+      res.status(200).send(messageDocument);
     } catch (error) {
       res.sendStatus(500);
     }
