@@ -11,6 +11,7 @@ export interface IMessage {
   username: string;
   text: string;
   roomId: mongoose.Types.ObjectId;
+  hidden: boolean;
 }
 
 export interface IMessageDoc extends IMessage, Document {}
@@ -29,7 +30,8 @@ export interface IRoomDoc extends IRoom, Document {}
 enum MessagePropertyNames {
   USERNAME = 'username',
   TEXT = 'text',
-  ROOM_ID = 'roomId'
+  ROOM_ID = 'roomId',
+  HIDDEN = 'hidden'
 }
 
 enum RoomPropertyNames {
@@ -57,6 +59,10 @@ const MessageSchemaFields: Record<keyof IMessage, SchemaDefinitionProperty> = {
   text: String,
   roomId: {
     type: mongoose.Types.ObjectId,
+    required: true
+  },
+  hidden: {
+    type: Boolean,
     required: true
   }
 };
@@ -94,6 +100,10 @@ RoomSchema.methods.toJSON = function () {
   }
 
   delete roomObject.disabled;
+
+  roomObject.messages = roomObject.messages.filter(
+    (message: IMessageDoc) => message.hidden === false
+  );
 
   return roomObject;
 };
