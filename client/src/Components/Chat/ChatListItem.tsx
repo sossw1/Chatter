@@ -9,15 +9,10 @@ import {
   useMediaQuery
 } from '@mui/material';
 import theme from '../../Providers/theme';
-
-interface Chat {
-  name: string;
-  _id: string;
-  type: string;
-}
+import { IRoomDoc } from './ChatList';
 
 interface Props {
-  chat: Chat;
+  room: IRoomDoc;
   selectedChatId: string | null;
   handleChatSelection: (event: MouseEvent<HTMLDivElement>) => void;
 }
@@ -41,8 +36,8 @@ export default function ChatListItem(props: Props) {
             opacity: 0.8
           }
         }}
-        id={props.chat._id}
-        selected={props.selectedChatId === props.chat._id}
+        id={props.room._id}
+        selected={props.selectedChatId === props.room._id}
         onClick={props.handleChatSelection}
       >
         <ListItemAvatar>
@@ -58,7 +53,7 @@ export default function ChatListItem(props: Props) {
                 whiteSpace: 'nowrap'
               }}
             >
-              {props.chat.name}
+              {props.room.name}
             </Typography>
           }
           secondary={
