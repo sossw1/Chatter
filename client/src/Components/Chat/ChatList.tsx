@@ -1,8 +1,8 @@
 import { useState, MouseEvent } from 'react';
 import { Box, Grid, List, Typography } from '@mui/material';
-import { v4 as uuid } from 'uuid';
 import mongoose, { Document } from 'mongoose';
 import ChatListItem from './ChatListItem';
+import { useAuth } from '../../Providers/auth';
 
 export interface IMessage {
   username: string;
@@ -24,21 +24,9 @@ export interface IRoom {
 
 export interface IRoomDoc extends IRoom, Document {}
 
-interface Chat {
-  name: string;
-  _id: string;
-  type: string;
-}
-
-const chats: Chat[] = [
-  { name: 'user1', _id: uuid(), type: 'direct' },
-  { name: 'user2', _id: uuid(), type: 'direct' },
-  { name: 'group1', _id: uuid(), type: 'group' },
-  { name: 'group2', _id: uuid(), type: 'group' },
-  { name: 'group3', _id: uuid(), type: 'group' }
-];
-
 export default function ChatList() {
+  const user = useAuth().user;
+  const [rooms, setRooms] = useState<IRoomDoc[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
   const handleChatSelection = (event: MouseEvent<HTMLDivElement>) => {
@@ -54,14 +42,14 @@ export default function ChatList() {
             Chats
           </Typography>
           <List sx={{ mb: '1rem' }}>
-            {chats
-              .filter((chat) => chat.type === 'group')
-              .map((chat) => (
+            {rooms
+              .filter((room) => !room.isDirect)
+              .map((room) => (
                 <ChatListItem
-                  chat={chat}
+                  room={room}
                   selectedChatId={selectedChatId}
                   handleChatSelection={handleChatSelection}
-                  key={chat._id}
+                  key={room._id}
                 />
               ))}
           </List>
@@ -71,14 +59,14 @@ export default function ChatList() {
             Friends
           </Typography>
           <List>
-            {chats
-              .filter((chat) => chat.type === 'direct')
-              .map((chat) => (
+            {rooms
+              .filter((room) => room.isDirect)
+              .map((room) => (
                 <ChatListItem
-                  chat={chat}
+                  room={room}
                   selectedChatId={selectedChatId}
                   handleChatSelection={handleChatSelection}
-                  key={chat._id}
+                  key={room._id}
                 />
               ))}
           </List>
