@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from 'react';
+import { useEffect, useState, MouseEvent } from 'react';
 import { Box, Grid, List, Typography } from '@mui/material';
 import mongoose, { Document } from 'mongoose';
 import ChatListItem from './ChatListItem';
@@ -33,6 +33,32 @@ export default function ChatList() {
     const id = event.currentTarget.id;
     setSelectedChatId(id);
   };
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      const result: IRoomDoc[] = [];
+      const token = JSON.parse(localStorage.getItem('token') || '');
+      if (user) {
+        for (let roomId of user.rooms) {
+          const response = await fetch(`/api/rooms/${roomId}`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          if (response.ok) {
+            const roomDocument: IRoomDoc = await response.json();
+            result.push(roomDocument);
+          }
+        }
+      }
+      setRooms((prevRooms) => [...prevRooms, ...result]);
+    };
+
+    fetchRooms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
