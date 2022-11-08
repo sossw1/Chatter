@@ -1,80 +1,18 @@
 import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
 import ChatMessage from './ChatMessage';
 import { useAuth } from '../../Providers/auth';
-import { IRoomDoc } from '../../types/Rooms';
+import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
 
 interface Props {
   rooms: IRoomDoc[];
+  selectedChatId: string | null;
 }
 
-interface Message {
-  username: string;
-  text: string;
-  timestamp: string;
-}
-
-const messages: Message[] = [
-  {
-    username: 'asdfasdf',
-    text: 'Nulla cillum quis est velit reprehenderit fugiat mollit aliqua dolore cupidatat.',
-    timestamp: '3:50 PM'
-  },
-  {
-    username: 'asdfasdf',
-    text: 'Consequat nulla amet ut qui.',
-    timestamp: '3:51 PM'
-  },
-  {
-    username: 'username',
-    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
-    timestamp: '3:53 PM'
-  },
-  {
-    username: 'asdfasdf',
-    text: 'Veniam aute duis et in nostrud ipsum.',
-    timestamp: '3:55 PM'
-  },
-  {
-    username: 'username',
-    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
-    timestamp: '3:57 PM'
-  },
-  {
-    username: 'asdfasdf',
-    text: 'Veniam aute duis et in nostrud ipsum.',
-    timestamp: '3:59 PM'
-  },
-  {
-    username: 'username',
-    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
-    timestamp: '4:00 PM'
-  },
-  {
-    username: 'asdfasdf',
-    text: 'Veniam aute duis et in nostrud ipsum.',
-    timestamp: '4:01 PM'
-  },
-  {
-    username: 'asdfasdf',
-    text: 'Veniam aute duis et in nostrud ipsum.',
-    timestamp: '4:02 PM'
-  },
-  {
-    username: 'username',
-    text: 'Eiusmod nisi ullamco pariatur consequat sint.',
-    timestamp: '4:02 PM'
-  },
-  {
-    username: 'asdfasdf',
-    text: 'Veniam aute duis et in nostrud ipsum.',
-    timestamp: '4:03 PM'
-  }
-];
-
-const groupMessagesByUsername = (messages: Message[]) => {
-  const groupedMessages: Message[][] = [];
+const groupMessagesByUsername = (messages: IMessageDoc[]) => {
+  const groupedMessages: IMessageDoc[][] = [];
+  if (messages.length === 0) return groupedMessages;
   let currentGroup = [messages[0]];
   let currentUsername = messages[0].username;
   for (let i = 1; i < messages.length; i++) {
@@ -91,11 +29,12 @@ const groupMessagesByUsername = (messages: Message[]) => {
   return groupedMessages;
 };
 
-export default function ChatHistory({ rooms }: Props) {
+export default function ChatHistory({ rooms, selectedChatId }: Props) {
   const { user } = useAuth();
   const username = user ? user.username : '';
+  const room = rooms.find((room) => room._id === selectedChatId);
+  const messages = room ? room.messages : [];
   const groupedMessages = groupMessagesByUsername(messages);
-
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
@@ -141,7 +80,7 @@ export default function ChatHistory({ rooms }: Props) {
                   opacity: '70%'
                 }}
               >
-                {groupOfMessages[0].timestamp}
+                {groupOfMessages[0].createdAt}
               </Typography>
             </Box>
           </Box>
