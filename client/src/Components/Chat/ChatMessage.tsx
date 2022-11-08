@@ -6,14 +6,12 @@ interface Props {
   text: string;
 }
 
-export default function ChatMessage(props: Props) {
-  const { sentByUser, text } = props;
-
+export default function ChatMessage({ sentByUser, text }: Props) {
   return (
     <Box sx={{ mb: '0.25rem' }}>
       <Typography
         sx={{
-          m: '0 0 0 auto',
+          m: sentByUser ? '0 0 0 auto' : 0,
           color: sentByUser
             ? theme.palette.common.white
             : 'rgba(58, 53, 65, 0.87)',
