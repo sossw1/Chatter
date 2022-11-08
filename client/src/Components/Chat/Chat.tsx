@@ -97,7 +97,7 @@ export default function Chat() {
         }}
       >
         <ChatHeader handleDrawerToggle={handleDrawerToggle} />
-        <ChatHistory />
+        <ChatHistory rooms={rooms} />
         <ChatInput drawerWidth={drawerWidth} />
       </Box>
     </Box>

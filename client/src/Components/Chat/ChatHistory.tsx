@@ -1,8 +1,13 @@
 import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
 import ChatMessage from './ChatMessage';
 import { useAuth } from '../../Providers/auth';
+import { IRoomDoc } from '../../types/Rooms';
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
+
+interface Props {
+  rooms: IRoomDoc[];
+}
 
 interface Message {
   username: string;
@@ -86,7 +91,7 @@ const groupMessagesByUsername = (messages: Message[]) => {
   return groupedMessages;
 };
 
-export default function ChatHistory() {
+export default function ChatHistory({ rooms }: Props) {
   const { user } = useAuth();
   const username = user ? user.username : '';
   const groupedMessages = groupMessagesByUsername(messages);
