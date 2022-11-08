@@ -9,7 +9,7 @@ import {
   useMediaQuery
 } from '@mui/material';
 import theme from '../../Providers/theme';
-import { IRoomDoc } from './ChatList';
+import { IRoomDoc } from '../../types/Rooms';
 
 interface Props {
   room: IRoomDoc;
