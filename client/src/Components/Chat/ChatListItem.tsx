@@ -17,7 +17,11 @@ interface Props {
   handleChatSelection: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function ChatListItem(props: Props) {
+export default function ChatListItem({
+  room,
+  selectedChatId,
+  handleChatSelection
+}: Props) {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
 
@@ -36,9 +40,9 @@ export default function ChatListItem(props: Props) {
             opacity: 0.8
           }
         }}
-        id={props.room._id}
-        selected={props.selectedChatId === props.room._id}
-        onClick={props.handleChatSelection}
+        id={room._id}
+        selected={selectedChatId === room._id}
+        onClick={handleChatSelection}
       >
         <ListItemAvatar>
           <Avatar />
@@ -53,7 +57,7 @@ export default function ChatListItem(props: Props) {
                 whiteSpace: 'nowrap'
               }}
             >
-              {props.room.name}
+              {room.name}
             </Typography>
           }
           secondary={
