@@ -36,7 +36,7 @@ export default function ChatList() {
 
   useEffect(() => {
     const fetchRooms = async () => {
-      const result: IRoomDoc[] = [];
+      let fetchedRooms: IRoomDoc[] = [];
       const token = JSON.parse(localStorage.getItem('token') || '');
       if (user) {
         for (let roomId of user.rooms) {
@@ -49,11 +49,11 @@ export default function ChatList() {
           });
           if (response.ok) {
             const roomDocument: IRoomDoc = await response.json();
-            result.push(roomDocument);
+            fetchedRooms.push(roomDocument);
           }
         }
       }
-      setRooms(() => [...result]);
+      setRooms(() => [...fetchedRooms]);
     };
 
     fetchRooms();
