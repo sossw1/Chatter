@@ -71,8 +71,8 @@ export default function ChatListItem({
                 whiteSpace: 'nowrap'
               }}
             >
-              Laboris est sint velit Lorem adipisicing et. Pariatur eiusmod
-              labore esse excepteur in veniam enim ipsum sunt.
+              {room.messages.length > 0 &&
+                room.messages[room.messages.length - 1].text}
             </Typography>
           }
         ></ListItemText>
