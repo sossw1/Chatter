@@ -53,7 +53,7 @@ export default function ChatList() {
           }
         }
       }
-      setRooms((prevRooms) => [...prevRooms, ...result]);
+      setRooms(() => [...result]);
     };
 
     fetchRooms();
