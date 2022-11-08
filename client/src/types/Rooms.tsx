@@ -5,6 +5,7 @@ export interface IMessage {
   text: string;
   roomId: mongoose.Types.ObjectId;
   hidden: boolean;
+  createdAt: string;
 }
 
 export interface IMessageDoc extends IMessage, Document {}
