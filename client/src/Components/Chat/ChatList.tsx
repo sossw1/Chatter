@@ -60,6 +60,17 @@ export default function ChatList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (selectedChatId === null && rooms.length > 0) {
+      const groups = rooms.filter((room) => !room.isDirect);
+      if (groups.length > 0) {
+        setSelectedChatId(groups[0]._id);
+      } else {
+        setSelectedChatId(rooms[0]._id);
+      }
+    }
+  }, [selectedChatId, rooms]);
+
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
       <Grid container direction='column'>
