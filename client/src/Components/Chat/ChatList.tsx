@@ -1,28 +1,8 @@
 import { useEffect, useState, MouseEvent } from 'react';
 import { Box, Grid, List, Typography } from '@mui/material';
-import mongoose, { Document } from 'mongoose';
+import { IRoomDoc } from '../../types/Rooms';
 import ChatListItem from './ChatListItem';
 import { useAuth, IUserDoc } from '../../Providers/auth';
-
-export interface IMessage {
-  username: string;
-  text: string;
-  roomId: mongoose.Types.ObjectId;
-  hidden: boolean;
-}
-
-export interface IMessageDoc extends IMessage, Document {}
-
-export interface IRoom {
-  name?: string;
-  isDirect: boolean;
-  users: string[];
-  invitedUsers?: string[];
-  messages: IMessageDoc[];
-  disabled: boolean;
-}
-
-export interface IRoomDoc extends IRoom, Document {}
 
 const sortByName = (a: IRoomDoc, b: IRoomDoc) => {
   if (a.name && b.name) {
