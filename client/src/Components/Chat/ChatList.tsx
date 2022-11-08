@@ -2,7 +2,7 @@ import { useEffect, useState, MouseEvent } from 'react';
 import { Box, Grid, List, Typography } from '@mui/material';
 import mongoose, { Document } from 'mongoose';
 import ChatListItem from './ChatListItem';
-import { useAuth } from '../../Providers/auth';
+import { useAuth, IUserDoc } from '../../Providers/auth';
 
 export interface IMessage {
   username: string;
@@ -28,6 +28,17 @@ const sortByName = (a: IRoomDoc, b: IRoomDoc) => {
   if (a.name && b.name) {
     if (a.name > b.name) return 1;
     if (a.name < b.name) return -1;
+  }
+  return 0;
+};
+
+const sortByFriendName = (a: IRoomDoc, b: IRoomDoc, user: IUserDoc | null) => {
+  if (user) {
+    const friendA = a.users.filter((roomUser) => roomUser !== user.username)[0];
+    const friendB = b.users.filter((roomUser) => roomUser !== user.username)[0];
+    if (friendA > friendB) return 1;
+    if (friendA < friendB) return -1;
+    return 0;
   }
   return 0;
 };
@@ -74,7 +85,9 @@ export default function ChatList() {
       if (groups.length > 0) {
         setSelectedChatId(groups.sort(sortByName)[0]._id);
       } else {
-        setSelectedChatId(rooms[0]._id);
+        setSelectedChatId(
+          rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
+        );
       }
     }
   }, [user, rooms, selectedChatId]);
@@ -107,6 +120,7 @@ export default function ChatList() {
           <List>
             {rooms
               .filter((room) => room.isDirect)
+              .sort((a, b) => sortByFriendName(a, b, user))
               .map((room) => (
                 <ChatListItem
                   room={room}
