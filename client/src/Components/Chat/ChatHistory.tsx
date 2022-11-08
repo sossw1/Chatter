@@ -67,7 +67,7 @@ export default function ChatHistory({ rooms, selectedChatId }: Props) {
             <Box sx={{ maxWidth: '65%' }}>
               {groupOfMessages.map((message) => (
                 <ChatMessage
-                  key={uuid()}
+                  key={message._id}
                   sentByUser={sentByUser}
                   text={message.text}
                 />
