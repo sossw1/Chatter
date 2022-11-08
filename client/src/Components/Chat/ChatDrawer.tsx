@@ -1,4 +1,6 @@
 import { Box, Drawer, Toolbar } from '@mui/material';
+import { IRoomDoc } from '../../types/Rooms';
+import { IUserDoc } from '../../Providers/auth';
 import ChatStatus from './ChatStatus';
 import ChatList from './ChatList';
 
@@ -6,20 +8,40 @@ interface Props {
   drawerWidth: string;
   drawerOpen: boolean;
   handleDrawerToggle: () => void;
+  selectedChatId: string | null;
+  setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
+  rooms: IRoomDoc[];
+  sortByName: (a: IRoomDoc, b: IRoomDoc) => 1 | -1 | 0;
+  sortByFriendName: (
+    a: IRoomDoc,
+    b: IRoomDoc,
+    user: IUserDoc | null
+  ) => 1 | -1 | 0;
 }
-
-const drawerContent = (
-  <>
-    <ChatStatus />
-    <ChatList />
-  </>
-);
 
 export default function ChatDrawer({
   drawerWidth,
   drawerOpen,
-  handleDrawerToggle
+  handleDrawerToggle,
+  selectedChatId,
+  setSelectedChatId,
+  rooms,
+  sortByName,
+  sortByFriendName
 }: Props) {
+  const drawerContent = (
+    <>
+      <ChatStatus />
+      <ChatList
+        selectedChatId={selectedChatId}
+        setSelectedChatId={setSelectedChatId}
+        rooms={rooms}
+        sortByName={sortByName}
+        sortByFriendName={sortByFriendName}
+      />
+    </>
+  );
+
   return (
     <Box
       sx={{
