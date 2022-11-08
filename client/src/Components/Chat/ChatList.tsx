@@ -24,6 +24,14 @@ export interface IRoom {
 
 export interface IRoomDoc extends IRoom, Document {}
 
+const sortByName = (a: IRoomDoc, b: IRoomDoc) => {
+  if (a.name && b.name) {
+    if (a.name > b.name) return 1;
+    if (a.name < b.name) return -1;
+  }
+  return 0;
+};
+
 export default function ChatList() {
   const user = useAuth().user;
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
@@ -64,12 +72,12 @@ export default function ChatList() {
     if (selectedChatId === null && rooms.length > 0) {
       const groups = rooms.filter((room) => !room.isDirect);
       if (groups.length > 0) {
-        setSelectedChatId(groups[0]._id);
+        setSelectedChatId(groups.sort(sortByName)[0]._id);
       } else {
         setSelectedChatId(rooms[0]._id);
       }
     }
-  }, [selectedChatId, rooms]);
+  }, [user, rooms, selectedChatId]);
 
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
@@ -81,6 +89,7 @@ export default function ChatList() {
           <List sx={{ mb: '1rem' }}>
             {rooms
               .filter((room) => !room.isDirect)
+              .sort(sortByName)
               .map((room) => (
                 <ChatListItem
                   room={room}
