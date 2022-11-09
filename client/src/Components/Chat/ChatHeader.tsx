@@ -12,9 +12,13 @@ import theme from '../../Providers/theme';
 
 interface Props {
   handleDrawerToggle: () => void;
+  selectedRoomName: string | null;
 }
 
-export default function ChatHeader(props: Props) {
+export default function ChatHeader({
+  handleDrawerToggle,
+  selectedRoomName
+}: Props) {
   const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
   const [statusColor, setStatusColor] = useState<
     'success' | 'warning' | 'error'
@@ -38,7 +42,7 @@ export default function ChatHeader(props: Props) {
         <IconButton
           color='inherit'
           aria-label='open drawer'
-          onClick={props.handleDrawerToggle}
+          onClick={handleDrawerToggle}
           sx={{ mr: '0.5rem', display: { sm: 'none' } }}
         >
           <MenuIcon />
@@ -57,7 +61,7 @@ export default function ChatHeader(props: Props) {
                 whiteSpace: 'nowrap'
               }}
             >
-              username
+              {selectedRoomName}
             </Typography>
             <Grid item>
               <Grid container direction='row' alignItems='center'>

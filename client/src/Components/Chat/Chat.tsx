@@ -27,6 +27,16 @@ const sortByFriendName = (a: IRoomDoc, b: IRoomDoc, user: IUserDoc | null) => {
   return 0;
 };
 
+const getRoomName = (room: IRoomDoc, username: string) => {
+  if (!username) return null;
+  if (room.isDirect) {
+    const friend = room.users.find((user) => user !== username);
+    return friend ? friend : '';
+  } else {
+    return room.name ? room.name : '';
+  }
+};
+
 export default function Chat() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
@@ -35,6 +45,8 @@ export default function Chat() {
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<IRoomDoc | null>(null);
+  const [selectedRoomName, setSelectedRoomName] = useState<string | null>(null);
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -76,6 +88,12 @@ export default function Chat() {
         );
       }
     }
+
+    const roomSelection = rooms.find((room) => room._id === selectedChatId);
+    if (roomSelection) {
+      setSelectedRoom(roomSelection);
+      if (user) setSelectedRoomName(getRoomName(roomSelection, user.username));
+    }
   }, [user, rooms, selectedChatId]);
 
   return (
@@ -96,7 +114,10 @@ export default function Chat() {
           width: `calc(100% - ${drawerWidth}`
         }}
       >
-        <ChatHeader handleDrawerToggle={handleDrawerToggle} />
+        <ChatHeader
+          handleDrawerToggle={handleDrawerToggle}
+          selectedRoomName={selectedRoomName}
+        />
         <ChatHistory rooms={rooms} selectedChatId={selectedChatId} />
         <ChatInput drawerWidth={drawerWidth} />
       </Box>
