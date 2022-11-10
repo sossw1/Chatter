@@ -10,7 +10,10 @@ export default function ChatInput(props: Props) {
   const messageRef = useRef<HTMLInputElement>(null);
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    const message = messageRef.current?.value;
+    const inputEl = messageRef.current;
+    const message = inputEl ? inputEl.value : '';
+
+    if (inputEl) inputEl.value = '';
   };
 
   return (
