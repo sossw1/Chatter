@@ -28,7 +28,7 @@ router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
     req.room.messages.push(messageDocument);
     await req.room.save();
 
-    res.sendStatus(200);
+    res.status(200).send(messageDocument);
   } catch (error) {
     res.sendStatus(500);
   }
