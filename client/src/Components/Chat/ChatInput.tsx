@@ -1,20 +1,50 @@
 import { useRef, FormEvent } from 'react';
 import { Button, Grid, Input, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { IRoomDoc } from '../../types/Rooms';
+import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
 
 interface Props {
   drawerWidth: string;
   selectedRoom: IRoomDoc | null;
+  setRooms: React.Dispatch<React.SetStateAction<IRoomDoc[]>>;
 }
 
-export default function ChatInput({ drawerWidth, selectedRoom }: Props) {
+export default function ChatInput({
+  drawerWidth,
+  selectedRoom,
+  setRooms
+}: Props) {
   const messageRef = useRef<HTMLInputElement>(null);
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const inputEl = messageRef.current;
     const message = inputEl ? inputEl.value : '';
     const roomId: string = selectedRoom ? selectedRoom._id : '';
+    let token = localStorage.getItem('token');
+    if (token) token = JSON.parse(token);
+
+    const response = await fetch(`/api/rooms/${roomId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: message })
+    });
+
+    const responseMessage: IMessageDoc = await response.json();
+
+    if (response.ok && selectedRoom) {
+      const roomCopy = Object.assign(selectedRoom);
+      roomCopy.messages.push(responseMessage);
+      setRooms((rooms) => {
+        const updatedRooms = rooms.filter(
+          (room: IRoomDoc) => room._id !== roomId
+        );
+        updatedRooms.push(roomCopy);
+        return updatedRooms;
+      });
+    }
 
     if (inputEl) inputEl.value = '';
   };
