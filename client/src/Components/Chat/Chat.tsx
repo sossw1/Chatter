@@ -119,7 +119,7 @@ export default function Chat() {
           selectedRoomName={selectedRoomName}
         />
         <ChatHistory rooms={rooms} selectedChatId={selectedChatId} />
-        <ChatInput drawerWidth={drawerWidth} />
+        <ChatInput drawerWidth={drawerWidth} selectedRoom={selectedRoom} />
       </Box>
     </Box>
   );
