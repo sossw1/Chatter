@@ -1,5 +1,5 @@
 import { Button, Grid, Input, Paper } from '@mui/material';
-import { FormEvent } from 'react';
+import { useRef, FormEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 
 interface Props {
@@ -7,8 +7,10 @@ interface Props {
 }
 
 export default function ChatInput(props: Props) {
+  const messageRef = useRef<HTMLInputElement>(null);
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    const message = messageRef.current?.value;
   };
 
   return (
@@ -28,6 +30,7 @@ export default function ChatInput(props: Props) {
             name='message'
             autoComplete='off'
             placeholder='Type a message here...'
+            inputRef={messageRef}
             disableUnderline
           />
         </Grid>
