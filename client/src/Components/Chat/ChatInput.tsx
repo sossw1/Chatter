@@ -26,6 +26,7 @@ export default function ChatInput(props: Props) {
           <Input
             sx={{ width: '100%', '.MuiInput-input': { p: '5px 0' } }}
             name='message'
+            autoComplete='off'
             placeholder='Type a message here...'
             disableUnderline
           />
