@@ -168,7 +168,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
       await room.save();
     }
 
-    res.sendStatus(200);
+    res.status(200).send(room);
   } catch (error) {
     res.sendStatus(500);
   }
