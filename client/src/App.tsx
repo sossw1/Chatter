@@ -15,8 +15,8 @@ function App() {
     <>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <SocketProvider>
+        <SocketProvider>
+          <AuthProvider>
             <BrowserRouter>
               <Routes>
                 <Route path='/' element={<Login />} />
@@ -33,8 +33,8 @@ function App() {
                 <Route path='*' element={<NoMatch />} />
               </Routes>
             </BrowserRouter>
-          </SocketProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </SocketProvider>
       </ThemeProvider>
     </>
   );
