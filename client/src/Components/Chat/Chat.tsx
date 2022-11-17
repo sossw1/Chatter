@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
-import { connectSocket } from '../../api/socket';
+import { getSocket } from '../../api/socket';
 import theme from '../../Providers/theme';
 import { IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
@@ -75,7 +75,7 @@ export default function Chat() {
     };
 
     fetchRooms();
-    const socket = connectSocket();
+    const socket = getSocket();
 
     return () => {
       socket.disconnect();
