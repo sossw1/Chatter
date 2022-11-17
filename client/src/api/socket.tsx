@@ -19,7 +19,6 @@ class SocketFactory {
     }
 
     if (!instance.socket.connected) {
-      console.log('reconnecting');
       instance.socket.connect();
     }
 
