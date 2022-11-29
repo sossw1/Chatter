@@ -8,7 +8,6 @@ export const setupSocketIO = (server: http.Server) => {
     socket.on('join', (rooms: string[], callback: Function) => {
       for (let room of rooms) {
         socket.join(room);
-        socket.to(room).emit('test', room);
       }
     });
   });
