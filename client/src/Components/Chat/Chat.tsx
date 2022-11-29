@@ -77,6 +77,11 @@ export default function Chat() {
     fetchRooms();
     const socket = getSocket();
 
+    if (user) {
+      const { rooms } = user;
+      socket.emit('join', rooms);
+    }
+
     return () => {
       socket.disconnect();
     };
