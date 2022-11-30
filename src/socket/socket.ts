@@ -20,5 +20,17 @@ export const setupSocketIO = (server: http.Server) => {
         await userDocument.save();
       }
     });
+
+    socket.on('disconnect', async () => {
+      if (user) {
+        const userDocument = await UserCollection.findById(user);
+        if (userDocument) {
+          userDocument.socketIds = userDocument.socketIds.filter(
+            (socketId) => socketId !== socket.id
+          );
+          await userDocument.save();
+        }
+      }
+    });
   });
 };
