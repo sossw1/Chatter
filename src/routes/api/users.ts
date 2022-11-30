@@ -25,7 +25,7 @@ router.post('/api/users', async (req, res) => {
       roomInvites: [],
       friendInvites: [],
       friends: [],
-      currentSocketId: ''
+      socketIds: []
     };
 
     const filter = new Filter();
