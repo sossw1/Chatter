@@ -78,8 +78,7 @@ export default function Chat() {
     const socket = getSocket();
 
     if (user) {
-      const { rooms } = user;
-      socket.emit('join', rooms);
+      socket.emit('user-data', user);
     }
 
     return () => {
