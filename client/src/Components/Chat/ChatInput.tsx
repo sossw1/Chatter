@@ -2,12 +2,15 @@ import { useRef, FormEvent } from 'react';
 import { Button, Grid, Input, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
+import { getSocket } from '../../api/socket';
 
 interface Props {
   drawerWidth: string;
   selectedRoom: IRoomDoc | null;
   setRooms: React.Dispatch<React.SetStateAction<IRoomDoc[]>>;
 }
+
+const socket = getSocket();
 
 export default function ChatInput({
   drawerWidth,
@@ -34,17 +37,7 @@ export default function ChatInput({
 
     const responseMessage: IMessageDoc = await response.json();
 
-    if (response.ok && selectedRoom) {
-      const roomCopy = Object.assign(selectedRoom);
-      roomCopy.messages.push(responseMessage);
-      setRooms((rooms) => {
-        const updatedRooms = rooms.filter(
-          (room: IRoomDoc) => room._id !== roomId
-        );
-        updatedRooms.push(roomCopy);
-        return updatedRooms;
-      });
-    }
+    socket.emit('message', responseMessage);
 
     if (inputEl) inputEl.value = '';
   };
