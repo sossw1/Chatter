@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import { getSocket } from '../../api/socket';
 import theme from '../../Providers/theme';
-import { IRoomDoc } from '../../types/Rooms';
+import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
@@ -37,6 +37,8 @@ const getRoomName = (room: IRoomDoc, username: string) => {
     return room.name ? room.name : '';
   }
 };
+
+const socket = getSocket();
 
 export default function Chat() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -75,11 +77,26 @@ export default function Chat() {
     };
 
     fetchRooms();
-    const socket = getSocket();
 
     if (user) {
       socket.emit('user-data', user);
     }
+
+    socket.on('message', (message: IMessageDoc) => {
+      setRooms((rooms) => {
+        const messageRoomIndex = rooms.findIndex(
+          (room) => room._id === message.roomId
+        );
+
+        if (messageRoomIndex === -1) return rooms;
+
+        const messageRoom = rooms[messageRoomIndex];
+
+        messageRoom.messages.push(message);
+
+        return rooms;
+      });
+    });
 
     return () => {
       socket.disconnect();
