@@ -50,6 +50,7 @@ export default function Chat() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<IRoomDoc | null>(null);
   const [selectedRoomName, setSelectedRoomName] = useState<string | null>(null);
+  const [displayMessages, setDisplayMessages] = useState<IMessageDoc[]>([]);
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
@@ -115,8 +116,9 @@ export default function Chat() {
     if (roomSelection) {
       setSelectedRoom(roomSelection);
       if (user) setSelectedRoomName(getRoomName(roomSelection, user.username));
+      setDisplayMessages(selectedRoom ? selectedRoom.messages : []);
     }
-  }, [user, rooms, selectedChatId]);
+  }, [user, rooms, selectedChatId, selectedRoom, displayMessages]);
 
   return (
     <Box sx={{ display: 'flex', backgroundColor: theme.palette.grey[100] }}>
@@ -140,7 +142,7 @@ export default function Chat() {
           handleDrawerToggle={handleDrawerToggle}
           selectedRoomName={selectedRoomName}
         />
-        <ChatHistory rooms={rooms} selectedChatId={selectedChatId} />
+        <ChatHistory displayMessages={displayMessages} />
         <ChatInput
           drawerWidth={drawerWidth}
           selectedRoom={selectedRoom}

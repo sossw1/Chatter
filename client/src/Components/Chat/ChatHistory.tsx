@@ -1,13 +1,12 @@
 import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
 import ChatMessage from './ChatMessage';
 import { useAuth } from '../../Providers/auth';
-import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
+import { IMessageDoc } from '../../types/Rooms';
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
 
 interface Props {
-  rooms: IRoomDoc[];
-  selectedChatId: string | null;
+  displayMessages: IMessageDoc[];
 }
 
 const groupMessagesByUsername = (messages: IMessageDoc[]) => {
@@ -29,12 +28,9 @@ const groupMessagesByUsername = (messages: IMessageDoc[]) => {
   return groupedMessages;
 };
 
-export default function ChatHistory({ rooms, selectedChatId }: Props) {
+export default function ChatHistory({ displayMessages }: Props) {
   const { user } = useAuth();
   const username = user ? user.username : '';
-  const room = rooms.find((room) => room._id === selectedChatId);
-  const messages = room ? room.messages : [];
-  const groupedMessages = groupMessagesByUsername(messages);
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
@@ -45,7 +41,7 @@ export default function ChatHistory({ rooms, selectedChatId }: Props) {
         overflowY: 'scroll'
       }}
     >
-      {groupedMessages.map((groupOfMessages) => {
+      {groupMessagesByUsername(displayMessages).map((groupOfMessages) => {
         const sentByUser = groupOfMessages[0].username === username;
         return (
           <Box
