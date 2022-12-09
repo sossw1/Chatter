@@ -84,17 +84,12 @@ export default function Chat() {
 
     socket.on('message', (message: IMessageDoc) => {
       setRooms((rooms) => {
-        const messageRoomIndex = rooms.findIndex(
-          (room) => room._id === message.roomId
-        );
-
-        if (messageRoomIndex === -1) return rooms;
-
-        const messageRoom = rooms[messageRoomIndex];
-
-        messageRoom.messages.push(message);
-
-        return rooms;
+        return rooms.map((room) => {
+          if (room._id === message.roomId) {
+            room.messages.push(message);
+          }
+          return room;
+        });
       });
     });
 
