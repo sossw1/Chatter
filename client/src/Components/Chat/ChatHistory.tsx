@@ -7,6 +7,7 @@ import theme from '../../Providers/theme';
 
 interface Props {
   displayMessages: IMessageDoc[];
+  messageRef: React.MutableRefObject<null | HTMLDivElement>;
 }
 
 const groupMessagesByUsername = (messages: IMessageDoc[]) => {
@@ -28,7 +29,7 @@ const groupMessagesByUsername = (messages: IMessageDoc[]) => {
   return groupedMessages;
 };
 
-export default function ChatHistory({ displayMessages }: Props) {
+export default function ChatHistory({ displayMessages, messageRef }: Props) {
   const { user } = useAuth();
   const username = user ? user.username : '';
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -40,6 +41,7 @@ export default function ChatHistory({ displayMessages }: Props) {
         height: `calc(100vh - 5.5rem - 94px - ${xs ? '56' : '64'}px)`,
         overflowY: 'scroll'
       }}
+      ref={messageRef}
     >
       {groupMessagesByUsername(displayMessages).map((groupOfMessages) => {
         const sentByUser = groupOfMessages[0].username === username;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import { getSocket } from '../../api/socket';
 import theme from '../../Providers/theme';
@@ -54,6 +54,7 @@ export default function Chat() {
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
+  const messageRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -142,7 +143,10 @@ export default function Chat() {
           handleDrawerToggle={handleDrawerToggle}
           selectedRoomName={selectedRoomName}
         />
-        <ChatHistory displayMessages={displayMessages} />
+        <ChatHistory
+          displayMessages={displayMessages}
+          messageRef={messageRef}
+        />
         <ChatInput
           drawerWidth={drawerWidth}
           selectedRoom={selectedRoom}
