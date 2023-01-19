@@ -93,6 +93,14 @@ export default function Chat() {
           return room;
         });
       });
+
+      if (
+        messageRef &&
+        messageRef.current &&
+        messageRef.current.lastElementChild
+      ) {
+        messageRef.current.lastElementChild.scrollIntoView(false);
+      }
     });
 
     return () => {
