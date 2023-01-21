@@ -1,7 +1,19 @@
+import { useState, ChangeEvent } from 'react';
 import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
 export default function Friends() {
+  const [isValidUsername, setIsValidUsername] = useState(false);
+
+  const checkUsernameInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value;
+    if (input.length >= 8 && input.length <= 20) {
+      setIsValidUsername(true);
+    } else {
+      setIsValidUsername(false);
+    }
+  };
+
   return (
     <Box p='2rem'>
       <Typography variant='h3' pb='1rem'>
@@ -22,8 +34,11 @@ export default function Friends() {
               <Search />
             </InputAdornment>
           }
+          onChange={checkUsernameInput}
         />
-        <Button variant='contained'>Send Friend Request</Button>
+        <Button variant='contained' disabled={!isValidUsername}>
+          Send Friend Request
+        </Button>
       </Box>
     </Box>
   );
