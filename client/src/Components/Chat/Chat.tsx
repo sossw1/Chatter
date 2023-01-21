@@ -99,7 +99,7 @@ export default function Chat() {
         messageRef.current &&
         messageRef.current.lastElementChild
       ) {
-        messageRef.current.lastElementChild.scrollIntoView(false);
+        messageRef.current.lastElementChild.scrollIntoView(true);
       }
     });
 
