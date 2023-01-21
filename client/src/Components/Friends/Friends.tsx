@@ -16,7 +16,7 @@ export default function Friends() {
           }}
           name='username'
           autoComplete='off'
-          placeholder='Search username'
+          placeholder='Enter username'
           startAdornment={
             <InputAdornment position='start'>
               <Search />
