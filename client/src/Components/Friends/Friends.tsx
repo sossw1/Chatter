@@ -1,4 +1,4 @@
-import { Box, Input, InputAdornment, Typography } from '@mui/material';
+import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
 export default function Friends() {
@@ -11,7 +11,8 @@ export default function Friends() {
         <Input
           sx={{
             width: '20rem',
-            p: '.5rem'
+            p: '.5rem',
+            mr: '1rem'
           }}
           name='username'
           autoComplete='off'
@@ -22,6 +23,7 @@ export default function Friends() {
             </InputAdornment>
           }
         />
+        <Button variant='contained'>Send Friend Request</Button>
       </Box>
     </Box>
   );
