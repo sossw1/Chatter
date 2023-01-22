@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
@@ -14,12 +14,16 @@ export default function Friends() {
     }
   };
 
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+  };
+
   return (
     <Box p='2rem'>
       <Typography variant='h3' pb='1rem'>
         Add Friend
       </Typography>
-      <Box>
+      <Box component='form' onSubmit={handleSubmit}>
         <Input
           sx={{
             width: '20rem',
@@ -36,7 +40,7 @@ export default function Friends() {
           }
           onChange={checkUsernameInput}
         />
-        <Button variant='contained' disabled={!isValidUsername}>
+        <Button variant='contained' type='submit' disabled={!isValidUsername}>
           Send Friend Request
         </Button>
       </Box>
