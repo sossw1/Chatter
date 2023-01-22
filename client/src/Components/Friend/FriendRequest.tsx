@@ -49,7 +49,7 @@ export default function FriendRequest() {
   };
 
   return (
-    <Box p='2rem'>
+    <Box mb='2rem'>
       <Typography variant='h3' pb='1rem'>
         Add Friend
       </Typography>
