@@ -17,7 +17,8 @@ export default function Friends() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const username = event.currentTarget.querySelector('input')?.value;
-    if (!username) {
+    const token = localStorage.getItem('token');
+    if (!username || !token) {
       event.currentTarget.reset();
       return;
     }
