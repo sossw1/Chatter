@@ -7,7 +7,7 @@ import Login from './Components/Login';
 import SignUp from './Components/SignUp';
 import Navigation from './Components/Navigation';
 import Chat from './Components/Chat/Chat';
-import Friends from './Components/Friends/Friends';
+import Friend from './Components/Friend/Friend';
 import NoMatch from './Components/NoMatch';
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
                 }
               >
                 <Route path='/chat' element={<Chat />} />
-                <Route path='/friends' element={<Friends />} />
+                <Route path='/friend' element={<Friend />} />
               </Route>
               <Route path='*' element={<NoMatch />} />
             </Routes>
