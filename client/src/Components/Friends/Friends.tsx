@@ -14,8 +14,9 @@ export default function Friends() {
     }
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    event.currentTarget.reset();
   };
 
   return (
