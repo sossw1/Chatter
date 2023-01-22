@@ -1,11 +1,17 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
+import theme from '../../Providers/theme';
 
 export default function Friends() {
   const [isValidUsername, setIsValidUsername] = useState(false);
+  const [isSuccessfulFriendRequest, setIsSuccessfulFriendRequest] =
+    useState<boolean>(true);
+  const [friendRequestMessage, setFriendRequestMessage] = useState<string>('');
 
-  const checkUsernameInput = (event: ChangeEvent<HTMLInputElement>) => {
+  const checkUsernameInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const input = event.target.value;
     if (input.length >= 8 && input.length <= 20) {
       setIsValidUsername(true);
@@ -34,8 +40,11 @@ export default function Friends() {
     });
 
     if (response.ok) {
+      setFriendRequestMessage('Friend request sent successfully!');
     } else {
       const error = await response.json();
+      setIsSuccessfulFriendRequest(false);
+      setFriendRequestMessage('Error: ' + error.error);
     }
   };
 
@@ -44,24 +53,52 @@ export default function Friends() {
       <Typography variant='h3' pb='1rem'>
         Add Friend
       </Typography>
-      <Box component='form' onSubmit={handleSubmit}>
-        <Input
-          sx={{
-            width: '20rem',
-            p: '.5rem',
-            mr: '1rem'
-          }}
-          name='username'
-          autoComplete='off'
-          placeholder='Enter username'
-          startAdornment={
-            <InputAdornment position='start'>
-              <Search />
-            </InputAdornment>
-          }
-          onChange={checkUsernameInput}
-        />
-        <Button variant='contained' type='submit' disabled={!isValidUsername}>
+      <Box
+        component='form'
+        display='flex'
+        flexDirection='row'
+        onSubmit={handleSubmit}
+      >
+        <Box display='flex' flexDirection='column'>
+          <Input
+            sx={{
+              width: '20rem',
+              p: '.5rem',
+              mr: '1rem',
+              mb: '.5rem'
+            }}
+            name='username'
+            autoComplete='off'
+            placeholder='Enter username'
+            startAdornment={
+              <InputAdornment position='start'>
+                <Search />
+              </InputAdornment>
+            }
+            error={!isSuccessfulFriendRequest}
+            onChange={(e) => {
+              checkUsernameInput(e);
+              setIsSuccessfulFriendRequest(true);
+              setFriendRequestMessage('');
+            }}
+          />
+          <Typography
+            variant='subtitle1'
+            color={
+              isSuccessfulFriendRequest
+                ? theme.palette.success.main
+                : theme.palette.error.main
+            }
+          >
+            {friendRequestMessage}
+          </Typography>
+        </Box>
+        <Button
+          variant='contained'
+          type='submit'
+          sx={{ height: '3rem' }}
+          disabled={!isValidUsername}
+        >
           Send Friend Request
         </Button>
       </Box>
