@@ -56,10 +56,10 @@ export default function FriendRequest() {
       <Box
         component='form'
         display='flex'
-        flexDirection='row'
+        flexDirection='column'
         onSubmit={handleSubmit}
       >
-        <Box display='flex' flexDirection='column'>
+        <Box display='flex' flexDirection='row' alignItems='center'>
           <Input
             sx={{
               width: '20rem',
@@ -82,25 +82,20 @@ export default function FriendRequest() {
               setFriendRequestMessage('');
             }}
           />
-          <Typography
-            variant='subtitle1'
-            color={
-              isSuccessfulFriendRequest
-                ? theme.palette.success.main
-                : theme.palette.error.main
-            }
-          >
-            {friendRequestMessage}
-          </Typography>
+          <Button variant='contained' type='submit' disabled={!isValidUsername}>
+            Send Friend Request
+          </Button>
         </Box>
-        <Button
-          variant='contained'
-          type='submit'
-          sx={{ height: '3rem' }}
-          disabled={!isValidUsername}
+        <Typography
+          variant='subtitle1'
+          color={
+            isSuccessfulFriendRequest
+              ? theme.palette.success.main
+              : theme.palette.error.main
+          }
         >
-          Send Friend Request
-        </Button>
+          {friendRequestMessage}
+        </Typography>
       </Box>
     </Box>
   );
