@@ -16,6 +16,12 @@ export default function Friends() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const username = event.currentTarget.querySelector('input')?.value;
+    if (!username) {
+      event.currentTarget.reset();
+      return;
+    }
+
     event.currentTarget.reset();
   };
 
