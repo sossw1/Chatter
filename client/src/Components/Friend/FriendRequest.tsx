@@ -49,54 +49,56 @@ export default function FriendRequest() {
   };
 
   return (
-    <Box mb='2rem'>
+    <Box
+      component='form'
+      display='flex'
+      flexDirection='column'
+      onSubmit={handleSubmit}
+      mb={friendRequestMessage === '' ? '3.75rem' : '2rem'}
+    >
       <Typography variant='h3' pb='1rem'>
         Add Friend
       </Typography>
-      <Box
-        component='form'
-        display='flex'
-        flexDirection='column'
-        onSubmit={handleSubmit}
+      <Input
+        sx={{
+          p: '.5rem',
+          mr: '1rem',
+          mb: '.5rem'
+        }}
+        fullWidth
+        name='username'
+        autoComplete='off'
+        placeholder='Enter username'
+        startAdornment={
+          <InputAdornment position='start'>
+            <Search />
+          </InputAdornment>
+        }
+        error={!isSuccessfulFriendRequest}
+        onChange={(e) => {
+          checkUsernameInput(e);
+          setIsSuccessfulFriendRequest(true);
+          setFriendRequestMessage('');
+        }}
+      />
+      <Button
+        variant='contained'
+        fullWidth
+        type='submit'
+        disabled={!isValidUsername}
       >
-        <Box display='flex' flexDirection='row' alignItems='center'>
-          <Input
-            sx={{
-              width: '20rem',
-              p: '.5rem',
-              mr: '1rem',
-              mb: '.5rem'
-            }}
-            name='username'
-            autoComplete='off'
-            placeholder='Enter username'
-            startAdornment={
-              <InputAdornment position='start'>
-                <Search />
-              </InputAdornment>
-            }
-            error={!isSuccessfulFriendRequest}
-            onChange={(e) => {
-              checkUsernameInput(e);
-              setIsSuccessfulFriendRequest(true);
-              setFriendRequestMessage('');
-            }}
-          />
-          <Button variant='contained' type='submit' disabled={!isValidUsername}>
-            Send Friend Request
-          </Button>
-        </Box>
-        <Typography
-          variant='subtitle1'
-          color={
-            isSuccessfulFriendRequest
-              ? theme.palette.success.main
-              : theme.palette.error.main
-          }
-        >
-          {friendRequestMessage}
-        </Typography>
-      </Box>
+        Send Friend Request
+      </Button>
+      <Typography
+        variant='subtitle1'
+        color={
+          isSuccessfulFriendRequest
+            ? theme.palette.success.main
+            : theme.palette.error.main
+        }
+      >
+        {friendRequestMessage}
+      </Typography>
     </Box>
   );
 }
