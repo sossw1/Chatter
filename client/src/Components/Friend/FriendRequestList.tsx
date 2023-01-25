@@ -9,12 +9,19 @@ import {
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
 import theme from '../../Providers/theme';
+import { useAuth } from '../../Providers/auth';
 
 interface Props {
   friendRequests: string[];
+  deleteRequest: (username: string) => void;
 }
 
-export default function FriendRequestList({ friendRequests }: Props) {
+export default function FriendRequestList({
+  friendRequests,
+  deleteRequest
+}: Props) {
+  const { addOrRemoveFriend } = useAuth();
+
   const replyFriendRequest = async (username: string, accept: boolean) => {
     const token = localStorage.getItem('token');
     let parsedToken: string = '';
@@ -33,7 +40,11 @@ export default function FriendRequestList({ friendRequests }: Props) {
 
     if (response.ok) {
       if (accept) {
+        addOrRemoveFriend(username, true);
+        deleteRequest(username);
       } else {
+        addOrRemoveFriend(username, false);
+        deleteRequest(username);
       }
     } else {
       const data = await response.json();
