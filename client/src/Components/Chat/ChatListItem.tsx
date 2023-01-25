@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import theme from '../../Providers/theme';
 import { IRoomDoc } from '../../types/Rooms';
+import { useAuth } from '../../Providers/auth';
 
 interface Props {
   room: IRoomDoc;
@@ -24,6 +25,9 @@ export default function ChatListItem({
 }: Props) {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
+  const { user } = useAuth();
+  let username: string = '';
+  if (user) username = user.username;
 
   return (
     <ListItem sx={{ p: 0 }}>
@@ -57,7 +61,7 @@ export default function ChatListItem({
                 whiteSpace: 'nowrap'
               }}
             >
-              {room.name}
+              {room.name || room.users.find((user) => user !== username)}
             </Typography>
           }
           secondary={
