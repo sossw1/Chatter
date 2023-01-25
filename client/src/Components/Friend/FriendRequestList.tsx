@@ -1,4 +1,3 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import {
   Avatar,
   Box,
@@ -13,7 +12,6 @@ import theme from '../../Providers/theme';
 
 interface Props {
   friendRequests: string[];
-  setFriendRequests: Dispatch<SetStateAction<string[]>>;
 }
 
 export default function FriendRequestList({ friendRequests }: Props) {
