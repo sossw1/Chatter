@@ -47,6 +47,7 @@ interface AuthContextProps {
   ) => Promise<ApiConfirmation | ApiError>;
   logout: () => Promise<ApiConfirmation | ApiError>;
   passwordChange: (password: string) => Promise<ApiConfirmation | ApiError>;
+  addOrRemoveFriend: (username: string, isFriend: boolean) => void;
 }
 
 class Auth {
@@ -250,13 +251,28 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
   };
 
+  const addOrRemoveFriend = (username: string, isFriend: boolean) => {
+    if (isFriend) {
+      setUser((user) => {
+        user?.friends.push(username);
+        return user;
+      });
+    } else {
+      setUser((user) => {
+        user?.friends.filter((user) => user !== username);
+        return user;
+      });
+    }
+  };
+
   let value: AuthContextProps = {
     user,
     setUserWithToken,
     signUp,
     login,
     logout,
-    passwordChange
+    passwordChange,
+    addOrRemoveFriend
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
