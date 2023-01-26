@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   Avatar,
   Box,
@@ -8,6 +9,7 @@ import {
   Typography
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
+import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
 
@@ -59,7 +61,7 @@ export default function FriendRequestList({
       <Divider />
       <List>
         {friendRequests.map((username) => (
-          <>
+          <Fragment key={uuid()}>
             <ListItem>
               <Box
                 display='flex'
@@ -88,7 +90,7 @@ export default function FriendRequestList({
               </Box>
             </ListItem>
             <Divider />
-          </>
+          </Fragment>
         ))}
       </List>
     </Box>
