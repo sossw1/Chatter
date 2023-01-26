@@ -80,6 +80,10 @@ export default function Chat() {
           const next = [...prev, ...fetchedRooms];
           return next;
         });
+        setTimeout(
+          () => messageRef?.current?.lastElementChild?.scrollIntoView(true),
+          1000
+        );
       }
     };
 
