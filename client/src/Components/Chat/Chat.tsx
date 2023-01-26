@@ -94,13 +94,7 @@ export default function Chat() {
         });
       });
 
-      if (
-        messageRef &&
-        messageRef.current &&
-        messageRef.current.lastElementChild
-      ) {
-        messageRef.current.lastElementChild.scrollIntoView(true);
-      }
+      messageRef?.current?.lastElementChild?.scrollIntoView(true);
     });
 
     return () => {
