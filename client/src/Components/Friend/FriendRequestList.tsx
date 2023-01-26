@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -22,6 +22,10 @@ export default function FriendRequestList({
   friendRequests,
   deleteRequest
 }: Props) {
+  const [friendRequestError, setFriendRequestError] = useState<{
+    error: string;
+    username: string;
+  } | null>(null);
   const { addOrRemoveFriend } = useAuth();
 
   const replyFriendRequest = async (username: string, accept: boolean) => {
@@ -50,6 +54,8 @@ export default function FriendRequestList({
       }
     } else {
       const data = await response.json();
+      setFriendRequestError({ error: 'Error: ' + data.error, username });
+      setTimeout(() => setFriendRequestError(null), 3000);
     }
   };
 
@@ -63,30 +69,39 @@ export default function FriendRequestList({
         {friendRequests.map((username) => (
           <Fragment key={uuid()}>
             <ListItem>
-              <Box
-                display='flex'
-                flexDirection='row'
-                alignItems='center'
-                p='0.25rem 0'
-              >
-                <Avatar
-                  sx={{ width: '2.5rem', height: '2.5rem', mr: '1.5rem' }}
-                />
-                <Typography variant='h5' mr='1rem'>
-                  {username}
-                </Typography>
-                <Button
-                  sx={{ color: theme.palette.success.main }}
-                  onClick={() => replyFriendRequest(username, true)}
+              <Box display='flex' flexDirection='column'>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  alignItems='center'
+                  p='0.25rem 0'
                 >
-                  <Check />
-                </Button>
-                <Button
-                  sx={{ color: theme.palette.error.main }}
-                  onClick={() => replyFriendRequest(username, false)}
-                >
-                  <Close />
-                </Button>
+                  <Avatar
+                    sx={{ width: '2.5rem', height: '2.5rem', mr: '1.5rem' }}
+                  />
+                  <Typography variant='h5' mr='1rem'>
+                    {username}
+                  </Typography>
+                  <Button
+                    sx={{ color: theme.palette.success.main }}
+                    onClick={() => replyFriendRequest(username, true)}
+                  >
+                    <Check />
+                  </Button>
+                  <Button
+                    sx={{ color: theme.palette.error.main }}
+                    onClick={() => replyFriendRequest(username, false)}
+                  >
+                    <Close />
+                  </Button>
+                </Box>
+                <Box>
+                  <Typography variant='h6' color={theme.palette.error.main}>
+                    {username === friendRequestError?.username
+                      ? friendRequestError?.error
+                      : ''}
+                  </Typography>
+                </Box>
               </Box>
             </ListItem>
             <Divider />
