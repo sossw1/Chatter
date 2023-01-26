@@ -61,21 +61,26 @@ export default function Chat() {
       let fetchedRooms: IRoomDoc[] = [];
       const token = JSON.parse(localStorage.getItem('token') || '');
       if (user) {
-        for (let roomId of user.rooms) {
-          const response = await fetch(`/api/rooms/${roomId}`, {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
+        await Promise.all(
+          user.rooms.map(async (room) => {
+            const response = await fetch(`/api/rooms/${room}`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            if (response.ok) {
+              const roomDocument: IRoomDoc = await response.json();
+              fetchedRooms.push(roomDocument);
             }
-          });
-          if (response.ok) {
-            const roomDocument: IRoomDoc = await response.json();
-            fetchedRooms.push(roomDocument);
-          }
-        }
+          })
+        );
+        setRooms((prev) => {
+          const next = [...prev, ...fetchedRooms];
+          return next;
+        });
       }
-      setRooms(() => [...fetchedRooms]);
     };
 
     fetchRooms();
