@@ -2,12 +2,17 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import theme from '../../Providers/theme';
+import { useAuth } from '../../Providers/auth';
+import { getSocket } from '../../api/socket';
+
+const socket = getSocket();
 
 export default function FriendRequest() {
   const [isValidUsername, setIsValidUsername] = useState(false);
   const [isSuccessfulFriendRequest, setIsSuccessfulFriendRequest] =
     useState<boolean>(true);
   const [friendRequestMessage, setFriendRequestMessage] = useState<string>('');
+  const { user } = useAuth();
 
   const checkUsernameInput = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -41,6 +46,10 @@ export default function FriendRequest() {
 
     if (response.ok) {
       setFriendRequestMessage('Friend request sent successfully!');
+      socket.emit('friend-request', {
+        requester: user ? user.username : '',
+        requested: username
+      });
     } else {
       const error = await response.json();
       setIsSuccessfulFriendRequest(false);
