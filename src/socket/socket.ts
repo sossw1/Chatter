@@ -26,6 +26,22 @@ export const setupSocketIO = (server: http.Server) => {
       io.to(message.roomId + '').emit('message', message);
     });
 
+    socket.on(
+      'friend-request',
+      async ({
+        requester,
+        requested
+      }: {
+        requester: string;
+        requested: string;
+      }) => {
+        const requestedUser = await UserCollection.findOne({
+          username: requested
+        });
+        if (!requestedUser) return;
+      }
+    );
+
     socket.on('disconnect', async () => {
       if (user) {
         const userDocument = await UserCollection.findById(user);
