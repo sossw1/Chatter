@@ -39,6 +39,10 @@ export const setupSocketIO = (server: http.Server) => {
           username: requested
         });
         if (!requestedUser) return;
+
+        requestedUser.socketIds.forEach((id) => {
+          io.to(id).emit('friend-request', requester);
+        });
       }
     );
 
