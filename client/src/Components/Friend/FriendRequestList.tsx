@@ -23,8 +23,9 @@ export default function FriendRequestList({
   deleteRequest
 }: Props) {
   const [friendRequestMessage, setFriendRequestMessage] = useState<{
-    error: string;
+    message: string;
     username: string;
+    isError: boolean;
   } | null>(null);
   const { addOrRemoveFriend } = useAuth();
 
@@ -46,16 +47,36 @@ export default function FriendRequestList({
 
     if (response.ok) {
       if (accept) {
-        addOrRemoveFriend(username, true);
-        deleteRequest(username);
+        setFriendRequestMessage({
+          message: 'Friend request accepted!',
+          username,
+          isError: false
+        });
+        setTimeout(() => {
+          setFriendRequestMessage(null);
+          addOrRemoveFriend(username, true);
+          deleteRequest(username);
+        }, 3000);
       } else {
-        addOrRemoveFriend(username, false);
-        deleteRequest(username);
+        setFriendRequestMessage({
+          message: 'Friend request denied',
+          username,
+          isError: false
+        });
+        setTimeout(() => {
+          setFriendRequestMessage(null);
+          addOrRemoveFriend(username, false);
+          deleteRequest(username);
+        }, 3000);
       }
     } else {
       const data = await response.json();
-      setFriendRequestMessage({ error: 'Error: ' + data.error, username });
-      setTimeout(() => setFriendRequestMessage(null), 3000);
+      setFriendRequestMessage({
+        message: 'Error: ' + data.error,
+        username,
+        isError: true
+      });
+      setTimeout(() => setFriendRequestMessage(null), 5000);
     }
   };
 
@@ -96,9 +117,17 @@ export default function FriendRequestList({
                   </Button>
                 </Box>
                 <Box>
-                  <Typography variant='h6' color={theme.palette.error.main}>
+                  {/* HERE!! */}
+                  <Typography
+                    variant='h6'
+                    color={
+                      friendRequestMessage?.isError
+                        ? theme.palette.error.main
+                        : theme.palette.success.main
+                    }
+                  >
                     {username === friendRequestMessage?.username
-                      ? friendRequestMessage?.error
+                      ? friendRequestMessage?.message
                       : ''}
                   </Typography>
                 </Box>
