@@ -136,7 +136,6 @@ export default function FriendRequestList({
                   </Button>
                 </Box>
                 <Box>
-                  {/* HERE!! */}
                   <Typography
                     variant='h6'
                     color={
