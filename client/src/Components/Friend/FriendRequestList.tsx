@@ -27,6 +27,7 @@ export default function FriendRequestList({
     username: string;
     isError: boolean;
   } | null>(null);
+  const [disabledRequests, setDisabledRequests] = useState<string[]>([]);
   const { addOrRemoveFriend } = useAuth();
 
   const replyFriendRequest = async (username: string, accept: boolean) => {
@@ -47,6 +48,10 @@ export default function FriendRequestList({
 
     if (response.ok) {
       if (accept) {
+        setDisabledRequests((prev) => {
+          const next = [...prev, username];
+          return next;
+        });
         setFriendRequestMessage({
           message: 'Friend request accepted!',
           username,
@@ -56,8 +61,16 @@ export default function FriendRequestList({
           setFriendRequestMessage(null);
           addOrRemoveFriend(username, true);
           deleteRequest(username);
+          setDisabledRequests((prev) => {
+            const next = prev.filter((user) => user !== username);
+            return next;
+          });
         }, 3000);
       } else {
+        setDisabledRequests((prev) => {
+          const next = [...prev, username];
+          return next;
+        });
         setFriendRequestMessage({
           message: 'Friend request denied',
           username,
@@ -67,6 +80,10 @@ export default function FriendRequestList({
           setFriendRequestMessage(null);
           addOrRemoveFriend(username, false);
           deleteRequest(username);
+          setDisabledRequests((prev) => {
+            const next = prev.filter((user) => user !== username);
+            return next;
+          });
         }, 3000);
       }
     } else {
@@ -105,12 +122,14 @@ export default function FriendRequestList({
                   </Typography>
                   <Button
                     sx={{ color: theme.palette.success.main }}
+                    disabled={disabledRequests.includes(username)}
                     onClick={() => replyFriendRequest(username, true)}
                   >
                     <Check />
                   </Button>
                   <Button
                     sx={{ color: theme.palette.error.main }}
+                    disabled={disabledRequests.includes(username)}
                     onClick={() => replyFriendRequest(username, false)}
                   >
                     <Close />
