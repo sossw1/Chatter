@@ -22,7 +22,7 @@ export default function FriendRequestList({
   friendRequests,
   deleteRequest
 }: Props) {
-  const [friendRequestError, setFriendRequestError] = useState<{
+  const [friendRequestMessage, setFriendRequestMessage] = useState<{
     error: string;
     username: string;
   } | null>(null);
@@ -54,8 +54,8 @@ export default function FriendRequestList({
       }
     } else {
       const data = await response.json();
-      setFriendRequestError({ error: 'Error: ' + data.error, username });
-      setTimeout(() => setFriendRequestError(null), 3000);
+      setFriendRequestMessage({ error: 'Error: ' + data.error, username });
+      setTimeout(() => setFriendRequestMessage(null), 3000);
     }
   };
 
@@ -97,8 +97,8 @@ export default function FriendRequestList({
                 </Box>
                 <Box>
                   <Typography variant='h6' color={theme.palette.error.main}>
-                    {username === friendRequestError?.username
-                      ? friendRequestError?.error
+                    {username === friendRequestMessage?.username
+                      ? friendRequestMessage?.error
                       : ''}
                   </Typography>
                 </Box>
