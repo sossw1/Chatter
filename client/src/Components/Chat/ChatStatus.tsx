@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import { Avatar, Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import { Circle } from '@mui/icons-material';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Grid,
+  Typography,
+  useMediaQuery
+} from '@mui/material';
+import { Circle, Mail } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 
@@ -23,21 +30,16 @@ export default function ChatStatus() {
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
       }}
     >
-      <Grid
-        container
-        direction='row'
-        sx={{ height: '100%' }}
-        alignItems='center'
-      >
+      <Grid container direction='row' alignItems='center'>
         <Grid item sx={{ mr: '1rem' }}>
           <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
         </Grid>
-        <Grid item>
+        <Grid item mr='1rem'>
           <Grid container direction='column'>
             <Typography
               variant='body1'
               sx={{
-                width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                width: mdDown ? (smDown ? '6rem' : '11rem') : '21rem',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
@@ -61,6 +63,11 @@ export default function ChatStatus() {
               </Grid>
             </Grid>
           </Grid>
+        </Grid>
+        <Grid item>
+          <Badge badgeContent={1} color='primary'>
+            <Mail color='action' />
+          </Badge>
         </Grid>
       </Grid>
     </Box>
