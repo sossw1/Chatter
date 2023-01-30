@@ -17,6 +17,7 @@ export default function ChatStatus() {
   const [statusColor, setStatusColor] = useState<
     'success' | 'warning' | 'error'
   >('success');
+  const [notificationCount, setNotificationCount] = useState<number>(0);
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
@@ -67,7 +68,7 @@ export default function ChatStatus() {
         </Grid>
         <Grid item>
           <Button sx={{ p: 0, minWidth: '100%' }}>
-            <Badge badgeContent={1} color='primary'>
+            <Badge badgeContent={notificationCount} color='primary'>
               <Mail color='action' />
             </Badge>
           </Button>
