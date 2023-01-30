@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Avatar,
   Badge,
+  Button,
   Box,
   Grid,
   Typography,
@@ -65,9 +66,11 @@ export default function ChatStatus() {
           </Grid>
         </Grid>
         <Grid item>
-          <Badge badgeContent={1} color='primary'>
-            <Mail color='action' />
-          </Badge>
+          <Button sx={{ p: 0, minWidth: '100%' }}>
+            <Badge badgeContent={1} color='primary'>
+              <Mail color='action' />
+            </Badge>
+          </Button>
         </Grid>
       </Grid>
     </Box>
