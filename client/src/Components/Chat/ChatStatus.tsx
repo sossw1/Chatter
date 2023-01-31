@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -11,6 +11,9 @@ import {
 import { Circle, Mail } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
+import { getSocket } from '../../api/socket';
+
+const socket = getSocket();
 
 export default function ChatStatus() {
   const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
@@ -22,8 +25,19 @@ export default function ChatStatus() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const auth = useAuth();
-  const username = auth.user!.username;
+  const { user } = useAuth();
+  const username = user?.username;
+
+  useEffect(() => {
+    socket.on('friend-request', (username: string) => {
+      if (username === user?.username) return;
+      setNotificationCount((prev) => prev + 1);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user?.username]);
 
   return (
     <Box
