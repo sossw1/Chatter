@@ -76,7 +76,9 @@ export default function ChatListItem({
               }}
             >
               {room.messages.length > 0 &&
-                room.messages[room.messages.length - 1].text}
+                `${room.messages[room.messages.length - 1].username}: ${
+                  room.messages[room.messages.length - 1].text
+                }`}
             </Typography>
           }
         ></ListItemText>
