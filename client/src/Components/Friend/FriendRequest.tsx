@@ -3,9 +3,7 @@ import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
-import { getSocket } from '../../api/socket';
-
-const socket = getSocket();
+import { useSocket } from '../../api/socket';
 
 export default function FriendRequest() {
   const [isValidUsername, setIsValidUsername] = useState(false);
@@ -13,6 +11,7 @@ export default function FriendRequest() {
     useState<boolean>(true);
   const [friendRequestMessage, setFriendRequestMessage] = useState<string>('');
   const { user } = useAuth();
+  const socket = useSocket();
 
   const checkUsernameInput = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

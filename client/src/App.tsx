@@ -2,6 +2,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, RequireAuth } from './Providers/auth';
+import { socket, SocketContext } from './api/socket';
 import theme from './Providers/theme';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';
@@ -17,21 +18,23 @@ function App() {
       <ThemeProvider theme={theme}>
         <AuthProvider>
           <BrowserRouter>
-            <Routes>
-              <Route path='/' element={<Login />} />
-              <Route path='/signup' element={<SignUp />} />
-              <Route
-                element={
-                  <RequireAuth>
-                    <Navigation />
-                  </RequireAuth>
-                }
-              >
-                <Route path='/chat' element={<Chat />} />
-                <Route path='/friend' element={<Friend />} />
-              </Route>
-              <Route path='*' element={<NoMatch />} />
-            </Routes>
+            <SocketContext.Provider value={socket}>
+              <Routes>
+                <Route path='/' element={<Login />} />
+                <Route path='/signup' element={<SignUp />} />
+                <Route
+                  element={
+                    <RequireAuth>
+                      <Navigation />
+                    </RequireAuth>
+                  }
+                >
+                  <Route path='/chat' element={<Chat />} />
+                  <Route path='/friend' element={<Friend />} />
+                </Route>
+                <Route path='*' element={<NoMatch />} />
+              </Routes>
+            </SocketContext.Provider>
           </BrowserRouter>
         </AuthProvider>
       </ThemeProvider>

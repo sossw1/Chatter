@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
-import { getSocket } from '../../api/socket';
 import theme from '../../Providers/theme';
 import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
+import { useSocket } from '../../api/socket';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';
@@ -38,8 +38,6 @@ const getRoomName = (room: IRoomDoc, username: string) => {
   }
 };
 
-const socket = getSocket();
-
 export default function Chat() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
@@ -55,6 +53,7 @@ export default function Chat() {
     setDrawerOpen(!drawerOpen);
   };
   const messageRef = useRef<null | HTMLDivElement>(null);
+  const socket = useSocket();
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -105,10 +104,6 @@ export default function Chat() {
 
       messageRef?.current?.lastElementChild?.scrollIntoView(true);
     });
-
-    return () => {
-      socket.disconnect();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

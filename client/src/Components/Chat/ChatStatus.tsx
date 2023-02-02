@@ -11,9 +11,7 @@ import {
 import { Circle, Mail } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
-import { getSocket } from '../../api/socket';
-
-const socket = getSocket();
+import { useSocket } from '../../api/socket';
 
 export default function ChatStatus() {
   const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
@@ -27,6 +25,7 @@ export default function ChatStatus() {
 
   const { user } = useAuth();
   const username = user?.username;
+  const socket = useSocket();
 
   useEffect(() => {
     socket.on('friend-request', (username: string) => {

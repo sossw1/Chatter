@@ -3,15 +3,14 @@ import { Box } from '@mui/material';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
 import { useAuth } from '../../Providers/auth';
-import { getSocket } from '../../api/socket';
-
-const socket = getSocket();
+import { useSocket } from '../../api/socket';
 
 export default function Friend() {
   const { user } = useAuth();
   const [friendRequests, setFriendRequests] = useState<string[]>(
     user?.friendInvites || []
   );
+  const socket = useSocket();
 
   const deleteRequest = (username: string) => {
     setFriendRequests((prev) => {

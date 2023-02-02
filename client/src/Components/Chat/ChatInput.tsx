@@ -2,7 +2,7 @@ import { useRef, FormEvent } from 'react';
 import { Button, Grid, Input, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
-import { getSocket } from '../../api/socket';
+import { useSocket } from '../../api/socket';
 
 interface Props {
   drawerWidth: string;
@@ -10,14 +10,14 @@ interface Props {
   setRooms: React.Dispatch<React.SetStateAction<IRoomDoc[]>>;
 }
 
-const socket = getSocket();
-
 export default function ChatInput({
   drawerWidth,
   selectedRoom,
   setRooms
 }: Props) {
   const messageRef = useRef<HTMLInputElement>(null);
+  const socket = useSocket();
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const inputEl = messageRef.current;
