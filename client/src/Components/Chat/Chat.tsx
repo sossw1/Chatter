@@ -88,6 +88,8 @@ export default function Chat() {
 
     fetchRooms();
 
+    if (socket.disconnected) socket.connect();
+
     if (user) {
       socket.emit('user-data', user);
     }

@@ -20,6 +20,8 @@ export default function Friend() {
   };
 
   useEffect(() => {
+    if (socket.disconnected) socket.connect();
+
     if (user) socket.emit('user-data', user);
 
     socket.on('friend-request', (username: string) => {
@@ -28,10 +30,6 @@ export default function Friend() {
         return next;
       });
     });
-
-    return () => {
-      socket.disconnect();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
