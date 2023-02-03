@@ -32,10 +32,6 @@ export default function ChatStatus() {
       if (username === user?.username) return;
       setNotificationCount((prev) => prev + 1);
     });
-
-    return () => {
-      socket.disconnect();
-    };
   }, [user?.username]);
 
   return (
