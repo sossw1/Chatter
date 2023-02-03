@@ -1,12 +1,17 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../Providers/auth';
+import { useSocket } from '../api/socket';
 
 export default function Navigation() {
   const auth = useAuth();
+  const socket = useSocket();
 
   const handleLogout = async () => {
-    await auth.logout();
+    try {
+      const response = await auth.logout();
+      if (response.type === 'confirmation') socket.disconnect();
+    } catch (error) {}
   };
 
   return (
