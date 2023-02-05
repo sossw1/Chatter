@@ -8,7 +8,7 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Circle, Mail } from '@mui/icons-material';
+import { Circle, Mail, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../api/socket';
@@ -22,6 +22,7 @@ export default function ChatStatus() {
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
+  const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
   const { user } = useAuth();
   const username = user?.username;
@@ -37,20 +38,20 @@ export default function ChatStatus() {
   return (
     <Box
       sx={{
-        padding: '1.25rem 1.25rem',
+        padding: '1rem',
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
       }}
     >
-      <Grid container direction='row' alignItems='center'>
-        <Grid item sx={{ mr: '1rem' }}>
-          <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
+      <Grid container direction='row' alignItems='center' spacing={1}>
+        <Grid item xs={3} md={2} lg={2}>
+          <Avatar />
         </Grid>
-        <Grid item mr='1rem'>
+        <Grid item xs={5} md={7} lg={8}>
           <Grid container direction='column'>
             <Typography
               variant='body1'
               sx={{
-                width: mdDown ? (smDown ? '6rem' : '11rem') : '21rem',
+                width: mdDown ? (smDown ? '5rem' : '9rem') : undefined,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
@@ -75,8 +76,24 @@ export default function ChatStatus() {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item>
-          <Button sx={{ p: 0, minWidth: '100%' }}>
+        <Grid
+          item
+          xs={2}
+          md={1}
+          sx={{ mr: betweenMdLg ? '0.75rem' : undefined }}
+        >
+          <Button size='large' sx={{ p: 0, minWidth: 'unset' }}>
+            <Person color='action' />
+          </Button>
+        </Grid>
+        <Grid item xs={2} md={1}>
+          <Button
+            size='large'
+            sx={{
+              p: 0,
+              minWidth: 'unset'
+            }}
+          >
             <Badge badgeContent={notificationCount} color='primary'>
               <Mail color='action' />
             </Badge>
