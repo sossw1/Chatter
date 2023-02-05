@@ -93,7 +93,10 @@ export default function Chat() {
     if (user) {
       socket.emit('user-data', user);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  useEffect(() => {
     socket.on('message', (message: IMessageDoc) => {
       setRooms((rooms) => {
         return rooms.map((room) => {
@@ -105,9 +108,11 @@ export default function Chat() {
       });
 
       messageRef?.current?.lastElementChild?.scrollIntoView(true);
+      return () => {
+        socket.off('message');
+      };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (selectedChatId === null && rooms.length > 0) {
