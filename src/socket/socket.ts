@@ -17,8 +17,10 @@ export const setupSocketIO = (server: http.Server) => {
 
       const userDocument = await UserCollection.findById(user._id);
       if (userDocument) {
-        userDocument.socketIds.push(socket.id);
-        await userDocument.save();
+        if (!userDocument.socketIds.includes(socket.id)) {
+          userDocument.socketIds.push(socket.id);
+          await userDocument.save();
+        }
       }
     });
 
