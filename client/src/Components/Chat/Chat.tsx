@@ -79,10 +79,9 @@ export default function Chat() {
           const next = [...prev, ...fetchedRooms];
           return next;
         });
-        setTimeout(
-          () => messageRef?.current?.lastElementChild?.scrollIntoView(true),
-          1000
-        );
+        setTimeout(() => {
+          messageRef?.current?.lastElementChild?.scrollIntoView(false);
+        }, 1000);
       }
     };
 
