@@ -62,7 +62,7 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
             sx={{
               display: 'flex',
               flexDirection: sentByUser ? 'row-reverse' : 'row',
-              mb: '1rem'
+              pb: '1rem'
             }}
           >
             <Avatar
