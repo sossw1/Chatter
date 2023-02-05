@@ -79,9 +79,6 @@ export default function Chat() {
           const next = [...prev, ...fetchedRooms];
           return next;
         });
-        setTimeout(() => {
-          messageRef?.current?.lastElementChild?.scrollIntoView(false);
-        }, 1000);
       }
     };
 
@@ -130,6 +127,7 @@ export default function Chat() {
       setSelectedRoom(roomSelection);
       if (user) setSelectedRoomName(getRoomName(roomSelection, user.username));
       setDisplayMessages(selectedRoom ? selectedRoom.messages : []);
+      messageRef?.current?.lastElementChild?.scrollIntoView(false);
     }
   }, [user, rooms, selectedChatId, selectedRoom, displayMessages]);
 
