@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Badge,
@@ -14,6 +15,7 @@ import theme from '../../Providers/theme';
 import { useSocket } from '../../api/socket';
 
 export default function ChatStatus() {
+  const navigate = useNavigate();
   const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
   const [statusColor, setStatusColor] = useState<
     'success' | 'warning' | 'error'
@@ -82,7 +84,11 @@ export default function ChatStatus() {
           md={1}
           sx={{ mr: betweenMdLg ? '0.75rem' : undefined }}
         >
-          <Button size='large' sx={{ p: 0, minWidth: 'unset' }}>
+          <Button
+            size='large'
+            sx={{ p: 0, minWidth: 'unset' }}
+            onClick={() => navigate('/friend')}
+          >
             <Person color='action' />
           </Button>
         </Grid>
