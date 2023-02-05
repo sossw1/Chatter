@@ -35,7 +35,11 @@ export default function ChatStatus() {
       if (username === user?.username) return;
       setNotificationCount((prev) => prev + 1);
     });
-  }, [user?.username]);
+
+    return () => {
+      socket.off('friend-request');
+    };
+  }, [user?.username, socket]);
 
   return (
     <Box
