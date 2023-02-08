@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
 import { useAuth } from '../../Providers/auth';
@@ -36,6 +38,14 @@ export default function Friend() {
   return (
     <Box display='flex' flexDirection='row' p='2rem'>
       <Box display='flex' flexDirection='column'>
+        <Link to='/chat'>
+          <Box display='flex' flexDirection='row' alignItems='center' mb='1rem'>
+            <ArrowBack
+              sx={{ width: '1.5rem', height: '1.5rem', mr: '0.5rem' }}
+            />
+            <Typography variant='h6'>Go back to Chat</Typography>
+          </Box>
+        </Link>
         <FriendRequest />
         <FriendRequestList
           friendRequests={friendRequests}
