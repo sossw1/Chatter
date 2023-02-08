@@ -7,3 +7,7 @@ export const SocketContext = React.createContext(socket);
 export const useSocket = () => {
   return useContext(SocketContext);
 };
+
+window.onbeforeunload = function () {
+  socket.disconnect();
+};
