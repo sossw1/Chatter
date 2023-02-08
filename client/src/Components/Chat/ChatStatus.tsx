@@ -6,6 +6,7 @@ import {
   Button,
   Box,
   Grid,
+  Tooltip,
   Typography,
   useMediaQuery
 } from '@mui/material';
@@ -88,26 +89,30 @@ export default function ChatStatus() {
           md={1}
           sx={{ mr: betweenMdLg ? '0.75rem' : undefined }}
         >
-          <Button
-            size='large'
-            sx={{ p: 0, minWidth: 'unset' }}
-            onClick={() => navigate('/friend')}
-          >
-            <Person color='action' />
-          </Button>
+          <Tooltip title='Friends'>
+            <Button
+              size='large'
+              sx={{ p: 0, minWidth: 'unset' }}
+              onClick={() => navigate('/friend')}
+            >
+              <Person color='action' />
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={2} md={1}>
-          <Button
-            size='large'
-            sx={{
-              p: 0,
-              minWidth: 'unset'
-            }}
-          >
-            <Badge badgeContent={notificationCount} color='primary'>
-              <Mail color='action' />
-            </Badge>
-          </Button>
+          <Tooltip title='Notifications'>
+            <Button
+              size='large'
+              sx={{
+                p: 0,
+                minWidth: 'unset'
+              }}
+            >
+              <Badge badgeContent={notificationCount} color='primary'>
+                <Mail color='action' />
+              </Badge>
+            </Button>
+          </Tooltip>
         </Grid>
       </Grid>
     </Box>
