@@ -158,11 +158,7 @@ export default function Chat() {
           displayMessages={displayMessages}
           messageRef={messageRef}
         />
-        <ChatInput
-          drawerWidth={drawerWidth}
-          selectedRoom={selectedRoom}
-          setRooms={setRooms}
-        />
+        <ChatInput selectedRoom={selectedRoom} />
       </Box>
     </Box>
   );

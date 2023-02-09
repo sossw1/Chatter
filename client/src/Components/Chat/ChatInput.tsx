@@ -5,16 +5,10 @@ import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
 import { useSocket } from '../../api/socket';
 
 interface Props {
-  drawerWidth: string;
   selectedRoom: IRoomDoc | null;
-  setRooms: React.Dispatch<React.SetStateAction<IRoomDoc[]>>;
 }
 
-export default function ChatInput({
-  drawerWidth,
-  selectedRoom,
-  setRooms
-}: Props) {
+export default function ChatInput({ selectedRoom }: Props) {
   const messageRef = useRef<HTMLInputElement>(null);
   const socket = useSocket();
 
