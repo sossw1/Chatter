@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../api/socket';
 
 export default function Friend() {
+  const isFriendComponentMounted = useRef(true);
   const { user } = useAuth();
   const [friendRequests, setFriendRequests] = useState<string[]>(
     user?.friendInvites || []
@@ -35,6 +36,7 @@ export default function Friend() {
 
     return () => {
       socket.disconnect();
+      isFriendComponentMounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -54,6 +56,7 @@ export default function Friend() {
         <FriendRequestList
           friendRequests={friendRequests}
           deleteRequest={deleteRequest}
+          isFriendComponentMounted={isFriendComponentMounted}
         />
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -16,13 +16,14 @@ import { useAuth } from '../../Providers/auth';
 interface Props {
   friendRequests: string[];
   deleteRequest: (username: string) => void;
+  isFriendComponentMounted: React.MutableRefObject<boolean>;
 }
 
 export default function FriendRequestList({
   friendRequests,
-  deleteRequest
+  deleteRequest,
+  isFriendComponentMounted
 }: Props) {
-  let mountedRef = useRef(true);
   const [friendRequestMessage, setFriendRequestMessage] = useState<{
     message: string;
     username: string;
@@ -30,12 +31,6 @@ export default function FriendRequestList({
   } | null>(null);
   const [disabledRequests, setDisabledRequests] = useState<string[]>([]);
   const { addOrRemoveFriend } = useAuth();
-
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
 
   const replyFriendRequest = async (username: string, accept: boolean) => {
     const token = localStorage.getItem('token');
@@ -55,7 +50,7 @@ export default function FriendRequestList({
 
     if (response.ok) {
       if (accept) {
-        if (mountedRef.current) {
+        if (isFriendComponentMounted.current) {
           setDisabledRequests((prev) => {
             const next = [...prev, username];
             return next;
@@ -66,7 +61,7 @@ export default function FriendRequestList({
             isError: false
           });
           setTimeout(() => {
-            if (mountedRef.current) {
+            if (isFriendComponentMounted.current) {
               setFriendRequestMessage(null);
               addOrRemoveFriend(username, true);
               deleteRequest(username);
