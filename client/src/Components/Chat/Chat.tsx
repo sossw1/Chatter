@@ -89,6 +89,10 @@ export default function Chat() {
     if (user) {
       socket.emit('user-data', user);
     }
+
+    return () => {
+      socket.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -104,9 +108,6 @@ export default function Chat() {
       });
 
       messageRef?.current?.lastElementChild?.scrollIntoView(true);
-      return () => {
-        socket.off('message');
-      };
     });
   }, [socket]);
 
