@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -22,6 +22,7 @@ export default function FriendRequestList({
   friendRequests,
   deleteRequest
 }: Props) {
+  let mountedRef = useRef(true);
   const [friendRequestMessage, setFriendRequestMessage] = useState<{
     message: string;
     username: string;
@@ -29,6 +30,12 @@ export default function FriendRequestList({
   } | null>(null);
   const [disabledRequests, setDisabledRequests] = useState<string[]>([]);
   const { addOrRemoveFriend } = useAuth();
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const replyFriendRequest = async (username: string, accept: boolean) => {
     const token = localStorage.getItem('token');
@@ -48,24 +55,28 @@ export default function FriendRequestList({
 
     if (response.ok) {
       if (accept) {
-        setDisabledRequests((prev) => {
-          const next = [...prev, username];
-          return next;
-        });
-        setFriendRequestMessage({
-          message: 'Friend request accepted!',
-          username,
-          isError: false
-        });
-        setTimeout(() => {
-          setFriendRequestMessage(null);
-          addOrRemoveFriend(username, true);
-          deleteRequest(username);
+        if (mountedRef.current) {
           setDisabledRequests((prev) => {
-            const next = prev.filter((user) => user !== username);
+            const next = [...prev, username];
             return next;
           });
-        }, 3000);
+          setFriendRequestMessage({
+            message: 'Friend request accepted!',
+            username,
+            isError: false
+          });
+          setTimeout(() => {
+            if (mountedRef.current) {
+              setFriendRequestMessage(null);
+              addOrRemoveFriend(username, true);
+              deleteRequest(username);
+              setDisabledRequests((prev) => {
+                const next = prev.filter((user) => user !== username);
+                return next;
+              });
+            }
+          }, 3000);
+        }
       } else {
         setDisabledRequests((prev) => {
           const next = [...prev, username];
