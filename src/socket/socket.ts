@@ -60,4 +60,6 @@ export const setupSocketIO = (server: http.Server) => {
       }
     });
   });
+
+  return io;
 };

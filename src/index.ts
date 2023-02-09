@@ -28,7 +28,7 @@ const app = express();
 const router = express.Router();
 
 const server = http.createServer(app);
-setupSocketIO(server);
+export const io = setupSocketIO(server);
 
 const publicDirectoryPath = path.join(__dirname, '../public');
 
