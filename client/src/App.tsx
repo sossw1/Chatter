@@ -1,9 +1,9 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider, RequireAuth } from './Providers/auth';
-import { socket, SocketContext } from './Providers/socket';
 import theme from './Providers/theme';
+import { AuthProvider, RequireAuth } from './Providers/auth';
+import { SocketProvider } from './Providers/socket';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';
 import Navigation from './Components/Navigation';
@@ -15,10 +15,12 @@ function App() {
   return (
     <>
       <CssBaseline />
+      {/* Providers */}
       <ThemeProvider theme={theme}>
         <AuthProvider>
-          <BrowserRouter>
-            <SocketContext.Provider value={socket}>
+          <SocketProvider>
+            {/* Routing */}
+            <BrowserRouter>
               <Routes>
                 <Route path='/' element={<Login />} />
                 <Route path='/signup' element={<SignUp />} />
@@ -34,8 +36,8 @@ function App() {
                 </Route>
                 <Route path='*' element={<NoMatch />} />
               </Routes>
-            </SocketContext.Provider>
-          </BrowserRouter>
+            </BrowserRouter>
+          </SocketProvider>
         </AuthProvider>
       </ThemeProvider>
     </>
