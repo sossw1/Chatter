@@ -48,30 +48,30 @@ export default function FriendRequestList({
       body: JSON.stringify({ username, accept })
     });
 
+    if (!isFriendComponentMounted.current) return;
+
     if (response.ok) {
       if (accept) {
-        if (isFriendComponentMounted.current) {
-          setDisabledRequests((prev) => {
-            const next = [...prev, username];
-            return next;
-          });
-          setFriendRequestMessage({
-            message: 'Friend request accepted!',
-            username,
-            isError: false
-          });
-          setTimeout(() => {
-            if (isFriendComponentMounted.current) {
-              setFriendRequestMessage(null);
-              addOrRemoveFriend(username, true);
-              deleteRequest(username);
-              setDisabledRequests((prev) => {
-                const next = prev.filter((user) => user !== username);
-                return next;
-              });
-            }
-          }, 3000);
-        }
+        setDisabledRequests((prev) => {
+          const next = [...prev, username];
+          return next;
+        });
+        setFriendRequestMessage({
+          message: 'Friend request accepted!',
+          username,
+          isError: false
+        });
+        setTimeout(() => {
+          if (isFriendComponentMounted.current) {
+            setFriendRequestMessage(null);
+            addOrRemoveFriend(username, true);
+            deleteRequest(username);
+            setDisabledRequests((prev) => {
+              const next = prev.filter((user) => user !== username);
+              return next;
+            });
+          }
+        }, 3000);
       } else {
         setDisabledRequests((prev) => {
           const next = [...prev, username];
@@ -83,6 +83,7 @@ export default function FriendRequestList({
           isError: false
         });
         setTimeout(() => {
+          if (!isFriendComponentMounted.current) return;
           setFriendRequestMessage(null);
           addOrRemoveFriend(username, false);
           deleteRequest(username);

@@ -39,6 +39,7 @@ const getRoomName = (room: IRoomDoc, username: string) => {
 };
 
 export default function Chat() {
+  const isChatComponentMounted = useRef(true);
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const drawerWidth = smDown ? '15rem' : mdDown ? '20rem' : '30rem';
@@ -75,10 +76,12 @@ export default function Chat() {
             }
           })
         );
-        setRooms((prev) => {
-          const next = [...prev, ...fetchedRooms];
-          return next;
-        });
+        if (isChatComponentMounted.current) {
+          setRooms((prev) => {
+            const next = [...prev, ...fetchedRooms];
+            return next;
+          });
+        }
       }
     };
 
@@ -92,39 +95,44 @@ export default function Chat() {
 
     return () => {
       socket.disconnect();
+      isChatComponentMounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     socket.on('message', (message: IMessageDoc) => {
-      setRooms((rooms) => {
-        return rooms.map((room) => {
-          if (room._id === message.roomId) {
-            room.messages.push(message);
-          }
-          return room;
+      if (isChatComponentMounted.current) {
+        setRooms((rooms) => {
+          return rooms.map((room) => {
+            if (room._id === message.roomId) {
+              room.messages.push(message);
+            }
+            return room;
+          });
         });
-      });
 
-      messageRef?.current?.lastElementChild?.scrollIntoView(true);
+        messageRef?.current?.lastElementChild?.scrollIntoView(true);
+      }
     });
   }, [socket]);
 
   useEffect(() => {
     if (selectedChatId === null && rooms.length > 0) {
       const groups = rooms.filter((room) => !room.isDirect);
-      if (groups.length > 0) {
-        setSelectedChatId(groups.sort(sortByName)[0]._id);
-      } else {
-        setSelectedChatId(
-          rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
-        );
+      if (isChatComponentMounted.current) {
+        if (groups.length > 0) {
+          setSelectedChatId(groups.sort(sortByName)[0]._id);
+        } else {
+          setSelectedChatId(
+            rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
+          );
+        }
       }
     }
 
     const roomSelection = rooms.find((room) => room._id === selectedChatId);
-    if (roomSelection) {
+    if (roomSelection && isChatComponentMounted.current) {
       setSelectedRoom(roomSelection);
       if (user) setSelectedRoomName(getRoomName(roomSelection, user.username));
       setDisplayMessages(selectedRoom ? selectedRoom.messages : []);
@@ -138,6 +146,7 @@ export default function Chat() {
         drawerWidth={drawerWidth}
         drawerOpen={drawerOpen}
         handleDrawerToggle={handleDrawerToggle}
+        isChatComponentMounted={isChatComponentMounted}
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}
         rooms={rooms}

@@ -8,6 +8,7 @@ interface Props {
   drawerWidth: string;
   drawerOpen: boolean;
   handleDrawerToggle: () => void;
+  isChatComponentMounted: React.MutableRefObject<boolean>;
   selectedChatId: string | null;
   setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
   rooms: IRoomDoc[];
@@ -23,6 +24,7 @@ export default function ChatDrawer({
   drawerWidth,
   drawerOpen,
   handleDrawerToggle,
+  isChatComponentMounted,
   selectedChatId,
   setSelectedChatId,
   rooms,
@@ -31,7 +33,7 @@ export default function ChatDrawer({
 }: Props) {
   const drawerContent = (
     <>
-      <ChatStatus />
+      <ChatStatus isChatComponentMounted={isChatComponentMounted} />
       <ChatList
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}

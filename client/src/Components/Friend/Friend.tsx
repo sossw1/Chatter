@@ -16,6 +16,7 @@ export default function Friend() {
   const socket = useSocket();
 
   const deleteRequest = (username: string) => {
+    if (!isFriendComponentMounted.current) return;
     setFriendRequests((prev) => {
       const next = prev.filter((request) => request !== username);
       return next;
@@ -28,6 +29,7 @@ export default function Friend() {
     if (user) socket.emit('user-data', user);
 
     socket.on('friend-request', (username: string) => {
+      if (!isFriendComponentMounted.current) return;
       setFriendRequests((prev) => {
         const next = [...prev, username];
         return next;
@@ -52,7 +54,7 @@ export default function Friend() {
             <Typography variant='h6'>Go back to Chat</Typography>
           </Box>
         </Link>
-        <FriendRequest />
+        <FriendRequest isFriendComponentMounted={isFriendComponentMounted} />
         <FriendRequestList
           friendRequests={friendRequests}
           deleteRequest={deleteRequest}

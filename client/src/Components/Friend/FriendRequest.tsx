@@ -5,7 +5,10 @@ import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../api/socket';
 
-export default function FriendRequest() {
+interface Props {
+  isFriendComponentMounted: React.MutableRefObject<boolean>;
+}
+export default function FriendRequest({ isFriendComponentMounted }: Props) {
   const [isValidUsername, setIsValidUsername] = useState(false);
   const [isSuccessfulFriendRequest, setIsSuccessfulFriendRequest] =
     useState<boolean>(true);
@@ -43,16 +46,18 @@ export default function FriendRequest() {
       body: JSON.stringify({ username })
     });
 
-    if (response.ok) {
-      setFriendRequestMessage('Friend request sent successfully!');
-      socket.emit('friend-request', {
-        requester: user ? user.username : '',
-        requested: username
-      });
-    } else {
-      const error = await response.json();
-      setIsSuccessfulFriendRequest(false);
-      setFriendRequestMessage('Error: ' + error.error);
+    if (isFriendComponentMounted.current) {
+      if (response.ok) {
+        setFriendRequestMessage('Friend request sent successfully!');
+        socket.emit('friend-request', {
+          requester: user ? user.username : '',
+          requested: username
+        });
+      } else {
+        const error = await response.json();
+        setIsSuccessfulFriendRequest(false);
+        setFriendRequestMessage('Error: ' + error.error);
+      }
     }
   };
 

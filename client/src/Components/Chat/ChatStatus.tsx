@@ -15,7 +15,11 @@ import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../api/socket';
 
-export default function ChatStatus() {
+interface Props {
+  isChatComponentMounted: React.MutableRefObject<boolean>;
+}
+
+export default function ChatStatus({ isChatComponentMounted }: Props) {
   const navigate = useNavigate();
   const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
   const [statusColor, setStatusColor] = useState<
@@ -33,7 +37,8 @@ export default function ChatStatus() {
 
   useEffect(() => {
     socket.on('friend-request', (username: string) => {
-      if (username === user?.username) return;
+      if (username === user?.username || !isChatComponentMounted.current)
+        return;
       setNotificationCount((prev) => prev + 1);
     });
   }, [user?.username, socket]);
