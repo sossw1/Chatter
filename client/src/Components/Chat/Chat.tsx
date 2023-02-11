@@ -3,7 +3,7 @@ import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
 import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
-import { useSocket } from '../../api/socket';
+import { useSocket } from '../../Providers/socket';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';

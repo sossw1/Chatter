@@ -3,7 +3,7 @@ import { Box, Button, Input, InputAdornment, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
-import { useSocket } from '../../api/socket';
+import { useSocket } from '../../Providers/socket';
 
 interface Props {
   isFriendComponentMounted: React.MutableRefObject<boolean>;

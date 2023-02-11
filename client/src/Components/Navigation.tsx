@@ -1,7 +1,7 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../Providers/auth';
-import { useSocket } from '../api/socket';
+import { useSocket } from '../Providers/socket';
 
 export default function Navigation() {
   const auth = useAuth();

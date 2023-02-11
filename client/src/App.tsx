@@ -2,7 +2,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, RequireAuth } from './Providers/auth';
-import { socket, SocketContext } from './api/socket';
+import { socket, SocketContext } from './Providers/socket';
 import theme from './Providers/theme';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';

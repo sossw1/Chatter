@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
 import { useAuth } from '../../Providers/auth';
-import { useSocket } from '../../api/socket';
+import { useSocket } from '../../Providers/socket';
 
 export default function Friend() {
   const isFriendComponentMounted = useRef(true);

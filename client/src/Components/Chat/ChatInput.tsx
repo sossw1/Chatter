@@ -2,7 +2,7 @@ import { useRef, FormEvent } from 'react';
 import { Button, Grid, Input, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
-import { useSocket } from '../../api/socket';
+import { useSocket } from '../../Providers/socket';
 
 interface Props {
   selectedRoom: IRoomDoc | null;

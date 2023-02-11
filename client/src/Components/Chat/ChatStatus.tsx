@@ -13,7 +13,7 @@ import {
 import { Circle, Mail, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
-import { useSocket } from '../../api/socket';
+import { useSocket } from '../../Providers/socket';
 
 interface Props {
   isChatComponentMounted: React.MutableRefObject<boolean>;
