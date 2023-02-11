@@ -41,7 +41,11 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
         return;
       setNotificationCount((prev) => prev + 1);
     });
-  }, [user?.username, socket]);
+
+    return () => {
+      socket.off('friend-request');
+    };
+  }, [user?.username, socket, isChatComponentMounted]);
 
   return (
     <Box
