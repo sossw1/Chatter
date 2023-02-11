@@ -37,7 +37,6 @@ export default function Friend() {
     });
 
     return () => {
-      socket.disconnect();
       isFriendComponentMounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

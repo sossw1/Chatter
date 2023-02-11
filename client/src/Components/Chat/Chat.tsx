@@ -94,7 +94,6 @@ export default function Chat() {
     }
 
     return () => {
-      socket.disconnect();
       isChatComponentMounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
