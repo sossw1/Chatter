@@ -47,39 +47,44 @@ export default function ChatHeader({
         >
           <MenuIcon />
         </IconButton>
-        <Grid item sx={{ mr: '1rem' }}>
-          <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
-        </Grid>
-        <Grid item>
-          <Grid container direction='column'>
-            <Typography
-              variant='body1'
-              sx={{
-                width: down400 ? '9rem' : undefined,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {selectedRoomName}
-            </Typography>
+        {selectedRoomName && (
+          <>
+            <Grid item sx={{ mr: '1rem' }}>
+              <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
+            </Grid>
             <Grid item>
-              <Grid container direction='row' alignItems='center'>
-                <Grid item sx={{ mr: '0.25rem' }}>
-                  <Circle
-                    sx={{ width: '0.75rem', height: '0.75rem' }}
-                    color={statusColor}
-                  />
-                </Grid>
+              <Grid container direction='column'>
+                <Typography
+                  variant='body1'
+                  sx={{
+                    width: down400 ? '9rem' : undefined,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {selectedRoomName}
+                </Typography>
                 <Grid item>
-                  <Typography variant='body2' color='text.secondary'>
-                    {status}
-                  </Typography>
+                  <Grid container direction='row' alignItems='center'>
+                    <Grid item sx={{ mr: '0.25rem' }}>
+                      <Circle
+                        sx={{ width: '0.75rem', height: '0.75rem' }}
+                        color={statusColor}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography variant='body2' color='text.secondary'>
+                        {status}
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
+          </>
+        )}
+        {!selectedRoomName && <Box height='2.5rem'></Box>}
       </Grid>
     </Box>
   );
