@@ -1,7 +1,18 @@
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { IRoomDoc } from '../types/Rooms';
 
-export const useChat = () => {
+interface ChatContextProps {
+  rooms: IRoomDoc[];
+  roomInvites: string[];
+  friends: string[];
+  friendInvites: string[];
+  addFriend: (username: string) => void;
+  removeFriend: (username: string) => void;
+}
+
+const ChatContext = createContext<ChatContextProps | null>(null);
+
+export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
   const [roomInvites, setRoomInvites] = useState<string[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
@@ -20,7 +31,7 @@ export const useChat = () => {
     });
   };
 
-  return {
+  let value = {
     rooms,
     roomInvites,
     friends,
@@ -28,4 +39,10 @@ export const useChat = () => {
     addFriend,
     removeFriend
   };
+
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
+};
+
+export const useChat = () => {
+  return useContext(ChatContext);
 };
