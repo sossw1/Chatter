@@ -1,9 +1,10 @@
+import mongoose from 'mongoose';
 import { createContext, useContext, useState } from 'react';
 import { IRoomDoc } from '../types/Rooms';
 
 interface ChatContextProps {
   rooms: IRoomDoc[];
-  roomInvites: string[];
+  roomInvites: mongoose.Types.ObjectId[];
   friends: string[];
   friendInvites: string[];
   addFriend: (username: string) => void;
@@ -14,7 +15,7 @@ const ChatContext = createContext<ChatContextProps | null>(null);
 
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
-  const [roomInvites, setRoomInvites] = useState<string[]>([]);
+  const [roomInvites, setRoomInvites] = useState<mongoose.Types.ObjectId[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
   const [friendInvites, setFriendInvites] = useState<string[]>([]);
 
