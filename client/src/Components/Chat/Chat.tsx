@@ -4,6 +4,7 @@ import theme from '../../Providers/theme';
 import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
+import { useChat } from '../../Providers/chat';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';
@@ -56,6 +57,8 @@ export default function Chat() {
   const messageRef = useRef<null | HTMLDivElement>(null);
   const socket = useSocket();
 
+  const chat = useChat();
+
   useEffect(() => {
     const fetchRooms = async () => {
       let fetchedRooms: IRoomDoc[] = [];
@@ -76,6 +79,12 @@ export default function Chat() {
             }
           })
         );
+        chat.loadInitialData({
+          rooms: fetchedRooms,
+          roomInvites: user.roomInvites,
+          friends: user.friends,
+          friendInvites: user.friendInvites
+        });
         if (isChatComponentMounted.current) {
           setRooms((prev) => {
             const next = [...prev, ...fetchedRooms];
