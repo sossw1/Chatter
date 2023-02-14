@@ -7,5 +7,25 @@ export const useChat = () => {
   const [friends, setFriends] = useState<string[]>([]);
   const [friendInvites, setFriendInvites] = useState<string[]>([]);
 
-  return { rooms, roomInvites, friends, friendInvites };
+  const addFriend = (username: string) => {
+    if (username) setFriends((prev) => [...prev, username]);
+  };
+
+  const removeFriend = (username: string) => {
+    if (!username) return;
+
+    setFriends((prev) => {
+      const next = prev.filter((user) => user !== username);
+      return next;
+    });
+  };
+
+  return {
+    rooms,
+    roomInvites,
+    friends,
+    friendInvites,
+    addFriend,
+    removeFriend
+  };
 };
