@@ -16,8 +16,6 @@ interface ChatContextProps {
   loadInitialData: (data: ChatData) => void;
   addFriend: (username: string) => void;
   removeFriend: (username: string) => void;
-  addRoom: (room: IRoomDoc) => void;
-  removeRoom: (room: string) => void;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -53,16 +51,6 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
-  const addRoom = (newRoom: IRoomDoc) => {
-    setRooms((rooms) => [...rooms, newRoom]);
-  };
-
-  const removeRoom = (roomId: string) => {
-    setRooms((rooms) => {
-      return rooms.filter((room) => room._id !== roomId);
-    });
-  };
-
   let value = {
     rooms,
     roomInvites,
@@ -70,9 +58,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friendInvites,
     loadInitialData,
     addFriend,
-    removeFriend,
-    addRoom,
-    removeRoom
+    removeFriend
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
