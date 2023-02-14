@@ -19,7 +19,7 @@ interface ChatContextProps {
   loadInitialData: (data: ChatData) => void;
 }
 
-const ChatContext = createContext<ChatContextProps | null>(null);
+const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
@@ -66,5 +66,10 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 };
 
 export const useChat = () => {
-  return useContext(ChatContext);
+  const chatContext = useContext(ChatContext);
+
+  if (!chatContext)
+    throw new Error('No context provider found when calling useChat.');
+
+  return chatContext;
 };
