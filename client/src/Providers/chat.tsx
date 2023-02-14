@@ -1,29 +1,30 @@
-import mongoose from 'mongoose';
 import { createContext, useContext, useState } from 'react';
 import { IRoomDoc } from '../types/Rooms';
 
 interface ChatData {
   rooms: IRoomDoc[];
-  roomInvites: mongoose.Types.ObjectId[];
+  roomInvites: string[];
   friends: string[];
   friendInvites: string[];
 }
 
 interface ChatContextProps {
   rooms: IRoomDoc[];
-  roomInvites: mongoose.Types.ObjectId[];
+  roomInvites: string[];
   friends: string[];
   friendInvites: string[];
+  loadInitialData: (data: ChatData) => void;
   addFriend: (username: string) => void;
   removeFriend: (username: string) => void;
-  loadInitialData: (data: ChatData) => void;
+  addRoom: (room: IRoomDoc) => void;
+  removeRoom: (room: string) => void;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
-  const [roomInvites, setRoomInvites] = useState<mongoose.Types.ObjectId[]>([]);
+  const [roomInvites, setRoomInvites] = useState<string[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
   const [friendInvites, setFriendInvites] = useState<string[]>([]);
 
@@ -52,6 +53,16 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
+  const addRoom = (newRoom: IRoomDoc) => {
+    setRooms((rooms) => [...rooms, newRoom]);
+  };
+
+  const removeRoom = (roomId: string) => {
+    setRooms((rooms) => {
+      return rooms.filter((room) => room._id !== roomId);
+    });
+  };
+
   let value = {
     rooms,
     roomInvites,
@@ -59,7 +70,9 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friendInvites,
     loadInitialData,
     addFriend,
-    removeFriend
+    removeFriend,
+    addRoom,
+    removeRoom
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

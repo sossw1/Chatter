@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
 
 interface IToken extends Document {
   token: string;
@@ -11,8 +11,8 @@ export interface IUser {
   username: string;
   password: string;
   email: string;
-  rooms: mongoose.Types.ObjectId[];
-  roomInvites: mongoose.Types.ObjectId[];
+  rooms: string[];
+  roomInvites: string[];
   friendInvites: string[];
   friends: string[];
   currentSocketId: string;
