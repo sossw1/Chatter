@@ -40,24 +40,27 @@ const getRoomName = (room: IRoomDoc, username: string) => {
 };
 
 export default function Chat() {
+  // refs
   const isChatComponentMounted = useRef(true);
+  const messageRef = useRef<null | HTMLDivElement>(null);
+  // styling
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const drawerWidth = smDown ? '15rem' : mdDown ? '20rem' : '30rem';
+  // hooks
   const { user } = useAuth();
-  const [rooms, setRooms] = useState<IRoomDoc[]>([]);
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const socket = useSocket();
+  const chat = useChat();
+  // state
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<IRoomDoc | null>(null);
   const [selectedRoomName, setSelectedRoomName] = useState<string | null>(null);
   const [displayMessages, setDisplayMessages] = useState<IMessageDoc[]>([]);
+
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
-  const messageRef = useRef<null | HTMLDivElement>(null);
-  const socket = useSocket();
-
-  const chat = useChat();
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -85,12 +88,6 @@ export default function Chat() {
           friends: user.friends,
           friendInvites: user.friendInvites
         });
-        if (isChatComponentMounted.current) {
-          setRooms((prev) => {
-            const next = [...prev, ...fetchedRooms];
-            return next;
-          });
-        }
       }
     };
 
@@ -102,51 +99,44 @@ export default function Chat() {
       socket.emit('user-data', user);
     }
 
+    socket.on('message', (message: IMessageDoc) => {
+      chat.newMessage(message);
+
+      if (isChatComponentMounted.current)
+        messageRef?.current?.lastElementChild?.scrollIntoView(true);
+    });
+
     return () => {
       isChatComponentMounted.current = false;
+      socket.off('message');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    socket.on('message', (message: IMessageDoc) => {
-      if (isChatComponentMounted.current) {
-        setRooms((rooms) => {
-          return rooms.map((room) => {
-            if (room._id === message.roomId) {
-              room.messages.push(message);
-            }
-            return room;
-          });
-        });
-
-        messageRef?.current?.lastElementChild?.scrollIntoView(true);
-      }
-    });
-  }, [socket]);
-
-  useEffect(() => {
-    if (selectedChatId === null && rooms.length > 0) {
-      const groups = rooms.filter((room) => !room.isDirect);
+    if (selectedChatId === null && chat.rooms.length > 0) {
+      const groups = chat.rooms.filter((room) => !room.isDirect);
       if (isChatComponentMounted.current) {
         if (groups.length > 0) {
           setSelectedChatId(groups.sort(sortByName)[0]._id);
         } else {
           setSelectedChatId(
-            rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
+            chat.rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
           );
         }
       }
     }
 
-    const roomSelection = rooms.find((room) => room._id === selectedChatId);
+    const roomSelection = chat.rooms.find(
+      (room) => room._id === selectedChatId
+    );
     if (roomSelection && isChatComponentMounted.current) {
       setSelectedRoom(roomSelection);
       if (user) setSelectedRoomName(getRoomName(roomSelection, user.username));
       setDisplayMessages(selectedRoom ? selectedRoom.messages : []);
       messageRef?.current?.lastElementChild?.scrollIntoView(false);
     }
-  }, [user, rooms, selectedChatId, selectedRoom, displayMessages]);
+  }, [chat, user, selectedChatId, selectedRoom, displayMessages]);
 
   return (
     <Box sx={{ display: 'flex', backgroundColor: theme.palette.grey[100] }}>
@@ -157,7 +147,7 @@ export default function Chat() {
         isChatComponentMounted={isChatComponentMounted}
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}
-        rooms={rooms}
+        rooms={chat.rooms}
         sortByName={sortByName}
         sortByFriendName={sortByFriendName}
       />
