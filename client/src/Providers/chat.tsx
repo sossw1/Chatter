@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { IRoomDoc } from '../types/Rooms';
+import { IMessageDoc, IRoomDoc } from '../types/Rooms';
 
 interface ChatData {
   rooms: IRoomDoc[];
@@ -18,6 +18,7 @@ interface ChatContextProps {
   removeFriend: (username: string) => void;
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
+  newMessage: (message: IMessageDoc) => void;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -63,6 +64,17 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
+  const newMessage = (message: IMessageDoc) => {
+    setRooms((rooms) => {
+      return rooms.map((room) => {
+        if (room._id === message.roomId) {
+          room.messages.push(message);
+        }
+        return room;
+      });
+    });
+  };
+
   let value = {
     rooms,
     roomInvites,
@@ -72,7 +84,8 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     addFriend,
     removeFriend,
     addRoom,
-    removeRoom
+    removeRoom,
+    newMessage
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
