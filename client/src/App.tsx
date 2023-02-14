@@ -3,7 +3,7 @@ import { ThemeProvider } from '@emotion/react';
 import theme from './Providers/theme';
 import { AuthProvider, RequireAuth } from './Providers/auth';
 import { SocketProvider } from './Providers/socket';
-import { ChatProvider } from './hooks/chat';
+import { ChatProvider } from './Providers/chat';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './Components/Login';
 import SignUp from './Components/SignUp';
