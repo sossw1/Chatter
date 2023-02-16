@@ -4,6 +4,7 @@ import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
+import { IRoomDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat } from '../../Providers/chat';
@@ -12,7 +13,7 @@ export default function Friend() {
   const isFriendComponentMounted = useRef(true);
   const { user } = useAuth();
   const socket = useSocket();
-  const { addFriendInvite } = useChat();
+  const { addRoom, addFriendInvite } = useChat();
 
   useEffect(() => {
     if (socket.disconnected) socket.connect();
@@ -23,9 +24,14 @@ export default function Friend() {
       addFriendInvite(username);
     });
 
+    socket.on('friend-request-accepted', (newRoom: IRoomDoc) => {
+      addRoom(newRoom);
+    });
+
     return () => {
       isFriendComponentMounted.current = false;
       socket.off('friend-request');
+      socket.off('friend-request-accepted');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
