@@ -9,6 +9,7 @@ interface ChatData {
 }
 
 interface ChatContextProps {
+  isInitialDataLoaded: boolean;
   rooms: IRoomDoc[];
   roomInvites: string[];
   friends: string[];
@@ -26,6 +27,8 @@ interface ChatContextProps {
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
+  const [isInitialDataLoaded, setIsInitialDataLoaded] =
+    useState<boolean>(false);
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
   const [roomInvites, setRoomInvites] = useState<string[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
@@ -41,6 +44,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setRoomInvites(roomInvites);
     setFriends(friends);
     setFriendInvites(friendInvites);
+    setIsInitialDataLoaded(true);
   };
 
   const addRoom = (newRoom: IRoomDoc) => {
@@ -88,6 +92,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   let value = {
+    isInitialDataLoaded,
     rooms,
     roomInvites,
     friends,
