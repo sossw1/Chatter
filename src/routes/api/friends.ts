@@ -2,6 +2,7 @@ import UserCollection from '../../models/User';
 import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
 import express from 'express';
+import { io } from '../../index';
 
 const router = express.Router();
 
@@ -83,6 +84,11 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
 
       await req.user.save();
       await userDocument.save();
+
+      io.to([...req.user.socketIds, ...userDocument.socketIds]).emit(
+        'friend-request-accepted',
+        roomDocument
+      );
 
       return res.status(201).send(roomDocument);
     }
