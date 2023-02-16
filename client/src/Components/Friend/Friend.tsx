@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
@@ -6,22 +6,13 @@ import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
+import { useChat } from '../../Providers/chat';
 
 export default function Friend() {
   const isFriendComponentMounted = useRef(true);
   const { user } = useAuth();
-  const [friendRequests, setFriendRequests] = useState<string[]>(
-    user?.friendInvites || []
-  );
   const socket = useSocket();
-
-  const deleteRequest = (username: string) => {
-    if (!isFriendComponentMounted.current) return;
-    setFriendRequests((prev) => {
-      const next = prev.filter((request) => request !== username);
-      return next;
-    });
-  };
+  const { addFriendInvite } = useChat();
 
   useEffect(() => {
     if (socket.disconnected) socket.connect();
@@ -29,15 +20,12 @@ export default function Friend() {
     if (user) socket.emit('user-data', user);
 
     socket.on('friend-request', (username: string) => {
-      if (!isFriendComponentMounted.current) return;
-      setFriendRequests((prev) => {
-        const next = [...prev, username];
-        return next;
-      });
+      addFriendInvite(username);
     });
 
     return () => {
       isFriendComponentMounted.current = false;
+      socket.off('friend-request');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -55,8 +43,6 @@ export default function Friend() {
         </Link>
         <FriendRequest isFriendComponentMounted={isFriendComponentMounted} />
         <FriendRequestList
-          friendRequests={friendRequests}
-          deleteRequest={deleteRequest}
           isFriendComponentMounted={isFriendComponentMounted}
         />
       </Box>

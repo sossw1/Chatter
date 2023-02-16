@@ -11,26 +11,20 @@ import {
 import { Check, Close } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
-import { useAuth } from '../../Providers/auth';
+import { useChat } from '../../Providers/chat';
 
 interface Props {
-  friendRequests: string[];
-  deleteRequest: (username: string) => void;
   isFriendComponentMounted: React.MutableRefObject<boolean>;
 }
 
-export default function FriendRequestList({
-  friendRequests,
-  deleteRequest,
-  isFriendComponentMounted
-}: Props) {
+export default function FriendRequestList({ isFriendComponentMounted }: Props) {
+  const { friendInvites, removeFriendInvite } = useChat();
   const [friendRequestMessage, setFriendRequestMessage] = useState<{
     message: string;
     username: string;
     isError: boolean;
   } | null>(null);
   const [disabledRequests, setDisabledRequests] = useState<string[]>([]);
-  const { addOrRemoveFriend } = useAuth();
 
   const replyFriendRequest = async (username: string, accept: boolean) => {
     const token = localStorage.getItem('token');
@@ -64,8 +58,7 @@ export default function FriendRequestList({
         setTimeout(() => {
           if (isFriendComponentMounted.current) {
             setFriendRequestMessage(null);
-            addOrRemoveFriend(username, true);
-            deleteRequest(username);
+            removeFriendInvite(username);
             setDisabledRequests((prev) => {
               const next = prev.filter((user) => user !== username);
               return next;
@@ -85,8 +78,7 @@ export default function FriendRequestList({
         setTimeout(() => {
           if (!isFriendComponentMounted.current) return;
           setFriendRequestMessage(null);
-          addOrRemoveFriend(username, false);
-          deleteRequest(username);
+          removeFriendInvite(username);
           setDisabledRequests((prev) => {
             const next = prev.filter((user) => user !== username);
             return next;
@@ -100,7 +92,10 @@ export default function FriendRequestList({
         username,
         isError: true
       });
-      setTimeout(() => setFriendRequestMessage(null), 5000);
+      setTimeout(() => {
+        setFriendRequestMessage(null);
+        removeFriendInvite(username);
+      }, 5000);
     }
   };
 
@@ -111,7 +106,7 @@ export default function FriendRequestList({
       </Typography>
       <Divider />
       <List>
-        {friendRequests.map((username) => (
+        {friendInvites.map((username) => (
           <Fragment key={uuid()}>
             <ListItem>
               <Box display='flex' flexDirection='column'>
