@@ -13,9 +13,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import validator from 'validator';
-import { useAuth } from '../Providers/auth';
-import theme from '../Providers/theme';
-import { validate, ValidationError } from '../validation/signup';
+import { useAuth } from '../../Providers/auth';
+import theme from '../../Providers/theme';
+import { validate, ValidationError } from '../../validation/signup';
 
 export default function Signup() {
   const auth = useAuth();

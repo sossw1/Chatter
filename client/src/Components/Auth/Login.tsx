@@ -12,8 +12,8 @@ import {
   useMediaQuery
 } from '@mui/material';
 
-import { useAuth } from '../Providers/auth';
-import theme from '../Providers/theme';
+import { useAuth } from '../../Providers/auth';
+import theme from '../../Providers/theme';
 
 interface LocationState {
   from: {
