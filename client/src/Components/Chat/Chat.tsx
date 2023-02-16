@@ -50,7 +50,8 @@ export default function Chat() {
   // hooks
   const { user } = useAuth();
   const socket = useSocket();
-  const { rooms, loadInitialData, addRoom, newMessage } = useChat();
+  const { isInitialDataLoaded, rooms, loadInitialData, addRoom, newMessage } =
+    useChat();
   // state
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -64,6 +65,7 @@ export default function Chat() {
 
   useEffect(() => {
     const fetchRooms = async () => {
+      if (isInitialDataLoaded) return;
       let fetchedRooms: IRoomDoc[] = [];
       const token = JSON.parse(localStorage.getItem('token') || '');
       if (user) {
