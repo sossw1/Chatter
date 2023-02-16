@@ -14,10 +14,12 @@ interface ChatContextProps {
   friends: string[];
   friendInvites: string[];
   loadInitialData: (data: ChatData) => void;
-  addFriend: (username: string) => void;
-  removeFriend: (username: string) => void;
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
+  addFriend: (username: string) => void;
+  removeFriend: (username: string) => void;
+  addFriendInvite: (username: string) => void;
+  removeFriendInvite: (username: string) => void;
   newMessage: (message: IMessageDoc) => void;
 }
 
@@ -41,6 +43,16 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setFriendInvites(friendInvites);
   };
 
+  const addRoom = (newRoom: IRoomDoc) => {
+    setRooms((rooms) => [...rooms, newRoom]);
+  };
+
+  const removeRoom = (roomId: string) => {
+    setRooms((rooms) => {
+      return rooms.filter((room) => room._id !== roomId);
+    });
+  };
+
   const addFriend = (username: string) => {
     if (username) setFriends((prev) => [...prev, username]);
   };
@@ -54,13 +66,13 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
-  const addRoom = (newRoom: IRoomDoc) => {
-    setRooms((rooms) => [...rooms, newRoom]);
+  const addFriendInvite = (username: string) => {
+    setFriendInvites((prev) => [...prev, username]);
   };
 
-  const removeRoom = (roomId: string) => {
-    setRooms((rooms) => {
-      return rooms.filter((room) => room._id !== roomId);
+  const removeFriendInvite = (username: string) => {
+    setFriendInvites((prev) => {
+      return prev.filter((invite) => invite !== username);
     });
   };
 
@@ -81,10 +93,12 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friends,
     friendInvites,
     loadInitialData,
-    addFriend,
-    removeFriend,
     addRoom,
     removeRoom,
+    addFriend,
+    removeFriend,
+    addFriendInvite,
+    removeFriendInvite,
     newMessage
   };
 
