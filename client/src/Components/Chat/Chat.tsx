@@ -150,7 +150,6 @@ export default function Chat() {
         isChatComponentMounted={isChatComponentMounted}
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}
-        rooms={rooms}
         sortByName={sortByName}
         sortByFriendName={sortByFriendName}
       />

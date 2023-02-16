@@ -3,11 +3,11 @@ import { Box, Grid, List, Typography } from '@mui/material';
 import ChatListItem from './ChatListItem';
 import { IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
+import { useChat } from '../../Providers/chat';
 
 interface Props {
   selectedChatId: string | null;
   setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
-  rooms: IRoomDoc[];
   sortByName: (a: IRoomDoc, b: IRoomDoc) => 1 | -1 | 0;
   sortByFriendName: (
     a: IRoomDoc,
@@ -19,11 +19,11 @@ interface Props {
 export default function ChatList({
   selectedChatId,
   setSelectedChatId,
-  rooms,
   sortByName,
   sortByFriendName
 }: Props) {
   const user = useAuth().user;
+  const { rooms } = useChat();
 
   const handleChatSelection = (event: MouseEvent<HTMLDivElement>) => {
     const id = event.currentTarget.id;

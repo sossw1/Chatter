@@ -11,7 +11,6 @@ interface Props {
   isChatComponentMounted: React.MutableRefObject<boolean>;
   selectedChatId: string | null;
   setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
-  rooms: IRoomDoc[];
   sortByName: (a: IRoomDoc, b: IRoomDoc) => 1 | -1 | 0;
   sortByFriendName: (
     a: IRoomDoc,
@@ -27,7 +26,6 @@ export default function ChatDrawer({
   isChatComponentMounted,
   selectedChatId,
   setSelectedChatId,
-  rooms,
   sortByName,
   sortByFriendName
 }: Props) {
@@ -37,7 +35,6 @@ export default function ChatDrawer({
       <ChatList
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}
-        rooms={rooms}
         sortByName={sortByName}
         sortByFriendName={sortByFriendName}
       />
