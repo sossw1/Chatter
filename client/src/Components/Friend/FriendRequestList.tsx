@@ -26,6 +26,36 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
   } | null>(null);
   const [disabledRequests, setDisabledRequests] = useState<string[]>([]);
 
+  const handleResponse = (username: string, accept: boolean, error?: any) => {
+    if (!error) {
+      setDisabledRequests((prev) => {
+        const next = [...prev, username];
+        return next;
+      });
+    }
+
+    let message: string;
+    if (error) {
+      message = `Error: ${error}`;
+      setFriendRequestMessage({ message, username, isError: true });
+    } else {
+      message = accept ? 'Friend request accepted!' : 'Friend request denied';
+      setFriendRequestMessage({ message, username, isError: false });
+    }
+
+    setTimeout(() => {
+      removeFriendInvite(username);
+      if (!isFriendComponentMounted.current) return;
+      setFriendRequestMessage(null);
+      if (!error) {
+        setDisabledRequests((prev) => {
+          const next = prev.filter((user) => user !== username);
+          return next;
+        });
+      }
+    }, 3000);
+  };
+
   const replyFriendRequest = async (username: string, accept: boolean) => {
     const token = localStorage.getItem('token');
     let parsedToken: string = '';
@@ -42,61 +72,13 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
       body: JSON.stringify({ username, accept })
     });
 
-    if (!isFriendComponentMounted.current) return;
-
-    if (response.ok) {
-      if (accept) {
-        setDisabledRequests((prev) => {
-          const next = [...prev, username];
-          return next;
-        });
-        setFriendRequestMessage({
-          message: 'Friend request accepted!',
-          username,
-          isError: false
-        });
-        setTimeout(() => {
-          if (isFriendComponentMounted.current) {
-            setFriendRequestMessage(null);
-            removeFriendInvite(username);
-            setDisabledRequests((prev) => {
-              const next = prev.filter((user) => user !== username);
-              return next;
-            });
-          }
-        }, 3000);
-      } else {
-        setDisabledRequests((prev) => {
-          const next = [...prev, username];
-          return next;
-        });
-        setFriendRequestMessage({
-          message: 'Friend request denied',
-          username,
-          isError: false
-        });
-        setTimeout(() => {
-          if (!isFriendComponentMounted.current) return;
-          setFriendRequestMessage(null);
-          removeFriendInvite(username);
-          setDisabledRequests((prev) => {
-            const next = prev.filter((user) => user !== username);
-            return next;
-          });
-        }, 3000);
-      }
-    } else {
+    let error = null;
+    if (!response.ok) {
       const data = await response.json();
-      setFriendRequestMessage({
-        message: 'Error: ' + data.error,
-        username,
-        isError: true
-      });
-      setTimeout(() => {
-        setFriendRequestMessage(null);
-        removeFriendInvite(username);
-      }, 5000);
+      error = data.error;
     }
+
+    handleResponse(username, accept, error);
   };
 
   return (
