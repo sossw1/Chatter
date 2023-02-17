@@ -2,42 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
 import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
-import { useAuth, IUserDoc } from '../../Providers/auth';
+import { sortByName, sortByFriendName } from '../../utils/sort';
+import { getRoomName } from '../../utils/parse';
+import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat } from '../../Providers/chat';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
-
-const sortByName = (a: IRoomDoc, b: IRoomDoc) => {
-  if (a.name && b.name) {
-    if (a.name > b.name) return 1;
-    if (a.name < b.name) return -1;
-  }
-  return 0;
-};
-
-const sortByFriendName = (a: IRoomDoc, b: IRoomDoc, user: IUserDoc | null) => {
-  if (user) {
-    const friendA = a.users.filter((roomUser) => roomUser !== user.username)[0];
-    const friendB = b.users.filter((roomUser) => roomUser !== user.username)[0];
-    if (friendA > friendB) return 1;
-    if (friendA < friendB) return -1;
-    return 0;
-  }
-  return 0;
-};
-
-const getRoomName = (room: IRoomDoc, username: string) => {
-  if (!username) return null;
-  if (room.isDirect) {
-    const friend = room.users.find((user) => user !== username);
-    return friend ? friend : '';
-  } else {
-    return room.name ? room.name : '';
-  }
-};
 
 export default function Chat() {
   // refs

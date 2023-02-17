@@ -2,6 +2,9 @@ import { Avatar, Box, Typography, useMediaQuery } from '@mui/material';
 import ChatMessage from './ChatMessage';
 import { useAuth } from '../../Providers/auth';
 import { IMessageDoc } from '../../types/Rooms';
+import { groupMessagesByUsername } from '../../utils/group';
+import { formatMessageTimestamp } from '../../utils/format';
+
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
 
@@ -9,36 +12,6 @@ interface Props {
   displayMessages: IMessageDoc[];
   messageRef: React.MutableRefObject<null | HTMLDivElement>;
 }
-
-const groupMessagesByUsername = (messages: IMessageDoc[]) => {
-  const groupedMessages: IMessageDoc[][] = [];
-  if (messages.length === 0) return groupedMessages;
-  let currentGroup = [messages[0]];
-  let currentUsername = messages[0].username;
-  for (let i = 1; i < messages.length; i++) {
-    const currentMessage = messages[i];
-    if (currentMessage.username === currentUsername) {
-      currentGroup.push(currentMessage);
-    } else {
-      groupedMessages.push(currentGroup);
-      currentGroup = [currentMessage];
-      currentUsername = currentMessage.username;
-    }
-  }
-  groupedMessages.push(currentGroup);
-  return groupedMessages;
-};
-
-const formatDate = (timestamp: string) => {
-  const date = new Date(timestamp);
-  const month = (date.getMonth() + 1).toString();
-  const day = date.getDate().toString();
-  const shortYear = date.getFullYear().toString().slice(-2);
-  const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
-  const minutes = date.getMinutes();
-  const amOrPm = date.getHours() > 12 ? 'PM' : 'AM';
-  return `${month}/${day}/${shortYear} ${hours}:${minutes}${amOrPm}`;
-};
 
 export default function ChatHistory({ displayMessages, messageRef }: Props) {
   const { user } = useAuth();
@@ -89,7 +62,7 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
                   opacity: '70%'
                 }}
               >
-                {formatDate(groupOfMessages[0].createdAt)}
+                {formatMessageTimestamp(groupOfMessages[0].createdAt)}
               </Typography>
             </Box>
           </Box>
