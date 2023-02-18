@@ -1,6 +1,9 @@
 import { createContext, useContext, useState } from 'react';
 import { IMessageDoc, IRoomDoc } from '../types/Rooms';
 
+export type Status = 'Online' | 'Away' | 'Offline';
+export type StatusColor = 'success' | 'warning' | 'error';
+
 interface ChatData {
   rooms: IRoomDoc[];
   roomInvites: string[];
@@ -10,11 +13,13 @@ interface ChatData {
 
 interface ChatContextProps {
   isInitialDataLoaded: boolean;
+  status: Status;
   rooms: IRoomDoc[];
   roomInvites: string[];
   friends: string[];
   friendInvites: string[];
   loadInitialData: (data: ChatData) => void;
+  updateStatus: (status: Status) => void;
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
   addFriend: (username: string) => void;
@@ -29,6 +34,7 @@ const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [isInitialDataLoaded, setIsInitialDataLoaded] =
     useState<boolean>(false);
+  const [status, setStatus] = useState<Status>('Offline');
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
   const [roomInvites, setRoomInvites] = useState<string[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
@@ -45,6 +51,10 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setFriends(friends);
     setFriendInvites(friendInvites);
     setIsInitialDataLoaded(true);
+  };
+
+  const updateStatus = (status: Status) => {
+    setStatus(status);
   };
 
   const addRoom = (newRoom: IRoomDoc) => {
@@ -93,10 +103,12 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   let value = {
     isInitialDataLoaded,
+    status,
     rooms,
     roomInvites,
     friends,
     friendInvites,
+    updateStatus,
     loadInitialData,
     addRoom,
     removeRoom,
