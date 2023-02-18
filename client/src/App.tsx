@@ -18,9 +18,9 @@ function App() {
       <CssBaseline />
       {/* Providers */}
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <SocketProvider>
-            <ChatProvider>
+        <ChatProvider>
+          <AuthProvider>
+            <SocketProvider>
               {/* Routing */}
               <BrowserRouter>
                 <Routes>
@@ -39,9 +39,9 @@ function App() {
                   <Route path='*' element={<NoMatch />} />
                 </Routes>
               </BrowserRouter>
-            </ChatProvider>
-          </SocketProvider>
-        </AuthProvider>
+            </SocketProvider>
+          </AuthProvider>
+        </ChatProvider>
       </ThemeProvider>
     </>
   );
