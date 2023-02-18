@@ -14,6 +14,7 @@ import { Circle, Mail, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
+import { useChat, StatusColor } from '../../Providers/chat';
 
 interface Props {
   isChatComponentMounted: React.MutableRefObject<boolean>;
@@ -21,10 +22,8 @@ interface Props {
 
 export default function ChatStatus({ isChatComponentMounted }: Props) {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
-  const [statusColor, setStatusColor] = useState<
-    'success' | 'warning' | 'error'
-  >('success');
+  const { status } = useChat();
+  const [statusColor, setStatusColor] = useState<StatusColor>('error');
   const [notificationCount, setNotificationCount] = useState<number>(0);
 
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -34,6 +33,22 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
+
+  useEffect(() => {
+    switch (status) {
+      case 'Online':
+        setStatusColor('success');
+        break;
+      case 'Away':
+        setStatusColor('warning');
+        break;
+      case 'Offline':
+        setStatusColor('error');
+        break;
+      default:
+        break;
+    }
+  }, [status]);
 
   useEffect(() => {
     socket.on('friend-request', (username: string) => {
