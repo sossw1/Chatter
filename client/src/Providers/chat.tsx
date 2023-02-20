@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from 'react';
 import { IMessageDoc, IRoomDoc } from '../types/Rooms';
 
-export type Status = 'Online' | 'Away' | 'Offline';
-export type StatusColor = 'success' | 'warning' | 'error';
+export type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
+export type StatusColor = 'success' | 'warning' | 'error' | 'disabled';
 
 interface ChatData {
   rooms: IRoomDoc[];

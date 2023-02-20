@@ -45,6 +45,9 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
       case 'Offline':
         setStatusColor('error');
         break;
+      case 'Invisible':
+        setStatusColor('disabled');
+        break;
       default:
         break;
     }
