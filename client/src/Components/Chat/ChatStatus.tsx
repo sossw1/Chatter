@@ -74,7 +74,19 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
     >
       <Grid container direction='row' alignItems='center' spacing={1}>
         <Grid item xs={3} md={2} lg={2}>
-          <Avatar />
+          <Badge
+            overlap='circular'
+            variant='dot'
+            color={statusColor}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            sx={{
+              '& .MuiBadge-badge': {
+                boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+              }
+            }}
+          >
+            <Avatar />
+          </Badge>
         </Grid>
         <Grid item xs={5} md={7} lg={8}>
           <Grid container direction='column'>
