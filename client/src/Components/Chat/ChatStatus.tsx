@@ -10,7 +10,7 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Circle, Mail, Person } from '@mui/icons-material';
+import { Mail, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
@@ -90,31 +90,23 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
         </Grid>
         <Grid item xs={5} md={7} lg={8}>
           <Grid container direction='column'>
-            <Typography
-              variant='body1'
-              sx={{
-                width: mdDown ? (smDown ? '5rem' : '9rem') : undefined,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {username}
-            </Typography>
             <Grid item>
-              <Grid container direction='row' alignItems='center'>
-                <Grid item sx={{ mr: '0.25rem' }}>
-                  <Circle
-                    sx={{ width: '0.75rem', height: '0.75rem' }}
-                    color={statusColor}
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography variant='body2' color='text.secondary'>
-                    {status}
-                  </Typography>
-                </Grid>
-              </Grid>
+              <Typography
+                variant='body1'
+                sx={{
+                  width: mdDown ? (smDown ? '5rem' : '9rem') : undefined,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {username}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant='body2' color='text.secondary'>
+                {status}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
