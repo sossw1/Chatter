@@ -46,7 +46,7 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
         setStatusColor('error');
         break;
       case 'Invisible':
-        setStatusColor('disabled');
+        setStatusColor('error');
         break;
       default:
         break;

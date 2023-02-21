@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import { IMessageDoc, IRoomDoc } from '../types/Rooms';
 
 export type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
-export type StatusColor = 'success' | 'warning' | 'error' | 'disabled';
+export type StatusColor = 'success' | 'warning' | 'error';
 
 interface ChatData {
   rooms: IRoomDoc[];
