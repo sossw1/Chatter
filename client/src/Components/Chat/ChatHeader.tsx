@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import {
   Avatar,
+  Badge,
   Box,
   Grid,
   IconButton,
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Circle, Menu as MenuIcon } from '@mui/icons-material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import theme from '../../Providers/theme';
 
 interface Props {
@@ -50,7 +51,19 @@ export default function ChatHeader({
         {selectedRoomName && (
           <>
             <Grid item sx={{ mr: '1rem' }}>
-              <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Badge
+                overlap='circular'
+                variant='dot'
+                color={statusColor}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                sx={{
+                  '& .MuiBadge-badge': {
+                    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+                  }
+                }}
+              >
+                <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
+              </Badge>
             </Grid>
             <Grid item>
               <Grid container direction='column'>
@@ -66,19 +79,9 @@ export default function ChatHeader({
                   {selectedRoomName}
                 </Typography>
                 <Grid item>
-                  <Grid container direction='row' alignItems='center'>
-                    <Grid item sx={{ mr: '0.25rem' }}>
-                      <Circle
-                        sx={{ width: '0.75rem', height: '0.75rem' }}
-                        color={statusColor}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant='body2' color='text.secondary'>
-                        {status}
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                  <Typography variant='body2' color='text.secondary'>
+                    {status}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
