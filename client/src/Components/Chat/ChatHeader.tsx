@@ -20,10 +20,12 @@ export default function ChatHeader({
   handleDrawerToggle,
   selectedRoomName
 }: Props) {
-  const [status, setStatus] = useState<'Online' | 'Away' | 'Offline'>('Online');
+  const [status, setStatus] = useState<
+    'Online' | 'Away' | 'Offline' | 'Loading'
+  >('Loading');
   const [statusColor, setStatusColor] = useState<
-    'success' | 'warning' | 'error'
-  >('success');
+    'success' | 'warning' | 'error' | 'neutral'
+  >('neutral');
 
   const down400 = useMediaQuery(theme.breakpoints.down(400));
 
@@ -37,6 +39,9 @@ export default function ChatHeader({
         break;
       case 'Offline':
         setStatusColor('error');
+        break;
+      case 'Loading':
+        setStatusColor('neutral');
         break;
       default:
         break;
