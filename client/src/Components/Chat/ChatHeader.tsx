@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -26,6 +26,22 @@ export default function ChatHeader({
   >('success');
 
   const down400 = useMediaQuery(theme.breakpoints.down(400));
+
+  useEffect(() => {
+    switch (status) {
+      case 'Online':
+        setStatusColor('success');
+        break;
+      case 'Away':
+        setStatusColor('warning');
+        break;
+      case 'Offline':
+        setStatusColor('error');
+        break;
+      default:
+        break;
+    }
+  }, [status]);
 
   return (
     <Box
