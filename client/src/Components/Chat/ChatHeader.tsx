@@ -9,16 +9,19 @@ import {
   useMediaQuery
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
+import { IRoomDoc } from '../../types/Rooms';
+import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
+import { useAuth } from '../../Providers/auth';
 
 interface Props {
   handleDrawerToggle: () => void;
-  selectedRoomName: string | null;
+  selectedRoom: IRoomDoc | null;
 }
 
 export default function ChatHeader({
   handleDrawerToggle,
-  selectedRoomName
+  selectedRoom
 }: Props) {
   const [status, setStatus] = useState<
     'Online' | 'Away' | 'Offline' | 'Loading'
@@ -28,6 +31,10 @@ export default function ChatHeader({
   >('neutral');
 
   const down400 = useMediaQuery(theme.breakpoints.down(400));
+  const { user } = useAuth();
+
+  const selectedRoomName =
+    selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
 
   useEffect(() => {
     switch (status) {

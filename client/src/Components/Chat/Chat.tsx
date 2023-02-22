@@ -3,7 +3,6 @@ import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
 import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
 import { sortByName, sortByFriendName } from '../../utils/sort';
-import { getRoomName } from '../../utils/parse';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat } from '../../Providers/chat';
@@ -29,7 +28,6 @@ export default function Chat() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<IRoomDoc | null>(null);
-  const [selectedRoomName, setSelectedRoomName] = useState<string | null>(null);
   const [displayMessages, setDisplayMessages] = useState<IMessageDoc[]>([]);
 
   const handleDrawerToggle = () => {
@@ -110,7 +108,6 @@ export default function Chat() {
     const roomSelection = rooms.find((room) => room._id === selectedChatId);
     if (roomSelection && isChatComponentMounted.current) {
       setSelectedRoom(roomSelection);
-      if (user) setSelectedRoomName(getRoomName(roomSelection, user.username));
       setDisplayMessages(selectedRoom ? selectedRoom.messages : []);
       messageRef?.current?.lastElementChild?.scrollIntoView(false);
     }
@@ -136,7 +133,7 @@ export default function Chat() {
       >
         <ChatHeader
           handleDrawerToggle={handleDrawerToggle}
-          selectedRoomName={selectedRoomName}
+          selectedRoom={selectedRoom}
         />
         <ChatHistory
           displayMessages={displayMessages}
