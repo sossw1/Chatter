@@ -14,6 +14,9 @@ import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
 
+type Status = 'Online' | 'Away' | 'Offline' | 'Loading';
+type StatusColor = 'success' | 'warning' | 'error' | 'neutral';
+
 interface Props {
   handleDrawerToggle: () => void;
   selectedRoom: IRoomDoc | null;
@@ -23,13 +26,8 @@ export default function ChatHeader({
   handleDrawerToggle,
   selectedRoom
 }: Props) {
-  const [status, setStatus] = useState<
-    'Online' | 'Away' | 'Offline' | 'Loading'
-  >('Loading');
-  const [statusColor, setStatusColor] = useState<
-    'success' | 'warning' | 'error' | 'neutral'
-  >('neutral');
-
+  const [status, setStatus] = useState<Status>('Loading');
+  const [statusColor, setStatusColor] = useState<StatusColor>('neutral');
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
 
