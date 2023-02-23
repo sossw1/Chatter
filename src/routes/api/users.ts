@@ -20,6 +20,7 @@ router.post('/api/users', async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
+      status: 'Offline',
       tokens: [],
       rooms: [],
       roomInvites: [],

@@ -9,6 +9,8 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt, { Jwt } from 'jsonwebtoken';
 
+type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
+
 interface IToken extends Document {
   token: string;
 }
@@ -17,6 +19,7 @@ export interface IUser {
   username: string;
   password: string;
   email: string;
+  status: Status;
   rooms: mongoose.Types.ObjectId[];
   roomInvites: mongoose.Types.ObjectId[];
   friendInvites: string[];
@@ -33,6 +36,7 @@ enum PropertyNames {
   USERNAME = 'username',
   PASSWORD = 'password',
   EMAIL = 'email',
+  STATUS = 'status',
   ROOMS = 'rooms',
   ROOM_INVITES = 'roomInvites',
   FRIEND_INVITES = 'friendInvites',
@@ -69,6 +73,7 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
       }
     }
   },
+  status: String,
   rooms: [mongoose.Types.ObjectId],
   roomInvites: [mongoose.Types.ObjectId],
   friendInvites: [
