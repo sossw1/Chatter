@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Get friend's status
 
-router.get('/api/users/friend/status', auth, async (req, res) => {
+router.post('/api/users/friend/status', auth, async (req, res) => {
   try {
     const username = req.body.username;
 
