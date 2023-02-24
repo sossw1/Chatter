@@ -6,6 +6,31 @@ import { io } from '../../index';
 
 const router = express.Router();
 
+// Get friend's status
+
+router.get('/api/users/friend/status', auth, async (req, res) => {
+  try {
+    const username = req.body.username;
+
+    if (!username)
+      return res.status(400).send({ error: 'Invalid friend username' });
+
+    if (!req.user.friends.includes(username))
+      return res.status(404).send({ error: 'Friend not found' });
+
+    const userDocument = await UserCollection.findOne({ username });
+
+    if (!userDocument)
+      return res.status(404).send({ error: 'Friend not found' });
+
+    const { status } = userDocument;
+
+    res.status(200).send({ status });
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 // Invite user to be friends
 
 router.post('/api/users/friend/invite', auth, async (req, res) => {
