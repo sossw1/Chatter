@@ -17,6 +17,12 @@ import { useAuth } from '../../Providers/auth';
 type Status = 'Online' | 'Away' | 'Offline' | 'Loading';
 type StatusColor = 'success' | 'warning' | 'error' | 'neutral';
 
+interface UserStatusObject {
+  username: string;
+  status: Status;
+  statusColor: StatusColor;
+}
+
 interface Props {
   handleDrawerToggle: () => void;
   selectedRoom: IRoomDoc | null;
@@ -26,32 +32,66 @@ export default function ChatHeader({
   handleDrawerToggle,
   selectedRoom
 }: Props) {
-  const [status, setStatus] = useState<Status>('Loading');
-  const [statusColor, setStatusColor] = useState<StatusColor>('neutral');
+  const [friendStatuses, setFriendStatuses] = useState<UserStatusObject[]>([]);
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
 
-  useEffect(() => {
-    switch (status) {
-      case 'Online':
-        setStatusColor('success');
-        break;
-      case 'Away':
-        setStatusColor('warning');
-        break;
-      case 'Offline':
-        setStatusColor('error');
-        break;
-      case 'Loading':
-        setStatusColor('neutral');
-        break;
-      default:
-        break;
+  const getStatusColor = (status: Status): StatusColor => {
+    if (status === 'Online') return 'success';
+    else if (status === 'Away') return 'warning';
+    else return 'error';
+  };
+
+  const getFriendStatuses = async () => {
+    const friends = user?.friends;
+    if (!friends) return;
+    const token = JSON.parse(localStorage.getItem('token') || '');
+    for (let friend of friends) {
+      try {
+        const response = await fetch(`/api/users/friend/status`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username: friend })
+        });
+        if (response.ok) {
+          const { status }: { status: Status } = await response.json();
+          const friendStatusObject = {
+            username: friend,
+            status,
+            statusColor: getStatusColor(status)
+          };
+          setFriendStatuses((prev) => {
+            return [...prev, friendStatusObject];
+          });
+        }
+      } catch (error) {}
     }
-  }, [status]);
+  };
+
+  const findFriendStatus = (username: string) => {
+    if (selectedRoom?.isDirect) {
+      const friendStatusObject = friendStatuses.find(
+        (status) => status.username === selectedRoomName
+      );
+      if (friendStatusObject) {
+        return {
+          status: friendStatusObject.status,
+          statusColor: friendStatusObject.statusColor
+        };
+      }
+    }
+  };
+
+  useEffect(() => {
+    getFriendStatuses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box
@@ -80,7 +120,11 @@ export default function ChatHeader({
               <Badge
                 overlap='circular'
                 variant='dot'
-                color={statusColor}
+                color={
+                  selectedRoom?.isDirect
+                    ? findFriendStatus(selectedRoomName)?.statusColor
+                    : 'neutral'
+                }
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 sx={{
                   '& .MuiBadge-badge': {
@@ -106,7 +150,9 @@ export default function ChatHeader({
                 </Typography>
                 <Grid item>
                   <Typography variant='body2' color='text.secondary'>
-                    {status}
+                    {selectedRoom?.isDirect
+                      ? findFriendStatus(selectedRoomName)?.status
+                      : 'Loading'}
                   </Typography>
                 </Grid>
               </Grid>
