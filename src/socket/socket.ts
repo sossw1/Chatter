@@ -5,9 +5,9 @@ import UserCollection, { IUserDoc } from '../models/User';
 
 export const setupSocketIO = (server: http.Server) => {
   const io = new Server(server);
-  let user: IUserDoc | null;
 
   io.on('connection', (socket) => {
+    let user: IUserDoc | null;
     socket.on('user-data', async (userData: IUserDoc) => {
       user = userData;
 
@@ -19,7 +19,24 @@ export const setupSocketIO = (server: http.Server) => {
       if (userDocument) {
         if (!userDocument.socketIds.includes(socket.id)) {
           userDocument.socketIds.push(socket.id);
-          await userDocument.save();
+        }
+
+        if (userDocument.status !== 'Invisible') {
+          userDocument.status = 'Online';
+        }
+
+        await userDocument.save();
+
+        for (let username of userDocument.friends) {
+          const friendUserDocument = await UserCollection.findOne({
+            username
+          });
+          if (friendUserDocument)
+            io.to(friendUserDocument.socketIds).emit(
+              'status-update',
+              user.username,
+              userDocument.status
+            );
         }
       }
     });
@@ -55,7 +72,24 @@ export const setupSocketIO = (server: http.Server) => {
           userDocument.socketIds = userDocument.socketIds.filter(
             (socketId) => socketId !== socket.id
           );
+
+          if (userDocument.status !== 'Invisible') {
+            userDocument.status = 'Offline';
+          }
+
           await userDocument.save();
+
+          for (let username of userDocument.friends) {
+            const friendUserDocument = await UserCollection.findOne({
+              username
+            });
+            if (friendUserDocument)
+              io.to(friendUserDocument.socketIds).emit(
+                'status-update',
+                user.username,
+                userDocument.status
+              );
+          }
         }
       }
     });
