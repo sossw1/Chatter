@@ -13,6 +13,7 @@ import { IRoomDoc } from '../../types/Rooms';
 import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
+import { useSocket } from '../../Providers/socket';
 
 type Status = 'Online' | 'Away' | 'Offline' | 'Loading';
 type StatusColor = 'success' | 'warning' | 'error' | 'neutral';
@@ -35,6 +36,7 @@ export default function ChatHeader({
   const [friendStatuses, setFriendStatuses] = useState<UserStatusObject[]>([]);
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
+  const socket = useSocket();
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
@@ -92,6 +94,26 @@ export default function ChatHeader({
     getFriendStatuses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    socket.on('status-update', (username: string, status: Status) => {
+      const statusColor = getStatusColor(status);
+      const newFriendStatus = { username, status, statusColor };
+
+      setFriendStatuses((prev) => {
+        const next = [...prev];
+        const friendIndex = next.findIndex(
+          (status) => status.username === username
+        );
+        next[friendIndex] = newFriendStatus;
+        return next;
+      });
+    });
+
+    return () => {
+      socket.off('status-update');
+    };
+  }, [socket]);
 
   return (
     <Box
