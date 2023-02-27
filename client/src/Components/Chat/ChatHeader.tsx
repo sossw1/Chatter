@@ -137,23 +137,28 @@ export default function ChatHeader({
         {selectedRoomName && (
           <>
             <Grid item sx={{ mr: '1rem' }}>
-              <Badge
-                overlap='circular'
-                variant='dot'
-                color={
-                  selectedRoom?.isDirect
-                    ? findFriendStatus(selectedRoomName)?.statusColor
-                    : 'neutral'
-                }
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                sx={{
-                  '& .MuiBadge-badge': {
-                    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+              {selectedRoom?.isDirect && (
+                <Badge
+                  overlap='circular'
+                  variant='dot'
+                  color={
+                    selectedRoom?.isDirect
+                      ? findFriendStatus(selectedRoomName)?.statusColor
+                      : 'neutral'
                   }
-                }}
-              >
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+                    }
+                  }}
+                >
+                  <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
+                </Badge>
+              )}
+              {!selectedRoom?.isDirect && (
                 <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
-              </Badge>
+              )}
             </Grid>
             <Grid item>
               <Grid container direction='column'>
@@ -168,13 +173,15 @@ export default function ChatHeader({
                 >
                   {selectedRoomName}
                 </Typography>
-                <Grid item>
-                  <Typography variant='body2' color='text.secondary'>
-                    {selectedRoom?.isDirect
-                      ? findFriendStatus(selectedRoomName)?.status
-                      : 'Loading'}
-                  </Typography>
-                </Grid>
+                {selectedRoom?.isDirect && (
+                  <Grid item>
+                    <Typography variant='body2' color='text.secondary'>
+                      {selectedRoom?.isDirect
+                        ? findFriendStatus(selectedRoomName)?.status
+                        : 'Loading'}
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
           </>
