@@ -77,16 +77,14 @@ export default function ChatHeader({
   };
 
   const findFriendStatus = (username: string) => {
-    if (selectedRoom?.isDirect) {
-      const friendStatusObject = friendStatuses.find(
-        (status) => status.username === selectedRoomName
-      );
-      if (friendStatusObject) {
-        return {
-          status: friendStatusObject.status,
-          statusColor: friendStatusObject.statusColor
-        };
-      }
+    const friendStatusObject = friendStatuses.find(
+      (status) => status.username === username
+    );
+    if (friendStatusObject) {
+      return {
+        status: friendStatusObject.status,
+        statusColor: friendStatusObject.statusColor
+      };
     }
   };
 
