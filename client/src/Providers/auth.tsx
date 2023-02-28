@@ -158,7 +158,6 @@ const auth = Auth.getInstance();
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
-  const { updateStatus } = useChat();
   const [user, setUser] = useState<IUserDoc | null>(null);
 
   const setUserWithToken = async () => {
@@ -174,7 +173,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     if (response.ok) {
       const user = await response.json();
       setUser(user);
-      updateStatus('Online');
       return {
         type: 'confirmation',
         confirmation: 'Successful login with token'
@@ -193,7 +191,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: IUserDoc; token: Jwt } =
         await response.json();
       setUser(user);
-      updateStatus('Online');
       localStorage.setItem('token', JSON.stringify(token));
       return {
         type: 'confirmation',
@@ -212,7 +209,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: IUserDoc; token: Jwt } =
         await response.json();
       setUser(user);
-      updateStatus('Online');
       localStorage.setItem('token', JSON.stringify(token));
       return {
         type: 'confirmation',
@@ -226,7 +222,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const logout = async () => {
     const response = await auth.postLogout();
     setUser(null);
-    updateStatus('Offline');
     if (response && response.ok) {
       return {
         type: 'confirmation',
