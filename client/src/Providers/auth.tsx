@@ -2,7 +2,6 @@ import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
 import { Document } from 'mongoose';
-import { useChat } from './chat';
 
 interface IToken extends Document {
   token: string;
