@@ -1,10 +1,18 @@
 import { createContext, useContext, useState } from 'react';
 import { IMessageDoc, IRoomDoc } from '../types/Rooms';
 
-export type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
-export type StatusColor = 'success' | 'warning' | 'error';
+export type UserStatusText = 'Online' | 'Away' | 'Offline' | 'Invisible';
+export type FriendStatusText = 'Online' | 'Away' | 'Offline' | 'Loading';
+export type StatusColor = 'success' | 'warning' | 'neutral' | 'error';
+
+export interface FriendStatus {
+  username: string;
+  status: FriendStatusText;
+  statusColor: StatusColor;
+}
 
 interface ChatData {
+  friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
   roomInvites: string[];
   friends: string[];
@@ -13,13 +21,18 @@ interface ChatData {
 
 interface ChatContextProps {
   isInitialDataLoaded: boolean;
-  status: Status;
+  userStatus: UserStatusText;
+  friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
   roomInvites: string[];
   friends: string[];
   friendInvites: string[];
   loadInitialData: (data: ChatData) => void;
-  updateStatus: (status: Status) => void;
+  updateUserStatus: (status: UserStatusText) => void;
+  updateFriendStatus: (username: string, status: FriendStatusText) => void;
+  findFriendStatus: (
+    username: string
+  ) => { status: FriendStatusText; statusColor: StatusColor } | undefined;
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
   addFriend: (username: string) => void;
@@ -29,23 +42,35 @@ interface ChatContextProps {
   newMessage: (message: IMessageDoc) => void;
 }
 
+export const getStatusColor = (
+  status: UserStatusText | FriendStatusText
+): StatusColor => {
+  if (status === 'Online') return 'success';
+  else if (status === 'Away') return 'warning';
+  else if (status === 'Offline') return 'error';
+  else return 'neutral';
+};
+
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [isInitialDataLoaded, setIsInitialDataLoaded] =
     useState<boolean>(false);
-  const [status, setStatus] = useState<Status>('Offline');
+  const [userStatus, setUserStatus] = useState<UserStatusText>('Offline');
+  const [friendStatuses, setFriendStatuses] = useState<FriendStatus[]>([]);
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
   const [roomInvites, setRoomInvites] = useState<string[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
   const [friendInvites, setFriendInvites] = useState<string[]>([]);
 
   const loadInitialData = ({
+    friendStatuses,
     rooms,
     roomInvites,
     friends,
     friendInvites
   }: ChatData) => {
+    setFriendStatuses(friendStatuses);
     setRooms(rooms);
     setRoomInvites(roomInvites);
     setFriends(friends);
@@ -53,8 +78,32 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setIsInitialDataLoaded(true);
   };
 
-  const updateStatus = (status: Status) => {
-    setStatus(status);
+  const updateUserStatus = (status: UserStatusText) => {
+    setUserStatus(status);
+  };
+
+  const updateFriendStatus = (username: string, status: FriendStatusText) => {
+    const newFriendStatus = {
+      username,
+      status,
+      statusColor: getStatusColor(status)
+    };
+    setFriendStatuses((prev) => {
+      const next = [...prev];
+      const friendIndex = next.findIndex(
+        (status) => status.username === username
+      );
+      if (friendIndex === -1) {
+        return [...prev, newFriendStatus];
+      } else {
+        next[friendIndex] = newFriendStatus;
+        return next;
+      }
+    });
+  };
+
+  const findFriendStatus = (username: string) => {
+    return friendStatuses.find((status) => status.username === username);
   };
 
   const addRoom = (newRoom: IRoomDoc) => {
@@ -103,12 +152,15 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   let value = {
     isInitialDataLoaded,
-    status,
+    userStatus,
+    friendStatuses,
     rooms,
     roomInvites,
     friends,
     friendInvites,
-    updateStatus,
+    updateUserStatus,
+    updateFriendStatus,
+    findFriendStatus,
     loadInitialData,
     addRoom,
     removeRoom,
