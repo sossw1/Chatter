@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Avatar,
   Badge,
@@ -14,15 +14,7 @@ import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
-
-type Status = 'Online' | 'Away' | 'Offline' | 'Loading';
-type StatusColor = 'success' | 'warning' | 'error' | 'neutral';
-
-interface UserStatusObject {
-  username: string;
-  status: Status;
-  statusColor: StatusColor;
-}
+import { useChat, FriendStatusText } from '../../Providers/chat';
 
 interface Props {
   handleDrawerToggle: () => void;
@@ -33,85 +25,23 @@ export default function ChatHeader({
   handleDrawerToggle,
   selectedRoom
 }: Props) {
-  const [friendStatuses, setFriendStatuses] = useState<UserStatusObject[]>([]);
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
   const socket = useSocket();
+  const { findFriendStatus, updateFriendStatus } = useChat();
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
 
-  const getStatusColor = (status: Status): StatusColor => {
-    if (status === 'Online') return 'success';
-    else if (status === 'Away') return 'warning';
-    else return 'error';
-  };
-
-  const getFriendStatuses = async () => {
-    const friends = user?.friends;
-    if (!friends) return;
-    const token = JSON.parse(localStorage.getItem('token') || '');
-    for (let friend of friends) {
-      try {
-        const response = await fetch(`/api/users/friend/status`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ username: friend })
-        });
-        if (response.ok) {
-          const { status }: { status: Status } = await response.json();
-          const friendStatusObject = {
-            username: friend,
-            status,
-            statusColor: getStatusColor(status)
-          };
-          setFriendStatuses((prev) => {
-            return [...prev, friendStatusObject];
-          });
-        }
-      } catch (error) {}
-    }
-  };
-
-  const findFriendStatus = (username: string) => {
-    const friendStatusObject = friendStatuses.find(
-      (status) => status.username === username
-    );
-    if (friendStatusObject) {
-      return {
-        status: friendStatusObject.status,
-        statusColor: friendStatusObject.statusColor
-      };
-    }
-  };
-
   useEffect(() => {
-    getFriendStatuses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    socket.on('status-update', (username: string, status: Status) => {
-      const statusColor = getStatusColor(status);
-      const newFriendStatus = { username, status, statusColor };
-
-      setFriendStatuses((prev) => {
-        const next = [...prev];
-        const friendIndex = next.findIndex(
-          (status) => status.username === username
-        );
-        next[friendIndex] = newFriendStatus;
-        return next;
-      });
+    socket.on('status-update', (username: string, status: FriendStatusText) => {
+      updateFriendStatus(username, status);
     });
 
     return () => {
       socket.off('status-update');
     };
-  }, [socket]);
+  });
 
   return (
     <Box
