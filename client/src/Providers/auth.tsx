@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
 import { Document } from 'mongoose';
+import { useChat } from './chat';
 
 interface IToken extends Document {
   token: string;
@@ -157,6 +158,7 @@ const auth = Auth.getInstance();
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
+  const { userStatus, updateUserStatus } = useChat();
   const [user, setUser] = useState<IUserDoc | null>(null);
 
   const setUserWithToken = async () => {
@@ -172,6 +174,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     if (response.ok) {
       const user = await response.json();
       setUser(user);
+      if (userStatus !== 'Invisible') updateUserStatus('Online');
       return {
         type: 'confirmation',
         confirmation: 'Successful login with token'
@@ -190,6 +193,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: IUserDoc; token: Jwt } =
         await response.json();
       setUser(user);
+      updateUserStatus('Online');
       localStorage.setItem('token', JSON.stringify(token));
       return {
         type: 'confirmation',
@@ -208,6 +212,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: IUserDoc; token: Jwt } =
         await response.json();
       setUser(user);
+      if (userStatus !== 'Invisible') updateUserStatus('Online');
       localStorage.setItem('token', JSON.stringify(token));
       return {
         type: 'confirmation',
@@ -221,6 +226,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const logout = async () => {
     const response = await auth.postLogout();
     setUser(null);
+    if (userStatus !== 'Invisible') updateUserStatus('Offline');
     if (response && response.ok) {
       return {
         type: 'confirmation',
