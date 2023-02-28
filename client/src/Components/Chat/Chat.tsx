@@ -5,7 +5,12 @@ import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
 import { sortByName, sortByFriendName } from '../../utils/sort';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
-import { useChat } from '../../Providers/chat';
+import {
+  useChat,
+  getStatusColor,
+  FriendStatusText,
+  FriendStatus
+} from '../../Providers/chat';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';
@@ -34,37 +39,65 @@ export default function Chat() {
     setDrawerOpen(!drawerOpen);
   };
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      if (isInitialDataLoaded) return;
-      let fetchedRooms: IRoomDoc[] = [];
-      const token = JSON.parse(localStorage.getItem('token') || '');
-      if (user) {
-        await Promise.all(
-          user.rooms.map(async (room) => {
-            const response = await fetch(`/api/rooms/${room}`, {
-              method: 'GET',
+  const fetchInitialData = async () => {
+    if (!user) return;
+
+    const token = JSON.parse(localStorage.getItem('token') || '');
+    let fetchedRooms: IRoomDoc[] = [];
+    let fetchedFriendStatuses: FriendStatus[] = [];
+
+    await Promise.all(
+      user.rooms
+        .map(async (room) => {
+          const response = await fetch(`/api/rooms/${room}`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          if (response.ok) {
+            const roomDocument: IRoomDoc = await response.json();
+            fetchedRooms.push(roomDocument);
+          }
+        })
+        .concat(
+          user.friends.map(async (friend) => {
+            const response = await fetch(`/api/users/friend/status`, {
+              method: 'POST',
               headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
-              }
+              },
+              body: JSON.stringify({ username: friend })
             });
             if (response.ok) {
-              const roomDocument: IRoomDoc = await response.json();
-              fetchedRooms.push(roomDocument);
+              const { status }: { status: FriendStatusText } =
+                await response.json();
+              const friendStatus = {
+                username: friend,
+                status,
+                statusColor: getStatusColor(status)
+              };
+              fetchedFriendStatuses.push(friendStatus);
             }
           })
-        );
-        loadInitialData({
-          rooms: fetchedRooms,
-          roomInvites: user.roomInvites,
-          friends: user.friends,
-          friendInvites: user.friendInvites
-        });
-      }
-    };
+        )
+    );
 
-    fetchRooms();
+    loadInitialData({
+      friendStatuses: fetchedFriendStatuses,
+      rooms: fetchedRooms,
+      roomInvites: user.roomInvites,
+      friends: user.friends,
+      friendInvites: user.friendInvites
+    });
+  };
+
+  useEffect(() => {
+    if (!isInitialDataLoaded) {
+      fetchInitialData();
+    }
 
     if (socket.disconnected) socket.connect();
 
