@@ -1,6 +1,7 @@
 import { MouseEvent } from 'react';
 import {
   Avatar,
+  Badge,
   ListItem,
   ListItemAvatar,
   ListItemButton,
@@ -11,6 +12,7 @@ import {
 import theme from '../../Providers/theme';
 import { IRoomDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
+import { useChat } from '../../Providers/chat';
 
 interface Props {
   room: IRoomDoc;
@@ -26,8 +28,16 @@ export default function ChatListItem({
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const { user } = useAuth();
+  const { findFriendStatus } = useChat();
   let username: string = '';
   if (user) username = user.username;
+
+  const friendUsername = room.isDirect
+    ? room.users.find((user) => user !== username)
+    : '';
+  const friendStatus = friendUsername
+    ? findFriendStatus(friendUsername)
+    : undefined;
 
   return (
     <ListItem sx={{ p: 0 }}>
@@ -49,7 +59,22 @@ export default function ChatListItem({
         onClick={handleChatSelection}
       >
         <ListItemAvatar>
-          <Avatar />
+          {friendStatus && (
+            <Badge
+              overlap='circular'
+              variant='dot'
+              color={friendStatus.statusColor}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              sx={{
+                '& .MuiBadge-badge': {
+                  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+                }
+              }}
+            >
+              <Avatar sx={{ width: '2.5rem', height: '2.5rem' }} />
+            </Badge>
+          )}
+          {(!room.isDirect || !friendStatus) && <Avatar />}
         </ListItemAvatar>
         <ListItemText
           primary={
@@ -61,7 +86,7 @@ export default function ChatListItem({
                 whiteSpace: 'nowrap'
               }}
             >
-              {room.name || room.users.find((user) => user !== username)}
+              {room.name || friendUsername}
             </Typography>
           }
           secondary={
