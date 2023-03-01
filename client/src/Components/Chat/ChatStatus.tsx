@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
@@ -6,11 +6,12 @@ import {
   Button,
   Box,
   Grid,
+  Popover,
   Tooltip,
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Mail, Person } from '@mui/icons-material';
+import { ArrowDropDown, ArrowDropUp, Mail, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
@@ -21,17 +22,26 @@ interface Props {
 }
 
 export default function ChatStatus({ isChatComponentMounted }: Props) {
-  const navigate = useNavigate();
-  const { userStatus } = useChat();
-  const [notificationCount, setNotificationCount] = useState<number>(0);
-
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
-
+  const navigate = useNavigate();
+  const { userStatus } = useChat();
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
+  const [notificationCount, setNotificationCount] = useState<number>(0);
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLElement | null>(
+    null
+  );
+
+  const handlePopoverAnchorClick = (event: MouseEvent<HTMLElement>) =>
+    setPopoverAnchorEl(event.currentTarget);
+
+  const handlePopoverClose = () => setPopoverAnchorEl(null);
+
+  const open = Boolean(popoverAnchorEl);
+  const id = open ? 'status-popover' : undefined;
 
   useEffect(() => {
     socket.on('friend-request', (username: string) => {
@@ -84,9 +94,33 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant='body2' color='text.secondary'>
+              <Button
+                variant='text'
+                color='primary'
+                disableRipple
+                sx={{
+                  fontSize: '0.875rem',
+                  p: '0',
+                  minWidth: 'unset',
+                  textTransform: 'none'
+                }}
+                aria-describedby={id}
+                onClick={handlePopoverAnchorClick}
+              >
                 {userStatus}
-              </Typography>
+                {open && <ArrowDropUp />}
+                {!open && <ArrowDropDown />}
+              </Button>
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={popoverAnchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left'
+                }}
+              ></Popover>
             </Grid>
           </Grid>
         </Grid>
