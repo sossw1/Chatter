@@ -6,7 +6,8 @@ import {
   Button,
   Box,
   Grid,
-  Popover,
+  Menu,
+  MenuItem,
   Tooltip,
   Typography,
   useMediaQuery
@@ -31,17 +32,13 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
   const username = user?.username;
   const socket = useSocket();
   const [notificationCount, setNotificationCount] = useState<number>(0);
-  const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLElement | null>(
-    null
-  );
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
 
-  const handlePopoverAnchorClick = (event: MouseEvent<HTMLElement>) =>
-    setPopoverAnchorEl(event.currentTarget);
+  const open = Boolean(menuAnchorEl);
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) =>
+    setMenuAnchorEl(event.currentTarget);
 
-  const handlePopoverClose = () => setPopoverAnchorEl(null);
-
-  const open = Boolean(popoverAnchorEl);
-  const id = open ? 'status-popover' : undefined;
+  const handleClose = () => setMenuAnchorEl(null);
 
   useEffect(() => {
     socket.on('friend-request', (username: string) => {
@@ -96,6 +93,10 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
             <Grid item>
               <Button
                 variant='text'
+                id='status-button'
+                aria-controls={open ? 'status-menu' : undefined}
+                aria-haspopup='true'
+                aria-expanded={open ? 'true' : undefined}
                 color='primary'
                 disableRipple
                 sx={{
@@ -104,23 +105,25 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
                   minWidth: 'unset',
                   textTransform: 'none'
                 }}
-                aria-describedby={id}
-                onClick={handlePopoverAnchorClick}
+                onClick={handleClick}
               >
                 {userStatus}
                 {open && <ArrowDropUp />}
                 {!open && <ArrowDropDown />}
               </Button>
-              <Popover
-                id={id}
+              <Menu
+                id='status-menu'
+                anchorEl={menuAnchorEl}
                 open={open}
-                anchorEl={popoverAnchorEl}
-                onClose={handlePopoverClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left'
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'status-button'
                 }}
-              ></Popover>
+              >
+                <MenuItem onClick={handleClose}>Online</MenuItem>
+                <MenuItem onClick={handleClose}>Away</MenuItem>
+                <MenuItem onClick={handleClose}>Invisible</MenuItem>
+              </Menu>
             </Grid>
           </Grid>
         </Grid>
