@@ -22,6 +22,8 @@ interface Props {
   isChatComponentMounted: React.MutableRefObject<boolean>;
 }
 
+const statusOptions = ['Online', 'Away', 'Invisible'];
+
 export default function ChatStatus({ isChatComponentMounted }: Props) {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
@@ -120,9 +122,11 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
                   'aria-labelledby': 'status-button'
                 }}
               >
-                <MenuItem onClick={handleClose}>Online</MenuItem>
-                <MenuItem onClick={handleClose}>Away</MenuItem>
-                <MenuItem onClick={handleClose}>Invisible</MenuItem>
+                {statusOptions.map((status) => (
+                  <MenuItem key={status} onClick={handleClose}>
+                    {status}
+                  </MenuItem>
+                ))}
               </Menu>
             </Grid>
           </Grid>
