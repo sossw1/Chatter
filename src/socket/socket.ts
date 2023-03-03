@@ -1,10 +1,22 @@
 import http from 'http';
 import { Server } from 'socket.io';
 import { IMessageDoc } from '../models/Room';
-import UserCollection, { IUserDoc } from '../models/User';
+import UserCollection, { IUserDoc, Status } from '../models/User';
 
 export const setupSocketIO = (server: http.Server) => {
   const io = new Server(server);
+
+  const emitStatusToFriends = async (user: IUserDoc, status: Status) => {
+    for (let username of user.friends) {
+      const friendUserDocument = await UserCollection.findOne({ username });
+      if (friendUserDocument)
+        io.to(friendUserDocument.socketIds).emit(
+          'status-update',
+          user.username,
+          status
+        );
+    }
+  };
 
   io.on('connection', (socket) => {
     let user: IUserDoc | null;
@@ -27,17 +39,7 @@ export const setupSocketIO = (server: http.Server) => {
 
         await userDocument.save();
 
-        for (let username of userDocument.friends) {
-          const friendUserDocument = await UserCollection.findOne({
-            username
-          });
-          if (friendUserDocument)
-            io.to(friendUserDocument.socketIds).emit(
-              'status-update',
-              user.username,
-              userDocument.status
-            );
-        }
+        await emitStatusToFriends(userDocument, userDocument.status);
       }
     });
 
@@ -79,17 +81,7 @@ export const setupSocketIO = (server: http.Server) => {
 
           await userDocument.save();
 
-          for (let username of userDocument.friends) {
-            const friendUserDocument = await UserCollection.findOne({
-              username
-            });
-            if (friendUserDocument)
-              io.to(friendUserDocument.socketIds).emit(
-                'status-update',
-                user.username,
-                userDocument.status
-              );
-          }
+          await emitStatusToFriends(userDocument, userDocument.status);
         }
       }
     });
