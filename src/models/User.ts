@@ -9,7 +9,7 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt, { Jwt } from 'jsonwebtoken';
 
-type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
+export type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
 
 interface IToken extends Document {
   token: string;
