@@ -43,6 +43,30 @@ export const setupSocketIO = (server: http.Server) => {
       }
     });
 
+    socket.on('status-update', async (newStatus: Status) => {
+      if (!user) return;
+
+      const userDocument = await UserCollection.findById(user._id);
+
+      if (!userDocument) return;
+
+      const previousStatus = userDocument.status;
+      if (newStatus === previousStatus) return;
+
+      userDocument.status = newStatus;
+      await userDocument.save();
+
+      if (newStatus === 'Online' || newStatus === 'Away') {
+        await emitStatusToFriends(userDocument, userDocument.status);
+      } else if (newStatus === 'Offline') {
+        if (previousStatus === 'Invisible') return;
+        await emitStatusToFriends(userDocument, userDocument.status);
+      } else if (newStatus === 'Invisible') {
+        if (previousStatus === 'Offline') return;
+        await emitStatusToFriends(userDocument, 'Offline');
+      }
+    });
+
     socket.on('message', (message: IMessageDoc) => {
       io.to(message.roomId + '').emit('message', message);
     });
