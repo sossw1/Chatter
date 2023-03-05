@@ -16,20 +16,20 @@ import { ArrowDropDown, ArrowDropUp, Mail, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
-import { useChat, getStatusColor } from '../../Providers/chat';
+import { useChat, getStatusColor, UserStatusText } from '../../Providers/chat';
 
 interface Props {
   isChatComponentMounted: React.MutableRefObject<boolean>;
 }
 
-const statusOptions = ['Online', 'Away', 'Invisible'];
+const statusOptions: UserStatusText[] = ['Online', 'Away', 'Invisible'];
 
 export default function ChatStatus({ isChatComponentMounted }: Props) {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const navigate = useNavigate();
-  const { userStatus } = useChat();
+  const { userStatus, updateUserStatus } = useChat();
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
@@ -40,7 +40,14 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
   const handleClick = (event: MouseEvent<HTMLButtonElement>) =>
     setMenuAnchorEl(event.currentTarget);
 
-  const handleClose = () => setMenuAnchorEl(null);
+  const handleClose = (selectedStatus: UserStatusText | null) => {
+    if (selectedStatus) {
+      updateUserStatus(selectedStatus);
+      socket.emit('status-update', selectedStatus);
+    }
+
+    setMenuAnchorEl(null);
+  };
 
   useEffect(() => {
     socket.on('friend-request', (username: string) => {
@@ -117,13 +124,13 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
                 id='status-menu'
                 anchorEl={menuAnchorEl}
                 open={open}
-                onClose={handleClose}
+                onClose={() => handleClose(null)}
                 MenuListProps={{
                   'aria-labelledby': 'status-button'
                 }}
               >
                 {statusOptions.map((status) => (
-                  <MenuItem key={status} onClick={handleClose}>
+                  <MenuItem key={status} onClick={() => handleClose(status)}>
                     {status}
                   </MenuItem>
                 ))}
