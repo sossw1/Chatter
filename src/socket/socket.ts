@@ -39,7 +39,9 @@ export const setupSocketIO = (server: http.Server) => {
 
         await userDocument.save();
 
-        await emitStatusToFriends(userDocument, userDocument.status);
+        if (userDocument.status !== 'Invisible') {
+          await emitStatusToFriends(userDocument, userDocument.status);
+        }
       }
     });
 
