@@ -25,6 +25,10 @@ router.post('/api/users/friend/status', auth, async (req, res) => {
 
     const { status } = userDocument;
 
+    if (status === 'Invisible') {
+      return res.status(200).send({ status: 'Offline' });
+    }
+
     res.status(200).send({ status });
   } catch (error) {
     res.sendStatus(500);
