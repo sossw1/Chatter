@@ -101,11 +101,11 @@ export const setupSocketIO = (server: http.Server) => {
 
           if (userDocument.status !== 'Invisible') {
             userDocument.status = 'Offline';
+            userDocument.save();
+            await emitStatusToFriends(userDocument, userDocument.status);
+          } else {
+            await userDocument.save();
           }
-
-          await userDocument.save();
-
-          await emitStatusToFriends(userDocument, userDocument.status);
         }
       }
     });
