@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
 import { Document } from 'mongoose';
+import { useSocket } from './socket';
 import { useChat } from './chat';
 
 interface IToken extends Document {
@@ -159,6 +160,7 @@ const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const { userStatus, updateUserStatus } = useChat();
+  const socket = useSocket();
   const [user, setUser] = useState<IUserDoc | null>(null);
 
   const setUserWithToken = async () => {
@@ -174,7 +176,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     if (response.ok) {
       const user = await response.json();
       setUser(user);
-      if (userStatus !== 'Invisible') updateUserStatus('Online');
+
+      if (userStatus !== 'Invisible') {
+        socket.emit('status-update', 'Online');
+        updateUserStatus('Online');
+      }
+
       return {
         type: 'confirmation',
         confirmation: 'Successful login with token'
@@ -193,7 +200,10 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: IUserDoc; token: Jwt } =
         await response.json();
       setUser(user);
+
+      socket.emit('status-update', 'Online');
       updateUserStatus('Online');
+
       localStorage.setItem('token', JSON.stringify(token));
       return {
         type: 'confirmation',
@@ -212,7 +222,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const { user, token }: { user: IUserDoc; token: Jwt } =
         await response.json();
       setUser(user);
-      if (userStatus !== 'Invisible') updateUserStatus('Online');
+
+      if (userStatus !== 'Invisible') {
+        socket.emit('status-update', 'Online');
+        updateUserStatus('Online');
+      }
+
       localStorage.setItem('token', JSON.stringify(token));
       return {
         type: 'confirmation',
@@ -226,7 +241,12 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   const logout = async () => {
     const response = await auth.postLogout();
     setUser(null);
-    if (userStatus !== 'Invisible') updateUserStatus('Offline');
+
+    if (userStatus !== 'Invisible') {
+      socket.emit('status-update', 'Offline');
+      updateUserStatus('Offline');
+    }
+
     if (response && response.ok) {
       return {
         type: 'confirmation',
