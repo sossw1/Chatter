@@ -114,9 +114,24 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
       await req.user.save();
       await userDocument.save();
 
-      io.to([...req.user.socketIds, ...userDocument.socketIds]).emit(
+      const reqUserStatus =
+        req.user.status === 'Invisible' ? 'Offline' : req.user.status;
+
+      const friendStatus =
+        userDocument.status === 'Invisible' ? 'Offline' : req.user.status;
+
+      io.to([...req.user.socketIds]).emit(
         'friend-request-accepted',
-        roomDocument
+        roomDocument,
+        userDocument.username,
+        friendStatus
+      );
+
+      io.to([...userDocument.socketIds]).emit(
+        'friend-request-accepted',
+        roomDocument,
+        req.user.username,
+        reqUserStatus
       );
 
       return res.status(201).send(roomDocument);
