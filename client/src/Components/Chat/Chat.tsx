@@ -27,8 +27,14 @@ export default function Chat() {
   // hooks
   const { user } = useAuth();
   const socket = useSocket();
-  const { isInitialDataLoaded, rooms, loadInitialData, addRoom, newMessage } =
-    useChat();
+  const {
+    isInitialDataLoaded,
+    rooms,
+    loadInitialData,
+    addRoom,
+    newMessage,
+    updateFriendStatus
+  } = useChat();
   // state
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -112,9 +118,17 @@ export default function Chat() {
         messageRef?.current?.lastElementChild?.scrollIntoView(true);
     });
 
-    socket.on('friend-request-accepted', (newRoom: IRoomDoc) => {
-      addRoom(newRoom);
-    });
+    socket.on(
+      'friend-request-accepted',
+      (
+        newRoom: IRoomDoc,
+        friendUsername: string,
+        friendStatus: FriendStatusText
+      ) => {
+        addRoom(newRoom);
+        updateFriendStatus(friendUsername, friendStatus);
+      }
+    );
 
     return () => {
       isChatComponentMounted.current = false;
