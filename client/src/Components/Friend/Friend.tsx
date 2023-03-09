@@ -24,19 +24,6 @@ export default function Friend() {
       addFriendInvite(username);
     });
 
-    socket.on('friend-request-accepted', (newRoom: IRoomDoc) => {
-      addRoom(newRoom);
-    });
-
-    return () => {
-      isFriendComponentMounted.current = false;
-      socket.off('friend-request');
-      socket.off('friend-request-accepted');
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     socket.on(
       'friend-request-accepted',
       (
@@ -50,9 +37,12 @@ export default function Friend() {
     );
 
     return () => {
+      isFriendComponentMounted.current = false;
+      socket.off('friend-request');
       socket.off('friend-request-accepted');
     };
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box display='flex' flexDirection='row' p='2rem'>
