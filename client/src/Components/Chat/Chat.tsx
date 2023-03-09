@@ -32,6 +32,7 @@ export default function Chat() {
     rooms,
     loadInitialData,
     addRoom,
+    addFriendInvite,
     newMessage,
     updateFriendStatus
   } = useChat();
@@ -118,6 +119,10 @@ export default function Chat() {
         messageRef?.current?.lastElementChild?.scrollIntoView(true);
     });
 
+    socket.on('friend-request', (username: string) => {
+      addFriendInvite(username);
+    });
+
     socket.on(
       'friend-request-accepted',
       (
@@ -133,6 +138,7 @@ export default function Chat() {
     return () => {
       isChatComponentMounted.current = false;
       socket.off('message');
+      socket.off('friend-request');
       socket.off('friend-request-accepted');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
