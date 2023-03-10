@@ -23,6 +23,7 @@ router.post('/api/users', async (req, res) => {
       status: 'Offline',
       tokens: [],
       rooms: [],
+      notifications: [],
       roomInvites: [],
       friendInvites: [],
       friends: [],

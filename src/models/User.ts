@@ -11,6 +11,19 @@ import jwt, { Jwt } from 'jsonwebtoken';
 
 export type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
 
+type NotificationType =
+  | 'system'
+  | 'friend-request-received'
+  | 'friend-request-accepted'
+  | 'group-invite-received';
+
+export interface AppNotification {
+  type: NotificationType;
+  title: string;
+  text: string;
+  viewed: boolean;
+}
+
 interface IToken extends Document {
   token: string;
 }
@@ -21,6 +34,7 @@ export interface IUser {
   email: string;
   status: Status;
   rooms: mongoose.Types.ObjectId[];
+  notifications: AppNotification[];
   roomInvites: mongoose.Types.ObjectId[];
   friendInvites: string[];
   friends: string[];
@@ -39,6 +53,7 @@ enum PropertyNames {
   STATUS = 'status',
   ROOMS = 'rooms',
   ROOM_INVITES = 'roomInvites',
+  NOTIFICATIONS = 'notifications',
   FRIEND_INVITES = 'friendInvites',
   FRIENDS = 'friends',
   SOCKET_IDS = 'socketIds',
@@ -49,6 +64,27 @@ export interface IUserModel extends Model<IUserDoc> {
   findByCredentials(email: string, password: string): Promise<IUserDoc>;
   PropertyNames: typeof PropertyNames;
 }
+
+export interface INotification {
+  type: string;
+  title: string;
+  text: string;
+  viewed: boolean;
+}
+
+const notificationSchemaFields: Record<
+  keyof INotification,
+  SchemaDefinitionProperty
+> = {
+  type: String,
+  title: String,
+  text: String,
+  viewed: Boolean
+};
+
+const NotificationSchema = new Schema(notificationSchemaFields, {
+  timestamps: true
+});
 
 const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
   username: {
@@ -76,6 +112,7 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
   status: String,
   rooms: [mongoose.Types.ObjectId],
   roomInvites: [mongoose.Types.ObjectId],
+  notifications: [NotificationSchema],
   friendInvites: [
     {
       type: String,
