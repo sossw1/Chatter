@@ -17,12 +17,14 @@ type NotificationType =
   | 'friend-request-accepted'
   | 'group-invite-received';
 
-export interface AppNotification {
+export interface INotification {
   type: NotificationType;
   title: string;
   text: string;
   viewed: boolean;
 }
+
+export interface INotificationDoc extends INotification, Document {}
 
 interface IToken extends Document {
   token: string;
@@ -34,7 +36,7 @@ export interface IUser {
   email: string;
   status: Status;
   rooms: mongoose.Types.ObjectId[];
-  notifications: AppNotification[];
+  notifications: INotificationDoc[];
   roomInvites: mongoose.Types.ObjectId[];
   friendInvites: string[];
   friends: string[];
@@ -46,7 +48,7 @@ export interface IUserDoc extends IUser, Document {
   generateAuthToken(): Jwt;
 }
 
-enum PropertyNames {
+enum UserPropertyNames {
   USERNAME = 'username',
   PASSWORD = 'password',
   EMAIL = 'email',
@@ -60,16 +62,20 @@ enum PropertyNames {
   TOKENS = 'tokens'
 }
 
-export interface IUserModel extends Model<IUserDoc> {
-  findByCredentials(email: string, password: string): Promise<IUserDoc>;
-  PropertyNames: typeof PropertyNames;
+enum NotificationPropertyNames {
+  TYPE = 'type',
+  TITLE = 'title',
+  TEXT = 'text',
+  VIEWED = 'viewed'
 }
 
-export interface INotification {
-  type: string;
-  title: string;
-  text: string;
-  viewed: boolean;
+export interface INotificationModel extends Model<INotificationDoc> {
+  PropertyNames: typeof NotificationPropertyNames;
+}
+
+export interface IUserModel extends Model<IUserDoc> {
+  findByCredentials(email: string, password: string): Promise<IUserDoc>;
+  PropertyNames: typeof UserPropertyNames;
 }
 
 const notificationSchemaFields: Record<
@@ -194,5 +200,9 @@ UserSchema.pre('save', async function (next) {
 });
 
 const UserCollection = model<IUserDoc, IUserModel>('users', UserSchema);
+const NotificationCollection = model<INotification, INotificationModel>(
+  'notifications',
+  NotificationSchema
+);
 
-export default UserCollection;
+export { UserCollection, NotificationCollection };

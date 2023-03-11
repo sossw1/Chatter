@@ -1,4 +1,4 @@
-import UserCollection from '../../models/User';
+import { UserCollection } from '../../models/User';
 import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
 import express from 'express';

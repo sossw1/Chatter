@@ -2,7 +2,7 @@ import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import express from 'express';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
-import UserCollection from '../../models/User';
+import { UserCollection } from '../../models/User';
 import inRoom from '../../middleware/inRoom';
 
 const router = express.Router();

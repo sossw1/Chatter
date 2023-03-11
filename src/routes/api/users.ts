@@ -1,4 +1,4 @@
-import UserCollection, { IUser, IUserDoc } from '../../models/User';
+import { UserCollection, IUser, IUserDoc } from '../../models/User';
 import auth from '../../middleware/auth';
 import express from 'express';
 import Filter from 'bad-words';

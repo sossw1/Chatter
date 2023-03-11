@@ -1,7 +1,13 @@
 import http from 'http';
 import { Server } from 'socket.io';
 import { IMessageDoc } from '../models/Room';
-import UserCollection, { IUserDoc, Status } from '../models/User';
+import {
+  UserCollection,
+  IUserDoc,
+  Status,
+  INotificationDoc,
+  NotificationCollection
+} from '../models/User';
 
 export const setupSocketIO = (server: http.Server) => {
   const io = new Server(server);

@@ -1,5 +1,5 @@
 import jwt, { Secret } from 'jsonwebtoken';
-import User from '../models/User';
+import { UserCollection } from '../models/User';
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -12,7 +12,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
       const secret: Secret = process.env.JWT_SECRET || 'd^e#f@a*u$l%t';
       const decoded = await jwt.verify(token, secret);
       if (typeof decoded !== 'string') {
-        const user = await User.findOne({
+        const user = await UserCollection.findOne({
           _id: decoded._id,
           'tokens.token': token
         });
