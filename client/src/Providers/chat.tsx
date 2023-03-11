@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { IMessageDoc, IRoomDoc } from '../types/Rooms';
+import { IMessageDoc, IRoomDoc, INotificationDoc } from '../types/Rooms';
 
 export type UserStatusText = 'Online' | 'Away' | 'Offline' | 'Invisible';
 export type FriendStatusText = 'Online' | 'Away' | 'Offline' | 'Loading';
@@ -12,6 +12,7 @@ export interface FriendStatus {
 }
 
 interface ChatData {
+  notifications: INotificationDoc[];
   friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
   roomInvites: string[];
@@ -21,6 +22,7 @@ interface ChatData {
 
 interface ChatContextProps {
   isInitialDataLoaded: boolean;
+  notifications: INotificationDoc[];
   userStatus: UserStatusText;
   friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
@@ -62,14 +64,17 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [roomInvites, setRoomInvites] = useState<string[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
   const [friendInvites, setFriendInvites] = useState<string[]>([]);
+  const [notifications, setNotifications] = useState<INotificationDoc[]>([]);
 
   const loadInitialData = ({
+    notifications,
     friendStatuses,
     rooms,
     roomInvites,
     friends,
     friendInvites
   }: ChatData) => {
+    setNotifications(notifications);
     setFriendStatuses(friendStatuses);
     setRooms(rooms);
     setRoomInvites(roomInvites);
@@ -152,6 +157,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   let value = {
     isInitialDataLoaded,
+    notifications,
     userStatus,
     friendStatuses,
     rooms,
