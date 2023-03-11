@@ -93,8 +93,18 @@ export const setupSocketIO = (server: http.Server) => {
         });
         if (!requestedUser) return;
 
+        const notification = new NotificationCollection({
+          type: 'friend-request-received',
+          title: 'Friend Request',
+          text: '' + requester,
+          viewed: false
+        });
+
+        requestedUser.notifications.unshift(notification);
+        await requestedUser.save();
+
         requestedUser.socketIds.forEach((id) => {
-          io.to(id).emit('friend-request', requester);
+          io.to(id).emit('friend-request', requester, notification);
         });
       }
     );
