@@ -18,13 +18,9 @@ import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
 import { useChat, getStatusColor, UserStatusText } from '../../Providers/chat';
 
-interface Props {
-  isChatComponentMounted: React.MutableRefObject<boolean>;
-}
-
 const statusOptions: UserStatusText[] = ['Online', 'Away', 'Invisible'];
 
-export default function ChatStatus({ isChatComponentMounted }: Props) {
+export default function ChatStatus() {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));

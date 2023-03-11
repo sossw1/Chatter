@@ -31,7 +31,7 @@ export default function ChatDrawer({
 }: Props) {
   const drawerContent = (
     <>
-      <ChatStatus isChatComponentMounted={isChatComponentMounted} />
+      <ChatStatus />
       <ChatList
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}
