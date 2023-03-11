@@ -20,3 +20,18 @@ export interface IRoom {
 }
 
 export interface IRoomDoc extends IRoom, Document {}
+
+type NotificationType =
+  | 'system'
+  | 'friend-request-received'
+  | 'friend-request-accepted'
+  | 'group-invite-received';
+
+export interface INotification {
+  type: NotificationType;
+  title: string;
+  text: string;
+  viewed: boolean;
+}
+
+export interface INotificationDoc extends INotification, Document {}
