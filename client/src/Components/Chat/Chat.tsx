@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
-import { IMessageDoc, IRoomDoc } from '../../types/Rooms';
+import { IMessageDoc, INotificationDoc, IRoomDoc } from '../../types/Rooms';
 import { sortByName, sortByFriendName } from '../../utils/sort';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
@@ -31,6 +31,7 @@ export default function Chat() {
     isInitialDataLoaded,
     rooms,
     loadInitialData,
+    addNotification,
     addRoom,
     addFriendInvite,
     newMessage,
@@ -120,9 +121,13 @@ export default function Chat() {
         messageRef?.current?.lastElementChild?.scrollIntoView(true);
     });
 
-    socket.on('friend-request', (username: string) => {
-      addFriendInvite(username);
-    });
+    socket.on(
+      'friend-request',
+      (username: string, notification: INotificationDoc) => {
+        addFriendInvite(username);
+        addNotification(notification);
+      }
+    );
 
     socket.on(
       'friend-request-accepted',

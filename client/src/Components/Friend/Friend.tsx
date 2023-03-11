@@ -4,7 +4,7 @@ import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
-import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
+import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat, FriendStatusText } from '../../Providers/chat';
@@ -13,17 +13,26 @@ export default function Friend() {
   const isFriendComponentMounted = useRef(true);
   const { user } = useAuth();
   const socket = useSocket();
-  const { addRoom, addFriendInvite, updateFriendStatus, newMessage } =
-    useChat();
+  const {
+    addNotification,
+    addRoom,
+    addFriendInvite,
+    updateFriendStatus,
+    newMessage
+  } = useChat();
 
   useEffect(() => {
     if (socket.disconnected) socket.connect();
 
     if (user) socket.emit('user-data', user);
 
-    socket.on('friend-request', (username: string) => {
-      addFriendInvite(username);
-    });
+    socket.on(
+      'friend-request',
+      (username: string, notification: INotificationDoc) => {
+        addFriendInvite(username);
+        addNotification(notification);
+      }
+    );
 
     socket.on(
       'friend-request-accepted',
