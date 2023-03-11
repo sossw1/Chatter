@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Jwt } from 'jsonwebtoken';
 import { Document } from 'mongoose';
+import { INotificationDoc } from '../types/Rooms';
 import { useSocket } from './socket';
 import { useChat } from './chat';
 
@@ -15,6 +16,7 @@ export interface IUser {
   email: string;
   rooms: string[];
   roomInvites: string[];
+  notifications: INotificationDoc[];
   friendInvites: string[];
   friends: string[];
   currentSocketId: string;
