@@ -93,6 +93,7 @@ export default function Chat() {
     );
 
     loadInitialData({
+      notifications: user.notifications,
       friendStatuses: fetchedFriendStatuses,
       rooms: fetchedRooms,
       roomInvites: user.roomInvites,
