@@ -1,4 +1,4 @@
-import { useEffect, useState, MouseEvent } from 'react';
+import { useState, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
@@ -29,11 +29,10 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const navigate = useNavigate();
-  const { userStatus, updateUserStatus } = useChat();
+  const { notifications, userStatus, updateUserStatus } = useChat();
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
-  const [notificationCount, setNotificationCount] = useState<number>(0);
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
 
   const open = Boolean(menuAnchorEl);
@@ -49,17 +48,10 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
     setMenuAnchorEl(null);
   };
 
-  useEffect(() => {
-    socket.on('friend-request', (username: string) => {
-      if (username === user?.username || !isChatComponentMounted.current)
-        return;
-      setNotificationCount((prev) => prev + 1);
-    });
-
-    return () => {
-      socket.off('friend-request');
-    };
-  }, [user?.username, socket, isChatComponentMounted]);
+  const unreadNotificationCount = notifications.reduce((acc, current) => {
+    const value = current.viewed ? 0 : 1;
+    return acc + value;
+  }, 0);
 
   return (
     <Box
@@ -163,7 +155,7 @@ export default function ChatStatus({ isChatComponentMounted }: Props) {
                 minWidth: 'unset'
               }}
             >
-              <Badge badgeContent={notificationCount} color='primary'>
+              <Badge badgeContent={unreadNotificationCount} color='primary'>
                 <Mail color='action' />
               </Badge>
             </Button>
