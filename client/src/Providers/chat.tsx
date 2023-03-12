@@ -30,6 +30,7 @@ interface ChatContextProps {
   friends: string[];
   friendInvites: string[];
   loadInitialData: (data: ChatData) => void;
+  clearChatContext: () => void;
   addNotification: (notification: INotificationDoc) => void;
   updateUserStatus: (status: UserStatusText) => void;
   updateFriendStatus: (username: string, status: FriendStatusText) => void;
@@ -82,6 +83,17 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setFriends(friends);
     setFriendInvites(friendInvites);
     setIsInitialDataLoaded(true);
+  };
+
+  const clearChatContext = () => {
+    setIsInitialDataLoaded(false);
+    setUserStatus('Offline');
+    setFriendStatuses([]);
+    setRooms([]);
+    setRoomInvites([]);
+    setFriends([]);
+    setFriendInvites([]);
+    setNotifications([]);
   };
 
   const addNotification = (notification: INotificationDoc) => {
@@ -174,6 +186,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     updateFriendStatus,
     findFriendStatus,
     loadInitialData,
+    clearChatContext,
     addRoom,
     removeRoom,
     addFriend,

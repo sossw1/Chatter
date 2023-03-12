@@ -161,7 +161,7 @@ const auth = Auth.getInstance();
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
-  const { userStatus, updateUserStatus } = useChat();
+  const { userStatus, clearChatContext, updateUserStatus } = useChat();
   const socket = useSocket();
   const [user, setUser] = useState<IUserDoc | null>(null);
 
@@ -241,6 +241,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   const logout = async () => {
+    clearChatContext();
+
     const response = await auth.postLogout();
     setUser(null);
 
@@ -249,7 +251,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       updateUserStatus('Offline');
     }
 
-    if (response && response.ok) {
+    if (response?.ok) {
       return {
         type: 'confirmation',
         confirmation: 'Logout successful'
