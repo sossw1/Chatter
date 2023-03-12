@@ -102,6 +102,7 @@ export const setupSocketIO = (server: http.Server) => {
 
         requestedUser.notifications.unshift(notification);
         await requestedUser.save();
+        await notification.save();
 
         requestedUser.socketIds.forEach((id) => {
           io.to(id).emit('friend-request', requester, notification);
