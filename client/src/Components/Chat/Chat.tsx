@@ -178,7 +178,6 @@ export default function Chat() {
         drawerWidth={drawerWidth}
         drawerOpen={drawerOpen}
         handleDrawerToggle={handleDrawerToggle}
-        isChatComponentMounted={isChatComponentMounted}
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}
         sortByName={sortByName}
