@@ -12,7 +12,8 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { ArrowDropDown, ArrowDropUp, Mail, Person } from '@mui/icons-material';
+import ChatNotificationList from './ChatNotificationList';
+import { ArrowDropDown, ArrowDropUp, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
@@ -143,19 +144,9 @@ export default function ChatStatus() {
           </Tooltip>
         </Grid>
         <Grid item xs={2} md={1}>
-          <Tooltip title='Notifications'>
-            <Button
-              size='large'
-              sx={{
-                p: 0,
-                minWidth: 'unset'
-              }}
-            >
-              <Badge badgeContent={unreadNotificationCount} color='primary'>
-                <Mail color='action' />
-              </Badge>
-            </Button>
-          </Tooltip>
+          <ChatNotificationList
+            unreadNotificationCount={unreadNotificationCount}
+          />
         </Grid>
       </Grid>
     </Box>
