@@ -44,7 +44,7 @@ export default function ChatNotificationList({
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box>
-        <Tooltip title='Notifications'>
+        <Tooltip title={open ? '' : 'Notifications'}>
           <Button
             size='large'
             sx={{
