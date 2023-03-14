@@ -1,5 +1,6 @@
 import { useState, MouseEvent } from 'react';
 import { Badge, Button, Box, Paper, Popper, Tooltip } from '@mui/material';
+import { ClickAwayListener } from '@mui/base';
 import { Mail } from '@mui/icons-material';
 
 interface Props {
@@ -15,28 +16,34 @@ export default function ChatNotificationList({
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
+  const handleClickAway = () => {
+    if (anchorEl) setAnchorEl(null);
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? 'popper' : undefined;
 
   return (
-    <Box>
-      <Tooltip title='Notifications'>
-        <Button
-          size='large'
-          sx={{
-            p: 0,
-            minWidth: 'unset'
-          }}
-          onClick={handleClick}
-        >
-          <Badge badgeContent={unreadNotificationCount} color='primary'>
-            <Mail color='action' />
-          </Badge>
-        </Button>
-      </Tooltip>
-      <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1201 }}>
-        <Paper></Paper>
-      </Popper>
-    </Box>
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Box>
+        <Tooltip title='Notifications'>
+          <Button
+            size='large'
+            sx={{
+              p: 0,
+              minWidth: 'unset'
+            }}
+            onClick={handleClick}
+          >
+            <Badge badgeContent={unreadNotificationCount} color='primary'>
+              <Mail color='action' />
+            </Badge>
+          </Button>
+        </Tooltip>
+        <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1201 }}>
+          <Paper></Paper>
+        </Popper>
+      </Box>
+    </ClickAwayListener>
   );
 }
