@@ -32,6 +32,8 @@ export interface INotification {
   title: string;
   text: string;
   viewed: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface INotificationDoc extends INotification, Document {}
