@@ -94,7 +94,7 @@ export const setupSocketIO = (server: http.Server) => {
 
         const notification = new NotificationCollection({
           type: 'friend-request-received',
-          text: '' + requester,
+          text: `${requester} has sent you a friend request.`,
           isRead: false
         });
 
