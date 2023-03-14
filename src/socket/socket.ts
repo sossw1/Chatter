@@ -5,7 +5,6 @@ import {
   UserCollection,
   IUserDoc,
   Status,
-  INotificationDoc,
   NotificationCollection
 } from '../models/User';
 
@@ -95,9 +94,8 @@ export const setupSocketIO = (server: http.Server) => {
 
         const notification = new NotificationCollection({
           type: 'friend-request-received',
-          title: 'Friend Request',
           text: '' + requester,
-          viewed: false
+          isRead: false
         });
 
         requestedUser.notifications.unshift(notification);

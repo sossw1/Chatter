@@ -29,9 +29,8 @@ type NotificationType =
 
 export interface INotification {
   type: NotificationType;
-  title: string;
   text: string;
-  viewed: boolean;
+  isRead: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -19,9 +19,8 @@ type NotificationType =
 
 export interface INotification {
   type: NotificationType;
-  title: string;
   text: string;
-  viewed: boolean;
+  isRead: boolean;
 }
 
 export interface INotificationDoc extends INotification, Document {}
@@ -64,9 +63,8 @@ enum UserPropertyNames {
 
 enum NotificationPropertyNames {
   TYPE = 'type',
-  TITLE = 'title',
   TEXT = 'text',
-  VIEWED = 'viewed'
+  IS_READ = 'isRead'
 }
 
 export interface INotificationModel extends Model<INotificationDoc> {
@@ -83,9 +81,8 @@ const notificationSchemaFields: Record<
   SchemaDefinitionProperty
 > = {
   type: String,
-  title: String,
   text: String,
-  viewed: Boolean
+  isRead: Boolean
 };
 
 const NotificationSchema = new Schema(notificationSchemaFields, {

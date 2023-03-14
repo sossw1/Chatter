@@ -46,7 +46,7 @@ export default function ChatStatus() {
   };
 
   const unreadNotificationCount = notifications.reduce((acc, current) => {
-    const value = current.viewed ? 0 : 1;
+    const value = current.isRead ? 0 : 1;
     return acc + value;
   }, 0);
 

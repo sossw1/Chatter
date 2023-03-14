@@ -28,9 +28,9 @@ router.patch(
       if (!matchingDoc)
         return res.status(404).send({ error: 'Not authorized' });
 
-      notificationDoc.viewed = true;
+      notificationDoc.isRead = true;
       await notificationDoc.save();
-      matchingDoc.viewed = true;
+      matchingDoc.isRead = true;
       await req.user.save();
 
       res.sendStatus(200);
