@@ -3,9 +3,8 @@ import ChatMessage from './ChatMessage';
 import { useAuth } from '../../Providers/auth';
 import { IMessageDoc } from '../../types/Rooms';
 import { groupMessagesByUsername } from '../../utils/group';
-import { formatMessageTimestamp } from '../../utils/format';
-
 import { v4 as uuid } from 'uuid';
+import { format } from 'date-fns';
 import theme from '../../Providers/theme';
 
 interface Props {
@@ -29,6 +28,10 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
     >
       {groupMessagesByUsername(displayMessages).map((groupOfMessages) => {
         const sentByUser = groupOfMessages[0].username === username;
+        const timestamp = format(
+          new Date(groupOfMessages[0].createdAt),
+          'M/dd/yy h:mm:ssaaa'
+        );
         return (
           <Box
             key={uuid()}
@@ -62,7 +65,7 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
                   opacity: '70%'
                 }}
               >
-                {formatMessageTimestamp(groupOfMessages[0].createdAt)}
+                {timestamp}
               </Typography>
             </Box>
           </Box>
