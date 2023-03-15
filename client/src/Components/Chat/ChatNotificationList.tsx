@@ -60,50 +60,56 @@ export default function ChatNotificationList({
         </Tooltip>
         <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1201 }}>
           <Paper>
-            <List sx={{ p: '0.25rem' }}>
-              {notifications.map((notification, index) => {
-                const durationSinceNotification = formatDistance(
-                  new Date(notification.createdAt),
-                  Date.now(),
-                  { addSuffix: true }
-                );
+            {notifications.length ? (
+              <List sx={{ p: '0.25rem' }}>
+                {notifications.map((notification, index) => {
+                  const durationSinceNotification = formatDistance(
+                    new Date(notification.createdAt),
+                    Date.now(),
+                    { addSuffix: true }
+                  );
 
-                return (
-                  <ListItem
-                    key={uuid()}
-                    sx={{
-                      p: 0,
-                      mb: index === notifications.length - 1 ? 0 : '0.25rem'
-                    }}
-                  >
-                    <ListItemButton
-                      onClick={handleNotificationClick}
+                  return (
+                    <ListItem
+                      key={uuid()}
                       sx={{
-                        p: '0.5rem',
-                        borderRadius: '5px',
-                        '&.Mui-selected:hover': {
-                          backgroundColor: theme.palette.primary.light,
-                          opacity: 0.8
-                        }
+                        p: 0,
+                        mb: index === notifications.length - 1 ? 0 : '0.25rem'
                       }}
                     >
-                      <Box display='flex' flexDirection='column'>
-                        <Typography component='p' variant='body2'>
-                          {notification.text}
-                        </Typography>
-                        <Typography
-                          component='p'
-                          variant='caption'
-                          color='primary'
-                        >
-                          {durationSinceNotification}
-                        </Typography>
-                      </Box>
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </List>
+                      <ListItemButton
+                        onClick={handleNotificationClick}
+                        sx={{
+                          p: '0.5rem',
+                          borderRadius: '5px',
+                          '&.Mui-selected:hover': {
+                            backgroundColor: theme.palette.primary.light,
+                            opacity: 0.8
+                          }
+                        }}
+                      >
+                        <Box display='flex' flexDirection='column'>
+                          <Typography component='p' variant='body2'>
+                            {notification.text}
+                          </Typography>
+                          <Typography
+                            component='p'
+                            variant='caption'
+                            color='primary'
+                          >
+                            {durationSinceNotification}
+                          </Typography>
+                        </Box>
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            ) : (
+              <Typography p='0.5rem' variant='body2' component='p'>
+                There are currently no notifications.
+              </Typography>
+            )}
           </Paper>
         </Popper>
       </Box>
