@@ -32,6 +32,7 @@ interface ChatContextProps {
   loadInitialData: (data: ChatData) => void;
   clearChatContext: () => void;
   addNotification: (notification: INotificationDoc) => void;
+  markNotificationAsRead: (id: string) => void;
   updateUserStatus: (status: UserStatusText) => void;
   updateFriendStatus: (username: string, status: FriendStatusText) => void;
   findFriendStatus: (
@@ -98,6 +99,32 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   const addNotification = (notification: INotificationDoc) => {
     setNotifications((prev) => [notification, ...prev]);
+  };
+
+  const markNotificationAsRead = async (id: string) => {
+    const token = localStorage.getItem('token');
+    let parsedToken: string = '';
+    if (token) parsedToken = JSON.parse(token);
+    const url = `/api/notifications/${id}/mark-read`;
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + parsedToken,
+        Accept: 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      setNotifications((prev) => {
+        const matchIndex = prev.findIndex(
+          (notification) => notification._id === id
+        );
+        if (matchIndex === -1) return prev;
+        const next = [...prev];
+        next[matchIndex].isRead = true;
+        return next;
+      });
+    }
   };
 
   const updateUserStatus = (status: UserStatusText) => {
@@ -182,6 +209,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friends,
     friendInvites,
     addNotification,
+    markNotificationAsRead,
     updateUserStatus,
     updateFriendStatus,
     findFriendStatus,
