@@ -28,6 +28,20 @@ router.patch(
       if (!matchingDoc)
         return res.status(404).send({ error: 'Not authorized' });
 
+      if (
+        notificationDoc.type === 'friend-request-received' ||
+        notificationDoc.type === 'friend-request-accepted'
+      ) {
+        await notificationDoc.delete();
+
+        req.user.notifications = req.user.notifications.filter(
+          (notification) => !notification._id.equals(notificationId)
+        );
+        await req.user.save();
+
+        return res.sendStatus(200);
+      }
+
       notificationDoc.isRead = true;
       await notificationDoc.save();
       matchingDoc.isRead = true;
