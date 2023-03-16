@@ -25,7 +25,7 @@ interface Props {
 export default function ChatNotificationList({
   unreadNotificationCount
 }: Props) {
-  const { notifications } = useChat();
+  const { notifications, markNotificationAsRead } = useChat();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -36,7 +36,10 @@ export default function ChatNotificationList({
     if (anchorEl) setAnchorEl(null);
   };
 
-  const handleNotificationClick = (event: MouseEvent<HTMLElement>) => {};
+  const handleNotificationClick = (event: MouseEvent<HTMLElement>) => {
+    const notificationId = event.currentTarget.id;
+    markNotificationAsRead(notificationId);
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? 'popper' : undefined;
@@ -79,6 +82,7 @@ export default function ChatNotificationList({
                     >
                       <ListItemButton
                         onClick={handleNotificationClick}
+                        id={notification._id}
                         sx={{
                           p: '0.5rem',
                           borderRadius: '5px',
