@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
-import { Mail } from '@mui/icons-material';
+import { Circle, Mail } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
 import { useChat } from '../../Providers/chat';
@@ -92,17 +92,35 @@ export default function ChatNotificationList({
                           }
                         }}
                       >
-                        <Box display='flex' flexDirection='column'>
-                          <Typography component='p' variant='body2'>
-                            {notification.text}
-                          </Typography>
-                          <Typography
-                            component='p'
-                            variant='caption'
-                            color='primary'
-                          >
-                            {durationSinceNotification}
-                          </Typography>
+                        <Box
+                          display='flex'
+                          flexDirection='row'
+                          alignItems='center'
+                        >
+                          <Box display='flex' flexDirection='column'>
+                            <Typography component='p' variant='body2'>
+                              {notification.text}
+                            </Typography>
+                            <Typography
+                              component='p'
+                              variant='caption'
+                              color='primary'
+                            >
+                              {durationSinceNotification}
+                            </Typography>
+                          </Box>
+                          {!notification.isRead ? (
+                            <Tooltip title='unread' enterDelay={400}>
+                              <Circle
+                                color='primary'
+                                sx={{
+                                  width: '1rem',
+                                  height: '1rem',
+                                  ml: '0.5rem'
+                                }}
+                              />
+                            </Tooltip>
+                          ) : undefined}
                         </Box>
                       </ListItemButton>
                     </ListItem>
