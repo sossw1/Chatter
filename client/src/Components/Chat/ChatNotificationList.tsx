@@ -83,11 +83,15 @@ export default function ChatNotificationList({
                       <ListItemButton
                         onClick={handleNotificationClick}
                         id={notification._id}
+                        disabled={notification.isRead}
                         sx={{
                           p: '0.5rem',
                           borderRadius: '5px',
                           '&.Mui-selected:hover': {
                             backgroundColor: theme.palette.primary.light,
+                            opacity: 0.8
+                          },
+                          '&.Mui-disabled': {
                             opacity: 0.8
                           }
                         }}
