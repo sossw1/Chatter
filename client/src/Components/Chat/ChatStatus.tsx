@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Box,
+  CircularProgress,
   Grid,
   Menu,
   MenuItem,
@@ -26,7 +27,8 @@ export default function ChatStatus() {
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const navigate = useNavigate();
-  const { notifications, userStatus, updateUserStatus } = useChat();
+  const { isInitialDataLoaded, notifications, userStatus, updateUserStatus } =
+    useChat();
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
@@ -89,41 +91,50 @@ export default function ChatStatus() {
               </Typography>
             </Grid>
             <Grid item>
-              <Button
-                variant='text'
-                id='status-button'
-                aria-controls={open ? 'status-menu' : undefined}
-                aria-haspopup='true'
-                aria-expanded={open ? 'true' : undefined}
-                color='primary'
-                disableRipple
-                sx={{
-                  fontSize: '0.875rem',
-                  p: '0',
-                  minWidth: 'unset',
-                  textTransform: 'none'
-                }}
-                onClick={handleClick}
-              >
-                {userStatus}
-                {open && <ArrowDropUp />}
-                {!open && <ArrowDropDown />}
-              </Button>
-              <Menu
-                id='status-menu'
-                anchorEl={menuAnchorEl}
-                open={open}
-                onClose={() => handleClose(null)}
-                MenuListProps={{
-                  'aria-labelledby': 'status-button'
-                }}
-              >
-                {statusOptions.map((status) => (
-                  <MenuItem key={status} onClick={() => handleClose(status)}>
-                    {status}
-                  </MenuItem>
-                ))}
-              </Menu>
+              {isInitialDataLoaded ? (
+                <>
+                  <Button
+                    variant='text'
+                    id='status-button'
+                    aria-controls={open ? 'status-menu' : undefined}
+                    aria-haspopup='true'
+                    aria-expanded={open ? 'true' : undefined}
+                    color='primary'
+                    disableRipple
+                    sx={{
+                      fontSize: '0.875rem',
+                      p: '0',
+                      minWidth: 'unset',
+                      textTransform: 'none'
+                    }}
+                    onClick={handleClick}
+                  >
+                    {userStatus}
+                    {open && <ArrowDropUp />}
+                    {!open && <ArrowDropDown />}
+                  </Button>
+                  <Menu
+                    id='status-menu'
+                    anchorEl={menuAnchorEl}
+                    open={open}
+                    onClose={() => handleClose(null)}
+                    MenuListProps={{
+                      'aria-labelledby': 'status-button'
+                    }}
+                  >
+                    {statusOptions.map((status) => (
+                      <MenuItem
+                        key={status}
+                        onClick={() => handleClose(status)}
+                      >
+                        {status}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              ) : (
+                <CircularProgress size='1rem' sx={{ mt: '0.125rem' }} />
+              )}
             </Grid>
           </Grid>
         </Grid>
