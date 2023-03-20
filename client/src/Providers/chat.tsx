@@ -12,6 +12,7 @@ export interface FriendStatus {
 }
 
 interface ChatData {
+  userStatus: UserStatusText;
   notifications: INotificationDoc[];
   friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
@@ -70,6 +71,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [notifications, setNotifications] = useState<INotificationDoc[]>([]);
 
   const loadInitialData = ({
+    userStatus,
     notifications,
     friendStatuses,
     rooms,
@@ -77,6 +79,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friends,
     friendInvites
   }: ChatData) => {
+    setUserStatus(userStatus);
     setNotifications(notifications);
     setFriendStatuses(friendStatuses);
     setRooms(rooms);
@@ -88,7 +91,6 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   const clearChatContext = () => {
     setIsInitialDataLoaded(false);
-    setUserStatus('Offline');
     setFriendStatuses([]);
     setRooms([]);
     setRoomInvites([]);
