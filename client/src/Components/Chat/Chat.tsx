@@ -50,7 +50,8 @@ export default function Chat() {
   const fetchInitialData = async () => {
     if (!user) return;
 
-    const token = JSON.parse(localStorage.getItem('token') || '');
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
     let fetchedRooms: IRoomDoc[] = [];
     let fetchedFriendStatuses: FriendStatus[] = [];
 
@@ -60,7 +61,7 @@ export default function Chat() {
           const response = await fetch(`/api/rooms/${room}`, {
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${parsedToken}`,
               'Content-Type': 'application/json'
             }
           });
@@ -74,7 +75,7 @@ export default function Chat() {
             const response = await fetch(`/api/users/friend/status`, {
               method: 'POST',
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${parsedToken}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({ username: friend })

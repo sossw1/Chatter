@@ -58,8 +58,7 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
 
   const replyFriendRequest = async (username: string, accept: boolean) => {
     const token = localStorage.getItem('token');
-    let parsedToken: string = '';
-    if (token) parsedToken = JSON.parse(token);
+    const parsedToken = token ? JSON.parse(token) : '';
 
     const url = '/api/users/friend/reply';
     const response = await fetch(url, {

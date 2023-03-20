@@ -71,8 +71,7 @@ class Auth {
 
   async getUserWithToken() {
     const token = localStorage.getItem('token');
-    if (!token) return;
-    const parsedToken = JSON.parse(token);
+    const parsedToken = token ? JSON.parse(token) : '';
     const url = '/api/users/me';
     const response = await fetch(url, {
       method: 'GET',
@@ -122,8 +121,7 @@ class Auth {
 
   async postLogout() {
     const token = localStorage.getItem('token');
-    if (!token) return;
-    const parsedToken = JSON.parse(token);
+    const parsedToken = token ? JSON.parse(token) : '';
     const url = '/api/users/logout';
     const response = await fetch(url, {
       method: 'POST',
@@ -141,8 +139,7 @@ class Auth {
   async patchPasswordChange(password: string) {
     const url = '/api/users/me';
     const token = localStorage.getItem('token');
-    if (!token) return;
-    const parsedToken = JSON.parse(token);
+    const parsedToken = token ? JSON.parse(token) : '';
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
@@ -167,7 +164,6 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
 
   const setUserWithToken = async () => {
     const response = await auth.getUserWithToken();
-    // No token was present
     if (!response) {
       return {
         type: 'error',

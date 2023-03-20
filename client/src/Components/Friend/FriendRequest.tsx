@@ -31,11 +31,11 @@ export default function FriendRequest({ isFriendComponentMounted }: Props) {
     event.preventDefault();
     const username = event.currentTarget.querySelector('input')?.value;
     event.currentTarget.reset();
-    const token = localStorage.getItem('token');
-    if (!username || !token) return;
+    if (!username) return;
 
     const url = '/api/users/friend/invite';
-    const parsedToken = JSON.parse(token);
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
     const response = await fetch(url, {
       method: 'POST',
       headers: {

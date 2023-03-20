@@ -103,8 +103,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   const markNotificationAsRead = async (id: string) => {
     const token = localStorage.getItem('token');
-    let parsedToken: string = '';
-    if (token) parsedToken = JSON.parse(token);
+    const parsedToken = token ? JSON.parse(token) : '';
     const url = `/api/notifications/${id}/mark-read`;
     const response = await fetch(url, {
       method: 'PATCH',

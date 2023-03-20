@@ -17,13 +17,13 @@ export default function ChatInput({ selectedRoom }: Props) {
     const inputEl = messageRef.current;
     const message = inputEl ? inputEl.value : '';
     const roomId: string = selectedRoom ? selectedRoom._id : '';
-    let token = localStorage.getItem('token');
-    if (token) token = JSON.parse(token);
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
 
     const response = await fetch(`/api/rooms/${roomId}/messages`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${parsedToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ text: message })
