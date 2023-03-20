@@ -4,7 +4,7 @@ import { Jwt } from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import { INotificationDoc } from '../types/Rooms';
 import { useSocket } from './socket';
-import { useChat } from './chat';
+import { useChat, UserStatusText } from './chat';
 
 interface IToken extends Document {
   token: string;
@@ -14,6 +14,7 @@ export interface IUser {
   username: string;
   password: string;
   email: string;
+  status: UserStatusText;
   rooms: string[];
   roomInvites: string[];
   notifications: INotificationDoc[];
