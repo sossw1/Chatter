@@ -64,7 +64,7 @@ export default function ChatStatus() {
           <Badge
             overlap='circular'
             variant='dot'
-            color={getStatusColor(userStatus)}
+            color={isInitialDataLoaded ? getStatusColor(userStatus) : 'neutral'}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             sx={{
               '& .MuiBadge-badge': {
