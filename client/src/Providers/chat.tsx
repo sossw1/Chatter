@@ -1,5 +1,10 @@
 import { createContext, useContext, useState } from 'react';
-import { IMessageDoc, IRoomDoc, INotificationDoc } from '../types/Rooms';
+import {
+  IMessageDoc,
+  IRoomDoc,
+  INotificationDoc,
+  NotificationType
+} from '../types/Rooms';
 
 export type UserStatusText = 'Online' | 'Away' | 'Offline' | 'Invisible';
 export type FriendStatusText = 'Online' | 'Away' | 'Offline' | 'Loading';
@@ -34,6 +39,7 @@ interface ChatContextProps {
   clearChatContext: () => void;
   addNotification: (notification: INotificationDoc) => void;
   markNotificationAsRead: (id: string) => void;
+  deleteNotification: (type: NotificationType, username: string) => void;
   updateUserStatus: (status: UserStatusText) => void;
   updateFriendStatus: (username: string, status: FriendStatusText) => void;
   findFriendStatus: (
@@ -128,6 +134,20 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     }
   };
 
+  const deleteNotification = (type: NotificationType, username: string) => {
+    if (type === 'friend-request-received') {
+      setNotifications((prev) => {
+        const matchIndex = prev.findIndex(
+          (notification) => notification.text === `${username}`
+        );
+        if (matchIndex === -1) return prev;
+        const next = [...prev];
+        next.splice(matchIndex, 1);
+        return next;
+      });
+    }
+  };
+
   const updateUserStatus = (status: UserStatusText) => {
     setUserStatus(status);
   };
@@ -211,6 +231,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friendInvites,
     addNotification,
     markNotificationAsRead,
+    deleteNotification,
     updateUserStatus,
     updateFriendStatus,
     findFriendStatus,
