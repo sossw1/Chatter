@@ -21,7 +21,7 @@ export interface IRoom {
 
 export interface IRoomDoc extends IRoom, Document {}
 
-type NotificationType =
+export type NotificationType =
   | 'system'
   | 'friend-request-received'
   | 'friend-request-accepted'
