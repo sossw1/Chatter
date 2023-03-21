@@ -18,7 +18,7 @@ interface Props {
 }
 
 export default function FriendRequestList({ isFriendComponentMounted }: Props) {
-  const { friendInvites, removeFriendInvite } = useChat();
+  const { deleteNotification, friendInvites, removeFriendInvite } = useChat();
   const [friendRequestMessage, setFriendRequestMessage] = useState<{
     message: string;
     username: string;
@@ -78,6 +78,7 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
     }
 
     handleResponse(username, accept, error);
+    deleteNotification('friend-request-received', username);
   };
 
   return (
