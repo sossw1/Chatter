@@ -103,7 +103,9 @@ export default function ChatNotificationList({
                         >
                           <Box display='flex' flexDirection='column'>
                             <Typography component='p' variant='body2'>
-                              {notification.text}
+                              {notification.type ===
+                                'friend-request-received' &&
+                                `${notification.text} has sent you a friend request.`}
                             </Typography>
                             <Typography
                               component='p'
