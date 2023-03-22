@@ -58,7 +58,12 @@ export default function ChatInput({ selectedRoom }: Props) {
           />
         </Grid>
         <Grid item>
-          <Button variant='contained' type='submit' endIcon={<SendIcon />}>
+          <Button
+            variant='contained'
+            type='submit'
+            endIcon={<SendIcon />}
+            disabled={!selectedRoom}
+          >
             send
           </Button>
         </Grid>
