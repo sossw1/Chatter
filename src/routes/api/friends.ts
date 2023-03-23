@@ -1,4 +1,4 @@
-import { UserCollection } from '../../models/User';
+import { NotificationCollection, UserCollection } from '../../models/User';
 import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
 import express from 'express';
@@ -111,6 +111,15 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
       req.user.rooms.push(roomDocument._id);
       userDocument.rooms.push(roomDocument._id);
 
+      const notification = new NotificationCollection({
+        type: 'friend-request-accepted',
+        text: `${req.user.username}`,
+        isRead: false
+      });
+
+      userDocument.notifications.unshift(notification);
+      await notification.save();
+
       await req.user.save();
       await userDocument.save();
 
@@ -131,7 +140,8 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
         'friend-request-accepted',
         roomDocument,
         req.user.username,
-        reqUserStatus
+        reqUserStatus,
+        notification
       );
 
       return res.status(201).send(roomDocument);
