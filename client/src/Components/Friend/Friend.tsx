@@ -39,10 +39,12 @@ export default function Friend() {
       (
         newRoom: IRoomDoc,
         friendUsername: string,
-        friendStatus: FriendStatusText
+        friendStatus: FriendStatusText,
+        notification: INotificationDoc
       ) => {
         addRoom(newRoom);
         updateFriendStatus(friendUsername, friendStatus);
+        addNotification(notification);
       }
     );
 
