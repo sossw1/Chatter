@@ -129,7 +129,7 @@ export default function Chat() {
       'friend-request',
       (username: string, notification: INotificationDoc) => {
         addFriendInvite(username);
-        addNotification(notification);
+        if (notification) addNotification(notification);
       }
     );
 
@@ -143,7 +143,7 @@ export default function Chat() {
       ) => {
         addRoom(newRoom);
         updateFriendStatus(friendUsername, friendStatus);
-        addNotification(notification);
+        if (notification) addNotification(notification);
       }
     );
 

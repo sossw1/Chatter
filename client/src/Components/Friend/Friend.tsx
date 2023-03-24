@@ -30,7 +30,7 @@ export default function Friend() {
       'friend-request',
       (username: string, notification: INotificationDoc) => {
         addFriendInvite(username);
-        addNotification(notification);
+        if (notification) addNotification(notification);
       }
     );
 
@@ -44,7 +44,7 @@ export default function Friend() {
       ) => {
         addRoom(newRoom);
         updateFriendStatus(friendUsername, friendStatus);
-        addNotification(notification);
+        if (notification) addNotification(notification);
       }
     );
 
