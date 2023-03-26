@@ -135,17 +135,13 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   const deleteNotification = (type: NotificationType, username: string) => {
-    if (type === 'friend-request-received') {
-      setNotifications((prev) => {
-        const matchIndex = prev.findIndex(
-          (notification) => notification.text === `${username}`
-        );
-        if (matchIndex === -1) return prev;
-        const next = [...prev];
-        next.splice(matchIndex, 1);
-        return next;
-      });
-    }
+    setNotifications((prev) => {
+      const next = prev.filter(
+        (notification) =>
+          !(notification.text === `${username}` && notification.type === type)
+      );
+      return next;
+    });
   };
 
   const updateUserStatus = (status: UserStatusText) => {
