@@ -29,7 +29,7 @@ export default function ChatDrawer({
 }: Props) {
   const drawerContent = (
     <>
-      <ChatStatus />
+      <ChatStatus setSelectedChatId={setSelectedChatId} />
       <ChatList
         selectedChatId={selectedChatId}
         setSelectedChatId={setSelectedChatId}

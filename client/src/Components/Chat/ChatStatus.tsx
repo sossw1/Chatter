@@ -22,7 +22,11 @@ import { useChat, getStatusColor, UserStatusText } from '../../Providers/chat';
 
 const statusOptions: UserStatusText[] = ['Online', 'Away', 'Invisible'];
 
-export default function ChatStatus() {
+interface Props {
+  setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export default function ChatStatus({ setSelectedChatId }: Props) {
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
@@ -157,6 +161,7 @@ export default function ChatStatus() {
         <Grid item xs={2} md={1}>
           <ChatNotificationList
             unreadNotificationCount={unreadNotificationCount}
+            setSelectedChatId={setSelectedChatId}
           />
         </Grid>
       </Grid>

@@ -15,19 +15,24 @@ import {
 import { ClickAwayListener } from '@mui/base';
 import { Circle, Mail } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
+import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
 import { useChat } from '../../Providers/chat';
+import { useAuth } from '../../Providers/auth';
 import { formatDistance } from 'date-fns';
 
 interface Props {
   unreadNotificationCount: number;
+  setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export default function ChatNotificationList({
-  unreadNotificationCount
+  unreadNotificationCount,
+  setSelectedChatId
 }: Props) {
   const navigate = useNavigate();
-  const { notifications, markNotificationAsRead } = useChat();
+  const { rooms, notifications, markNotificationAsRead } = useChat();
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -46,7 +51,17 @@ export default function ChatNotificationList({
     );
     if (notification) {
       const { type } = notification;
-      if (type === 'friend-request-received') navigate('/friend');
+      if (type === 'friend-request-received') {
+        navigate('/friend');
+      } else if (type === 'friend-request-accepted' && user) {
+        const newFriendUsername = notification.text;
+        const match = rooms.find(
+          (room) =>
+            room.isDirect &&
+            getRoomName(room, user.username) === newFriendUsername
+        );
+        if (match) setSelectedChatId(match._id);
+      }
     }
   };
 
