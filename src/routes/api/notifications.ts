@@ -54,4 +54,29 @@ router.patch(
   }
 );
 
+// Delete a notification
+
+router.delete('/api/notifications/:notificationId', auth, async (req, res) => {
+  try {
+    const { notificationId } = req.params;
+
+    const notificationDoc = await NotificationCollection.findByIdAndDelete(
+      notificationId
+    );
+
+    if (!notificationDoc)
+      return res.status(404).send({ error: 'Notification not found' });
+
+    req.user.notifications = req.user.notifications.filter(
+      (notification) => !notification._id.equals(notificationId)
+    );
+
+    await req.user.save();
+
+    res.status(200).send(notificationDoc);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 export default router;
