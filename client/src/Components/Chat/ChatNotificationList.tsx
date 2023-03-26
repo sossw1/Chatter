@@ -1,4 +1,5 @@
 import { useState, MouseEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Badge,
   Button,
@@ -25,6 +26,7 @@ interface Props {
 export default function ChatNotificationList({
   unreadNotificationCount
 }: Props) {
+  const navigate = useNavigate();
   const { notifications, markNotificationAsRead } = useChat();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -39,6 +41,13 @@ export default function ChatNotificationList({
   const handleNotificationClick = (event: MouseEvent<HTMLElement>) => {
     const notificationId = event.currentTarget.id;
     markNotificationAsRead(notificationId);
+    const notification = notifications.find(
+      (notification) => notification._id === event.currentTarget.id
+    );
+    if (notification) {
+      const { type } = notification;
+      if (type === 'friend-request-received') navigate('/friend');
+    }
   };
 
   const open = Boolean(anchorEl);
