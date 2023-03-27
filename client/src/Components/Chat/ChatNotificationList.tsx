@@ -45,15 +45,16 @@ export default function ChatNotificationList({
 
   const handleNotificationClick = (event: MouseEvent<HTMLElement>) => {
     const notificationId = event.currentTarget.id;
-    markNotificationAsRead(notificationId);
     const notification = notifications.find(
-      (notification) => notification._id === event.currentTarget.id
+      (notification) => notification._id === notificationId
     );
     if (notification) {
       const { type } = notification;
       if (type === 'friend-request-received') {
+        markNotificationAsRead(notificationId);
         navigate('/friend');
       } else if (type === 'friend-request-accepted' && user) {
+        markNotificationAsRead(notificationId);
         const newFriendUsername = notification.text;
         const match = rooms.find(
           (room) =>
