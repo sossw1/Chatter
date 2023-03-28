@@ -50,6 +50,26 @@ router.post('/api/rooms', auth, async (req, res) => {
   }
 });
 
+// Update room lastReadAt time
+
+router.patch('/api/rooms/:roomId/last-read', auth, inRoom, async (req, res) => {
+  try {
+    const { room } = req;
+    const roomId = room._id;
+
+    if (!roomId) return res.status(400).send({ error: 'Invalid roomId' });
+
+    const match = req.user.rooms.find((room) => roomId.equals(room.roomId));
+    if (match) {
+      match.lastReadAt = Date.now().toString();
+    }
+    await req.user.save();
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
 // Update room name
 
 router.patch('/api/rooms/:roomId', auth, inRoom, async (req, res) => {
