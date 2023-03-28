@@ -2,7 +2,7 @@ import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import express from 'express';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
-import { UserCollection } from '../../models/User';
+import { IRoomData, UserCollection } from '../../models/User';
 import inRoom from '../../middleware/inRoom';
 
 const router = express.Router();
@@ -36,7 +36,12 @@ router.post('/api/rooms', auth, async (req, res) => {
     const roomDocument: IRoomDoc = new RoomCollection(room);
     await roomDocument.save();
 
-    req.user.rooms.push(roomDocument._id);
+    const newRoomData: IRoomData = {
+      roomId: roomDocument._id,
+      lastReadAt: Date.now().toString()
+    };
+
+    req.user.rooms.push(newRoomData);
     await req.user.save();
 
     res.status(201).send(roomDocument);
@@ -157,7 +162,13 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
     req.user.roomInvites = req.user.roomInvites.filter(
       (invite) => !invite.equals(room._id)
     );
-    req.user.rooms.push(room._id);
+
+    const newRoomData: IRoomData = {
+      roomId: room._id,
+      lastReadAt: ''
+    };
+
+    req.user.rooms.push(newRoomData);
     await req.user.save();
 
     if (room.invitedUsers) {
@@ -209,7 +220,7 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
     }
 
     req.user.rooms = req.user.rooms.filter(
-      (room) => !room.equals(req.params.roomId)
+      (room) => !room.roomId.equals(req.params.roomId)
     );
     await req.user.save();
 

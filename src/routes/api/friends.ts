@@ -1,4 +1,8 @@
-import { NotificationCollection, UserCollection } from '../../models/User';
+import {
+  IRoomData,
+  NotificationCollection,
+  UserCollection
+} from '../../models/User';
 import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import auth from '../../middleware/auth';
 import express from 'express';
@@ -108,8 +112,13 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
 
       await roomDocument.save();
 
-      req.user.rooms.push(roomDocument._id);
-      userDocument.rooms.push(roomDocument._id);
+      const newRoomData: IRoomData = {
+        roomId: roomDocument._id,
+        lastReadAt: ''
+      };
+
+      req.user.rooms.push(newRoomData);
+      userDocument.rooms.push(newRoomData);
 
       const notification = new NotificationCollection({
         type: 'friend-request-accepted',
@@ -177,10 +186,10 @@ router.delete('/api/users/friend', auth, async (req, res) => {
 
     for (let currentRoom of directRooms) {
       req.user.rooms = req.user.rooms.filter(
-        (room) => !room.equals(currentRoom._id)
+        (room) => !room.roomId.equals(currentRoom._id)
       );
       userDocument.rooms = userDocument.rooms.filter(
-        (room) => !room.equals(currentRoom._id)
+        (room) => !room.roomId.equals(currentRoom._id)
       );
 
       if (currentRoom.messages.length === 0) {

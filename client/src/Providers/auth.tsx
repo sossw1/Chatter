@@ -6,6 +6,11 @@ import { INotificationDoc } from '../types/Rooms';
 import { useSocket } from './socket';
 import { useChat, UserStatusText } from './chat';
 
+interface IRoomData {
+  roomId: string;
+  lastReadAt: string;
+}
+
 interface IToken extends Document {
   token: string;
 }
@@ -15,7 +20,7 @@ export interface IUser {
   password: string;
   email: string;
   status: UserStatusText;
-  rooms: string[];
+  rooms: IRoomData[];
   roomInvites: string[];
   notifications: INotificationDoc[];
   friendInvites: string[];

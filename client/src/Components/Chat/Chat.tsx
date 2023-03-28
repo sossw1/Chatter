@@ -58,7 +58,7 @@ export default function Chat() {
     await Promise.all(
       user.rooms
         .map(async (room) => {
-          const response = await fetch(`/api/rooms/${room}`, {
+          const response = await fetch(`/api/rooms/${room.roomId}`, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${parsedToken}`,

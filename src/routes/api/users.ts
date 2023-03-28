@@ -186,9 +186,9 @@ router.delete('/api/users/me', auth, async (req, res) => {
       await user.save();
     }
 
-    const roomIds = req.user.rooms;
-    for (let id of roomIds) {
-      const roomDocument = await RoomCollection.findById(id);
+    const rooms = req.user.rooms;
+    for (let room of rooms) {
+      const roomDocument = await RoomCollection.findById(room.roomId);
       if (!roomDocument) continue;
 
       if (roomDocument.isDirect) {
@@ -203,7 +203,7 @@ router.delete('/api/users/me', auth, async (req, res) => {
           });
           if (friendDocument) {
             friendDocument.rooms = friendDocument.rooms.filter(
-              (room) => !room.equals(roomDocument._id)
+              (room) => !room.roomId.equals(roomDocument._id)
             );
             await friendDocument.save();
           }

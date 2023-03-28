@@ -11,6 +11,11 @@ import jwt, { Jwt } from 'jsonwebtoken';
 
 export type Status = 'Online' | 'Away' | 'Invisible' | 'Offline';
 
+export interface IRoomData {
+  roomId: mongoose.Types.ObjectId;
+  lastReadAt: string;
+}
+
 type NotificationType =
   | 'system'
   | 'friend-request-received'
@@ -34,7 +39,7 @@ export interface IUser {
   password: string;
   email: string;
   status: Status;
-  rooms: mongoose.Types.ObjectId[];
+  rooms: IRoomData[];
   notifications: INotificationDoc[];
   roomInvites: mongoose.Types.ObjectId[];
   friendInvites: string[];
@@ -113,7 +118,12 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
     }
   },
   status: String,
-  rooms: [mongoose.Types.ObjectId],
+  rooms: [
+    {
+      roomId: mongoose.Types.ObjectId,
+      lastReadAt: String
+    }
+  ],
   roomInvites: [mongoose.Types.ObjectId],
   notifications: [NotificationSchema],
   friendInvites: [

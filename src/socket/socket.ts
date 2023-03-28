@@ -29,7 +29,7 @@ export const setupSocketIO = (server: http.Server) => {
       user = userData;
 
       for (let room of user.rooms) {
-        socket.join(room + '');
+        socket.join(`${room.roomId}`);
       }
 
       const userDocument = await UserCollection.findById(user._id);
