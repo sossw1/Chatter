@@ -6,7 +6,7 @@ import { INotificationDoc } from '../types/Rooms';
 import { useSocket } from './socket';
 import { useChat, UserStatusText } from './chat';
 
-interface IRoomData {
+export interface IRoomData {
   roomId: string;
   lastReadAt: string;
 }
