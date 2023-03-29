@@ -5,6 +5,7 @@ import {
   INotificationDoc,
   NotificationType
 } from '../types/Rooms';
+import { IRoomData } from './auth';
 
 export type UserStatusText = 'Online' | 'Away' | 'Offline' | 'Invisible';
 export type FriendStatusText = 'Online' | 'Away' | 'Offline' | 'Loading';
@@ -17,6 +18,7 @@ export interface FriendStatus {
 }
 
 interface ChatData {
+  roomData: IRoomData[];
   userStatus: UserStatusText;
   notifications: INotificationDoc[];
   friendStatuses: FriendStatus[];
@@ -28,6 +30,7 @@ interface ChatData {
 
 interface ChatContextProps {
   isInitialDataLoaded: boolean;
+  roomData: IRoomData[];
   notifications: INotificationDoc[];
   userStatus: UserStatusText;
   friendStatuses: FriendStatus[];
@@ -68,6 +71,7 @@ const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [isInitialDataLoaded, setIsInitialDataLoaded] =
     useState<boolean>(false);
+  const [roomData, setRoomData] = useState<IRoomData[]>([]);
   const [userStatus, setUserStatus] = useState<UserStatusText>('Offline');
   const [friendStatuses, setFriendStatuses] = useState<FriendStatus[]>([]);
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
@@ -77,6 +81,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [notifications, setNotifications] = useState<INotificationDoc[]>([]);
 
   const loadInitialData = ({
+    roomData,
     userStatus,
     notifications,
     friendStatuses,
@@ -85,6 +90,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friends,
     friendInvites
   }: ChatData) => {
+    setRoomData(roomData);
     setUserStatus(userStatus);
     setNotifications(notifications);
     setFriendStatuses(friendStatuses);
@@ -242,6 +248,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   let value = {
     isInitialDataLoaded,
+    roomData,
     notifications,
     userStatus,
     friendStatuses,

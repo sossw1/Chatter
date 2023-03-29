@@ -97,6 +97,7 @@ export default function Chat() {
     const status = user.status === 'Invisible' ? 'Invisible' : 'Online';
 
     loadInitialData({
+      roomData: user.rooms,
       userStatus: status,
       notifications: user.notifications,
       friendStatuses: fetchedFriendStatuses,
