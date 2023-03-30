@@ -61,7 +61,7 @@ router.patch('/api/rooms/:roomId/last-read', auth, inRoom, async (req, res) => {
 
     const match = req.user.rooms.find((room) => roomId.equals(room.roomId));
     if (match) {
-      match.lastReadAt = Date.now().toString();
+      match.lastReadAt = JSON.stringify(Date.now());
     }
     await req.user.save();
     res.sendStatus(200);
