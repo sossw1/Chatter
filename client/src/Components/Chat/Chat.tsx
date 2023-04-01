@@ -37,7 +37,8 @@ export default function Chat() {
     addRoom,
     addFriendInvite,
     newMessage,
-    updateFriendStatus
+    updateFriendStatus,
+    updateUnreadMessageCount
   } = useChat();
   // state
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -193,6 +194,11 @@ export default function Chat() {
       messageRef?.current?.lastElementChild?.scrollIntoView(false);
     }
   }, [rooms, user, selectedChatId, selectedRoom, displayMessages]);
+
+  useEffect(() => {
+    updateUnreadMessageCount(selectedChatId || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChatId]);
 
   return (
     <Box sx={{ display: 'flex', backgroundColor: theme.palette.grey[100] }}>
