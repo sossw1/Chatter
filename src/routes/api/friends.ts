@@ -114,7 +114,7 @@ router.post('/api/users/friend/reply', auth, async (req, res) => {
 
       const newRoomData: IRoomData = {
         roomId: roomDocument._id,
-        lastReadAt: ''
+        lastReadAt: JSON.stringify(Date.now())
       };
 
       req.user.rooms.push(newRoomData);

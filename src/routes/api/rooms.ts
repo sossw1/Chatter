@@ -38,7 +38,7 @@ router.post('/api/rooms', auth, async (req, res) => {
 
     const newRoomData: IRoomData = {
       roomId: roomDocument._id,
-      lastReadAt: Date.now().toString()
+      lastReadAt: JSON.stringify(Date.now())
     };
 
     req.user.rooms.push(newRoomData);
@@ -185,7 +185,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
 
     const newRoomData: IRoomData = {
       roomId: room._id,
-      lastReadAt: ''
+      lastReadAt: JSON.stringify(Date.now())
     };
 
     req.user.rooms.push(newRoomData);
