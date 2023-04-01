@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { compareAsc } from 'date-fns';
 import {
   IMessageDoc,
   IRoomDoc,
@@ -68,6 +69,23 @@ export const getStatusColor = (
   else if (status === 'Away') return 'warning';
   else if (status === 'Offline') return 'error';
   else return 'neutral';
+};
+
+export const getUnreadMessageCount = (lastReadAt: string, room: IRoomDoc) => {
+  if (lastReadAt) {
+    const lastReadAtDate = new Date(JSON.parse(lastReadAt));
+    const { messages } = room;
+
+    const sum = messages.reduce((acc, curr) => {
+      const messageDate = new Date(curr.createdAt);
+      const compare = compareAsc(messageDate, lastReadAtDate);
+      const result = compare === -1 ? 0 : 1;
+      return acc + result;
+    }, 0);
+    return sum;
+  } else {
+    return 0;
+  }
 };
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
