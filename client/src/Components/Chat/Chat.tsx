@@ -8,6 +8,8 @@ import { useSocket } from '../../Providers/socket';
 import {
   useChat,
   getStatusColor,
+  getUnreadMessageCount,
+  RoomData,
   FriendStatusText,
   FriendStatus
 } from '../../Providers/chat';
@@ -96,8 +98,21 @@ export default function Chat() {
 
     const status = user.status === 'Invisible' ? 'Invisible' : 'Online';
 
+    const roomData: RoomData[] = user.rooms.map((userRoom) => {
+      const matchingRoom = fetchedRooms.find(
+        (room) => room._id === userRoom.roomId
+      );
+      const unreadMessageCount = matchingRoom
+        ? getUnreadMessageCount(userRoom.lastReadAt, matchingRoom)
+        : 0;
+      return {
+        ...userRoom,
+        unreadMessageCount
+      };
+    });
+
     loadInitialData({
-      roomData: user.rooms,
+      roomData: roomData,
       userStatus: status,
       notifications: user.notifications,
       friendStatuses: fetchedFriendStatuses,
