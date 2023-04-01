@@ -28,7 +28,7 @@ export default function ChatListItem({
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const { user } = useAuth();
-  const { findFriendStatus } = useChat();
+  const { findFriendStatus, roomData } = useChat();
   let username: string = '';
   if (user) username = user.username;
 
@@ -38,6 +38,8 @@ export default function ChatListItem({
   const friendStatus = friendUsername
     ? findFriendStatus(friendUsername)
     : undefined;
+
+  const roomDataMatch = roomData.find((r) => r.roomId === room._id);
 
   return (
     <ListItem sx={{ p: 0 }}>
@@ -80,7 +82,7 @@ export default function ChatListItem({
           primary={
             <Typography
               sx={{
-                width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                width: mdDown ? (smDown ? '6rem' : '11rem') : '21rem',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
@@ -93,7 +95,7 @@ export default function ChatListItem({
             <Typography
               variant='body2'
               sx={{
-                width: mdDown ? (smDown ? '8rem' : '13rem') : '23rem',
+                width: mdDown ? (smDown ? '6rem' : '11rem') : '21rem',
                 opacity: 0.8,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -107,6 +109,14 @@ export default function ChatListItem({
             </Typography>
           }
         ></ListItemText>
+        {roomDataMatch && (
+          <ListItemText sx={{ ml: '0.5rem' }}>
+            <Badge
+              color='neutral'
+              badgeContent={roomDataMatch.unreadMessageCount}
+            ></Badge>
+          </ListItemText>
+        )}
       </ListItemButton>
     </ListItem>
   );
