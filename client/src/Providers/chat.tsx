@@ -60,6 +60,7 @@ interface ChatContextProps {
   addFriendInvite: (username: string) => void;
   removeFriendInvite: (username: string) => void;
   newMessage: (message: IMessageDoc) => void;
+  updateUnreadMessageCount: (roomId: string) => void;
 }
 
 export const getStatusColor = (
@@ -268,6 +269,32 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
+  const updateUnreadMessageCount = async (roomId: string) => {
+    const next = [...roomData];
+    const matchIndex = next.findIndex((room) => room.roomId === roomId);
+    if (matchIndex === -1) return;
+
+    const url = `/api/rooms/${roomId}/last-read`;
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    });
+
+    if (!response.ok) return;
+    const { lastReadAt } = await response.json();
+    if (typeof lastReadAt !== 'string') return;
+
+    next[matchIndex].lastReadAt = lastReadAt;
+    next[matchIndex].unreadMessageCount = 0;
+    setRoomData(next);
+  };
+
   let value = {
     isInitialDataLoaded,
     roomData,
@@ -292,7 +319,8 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     removeFriend,
     addFriendInvite,
     removeFriendInvite,
-    newMessage
+    newMessage,
+    updateUnreadMessageCount
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
