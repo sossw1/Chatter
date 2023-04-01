@@ -7,6 +7,10 @@ import {
 } from '../types/Rooms';
 import { IRoomData } from './auth';
 
+export interface RoomData extends IRoomData {
+  unreadMessageCount: number;
+}
+
 export type UserStatusText = 'Online' | 'Away' | 'Offline' | 'Invisible';
 export type FriendStatusText = 'Online' | 'Away' | 'Offline' | 'Loading';
 export type StatusColor = 'success' | 'warning' | 'neutral' | 'error';
@@ -18,7 +22,7 @@ export interface FriendStatus {
 }
 
 interface ChatData {
-  roomData: IRoomData[];
+  roomData: RoomData[];
   userStatus: UserStatusText;
   notifications: INotificationDoc[];
   friendStatuses: FriendStatus[];
@@ -30,7 +34,7 @@ interface ChatData {
 
 interface ChatContextProps {
   isInitialDataLoaded: boolean;
-  roomData: IRoomData[];
+  roomData: RoomData[];
   notifications: INotificationDoc[];
   userStatus: UserStatusText;
   friendStatuses: FriendStatus[];
@@ -71,7 +75,7 @@ const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [isInitialDataLoaded, setIsInitialDataLoaded] =
     useState<boolean>(false);
-  const [roomData, setRoomData] = useState<IRoomData[]>([]);
+  const [roomData, setRoomData] = useState<RoomData[]>([]);
   const [userStatus, setUserStatus] = useState<UserStatusText>('Offline');
   const [friendStatuses, setFriendStatuses] = useState<FriendStatus[]>([]);
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
