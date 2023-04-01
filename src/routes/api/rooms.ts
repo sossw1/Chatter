@@ -60,11 +60,11 @@ router.patch('/api/rooms/:roomId/last-read', auth, inRoom, async (req, res) => {
     if (!roomId) return res.status(400).send({ error: 'Invalid roomId' });
 
     const match = req.user.rooms.find((room) => roomId.equals(room.roomId));
-    if (match) {
-      match.lastReadAt = JSON.stringify(Date.now());
-    }
+    if (!match) return res.status(404).send({ error: 'Room not found' });
+
+    match.lastReadAt = JSON.stringify(Date.now());
     await req.user.save();
-    res.sendStatus(200);
+    res.status(200).send({ lastReadAt: match.lastReadAt });
   } catch (error) {
     res.sendStatus(500);
   }
