@@ -161,6 +161,7 @@ export default function Chat() {
         addRoom(newRoom);
         updateFriendStatus(friendUsername, friendStatus);
         if (notification) addNotification(notification);
+        socket.emit('join-room', newRoom._id);
       }
     );
 

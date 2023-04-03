@@ -45,6 +45,7 @@ export default function Friend() {
         addRoom(newRoom);
         updateFriendStatus(friendUsername, friendStatus);
         if (notification) addNotification(notification);
+        socket.emit('join-room', newRoom._id);
       }
     );
 
