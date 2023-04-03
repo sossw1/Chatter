@@ -108,6 +108,10 @@ export const setupSocketIO = (server: http.Server) => {
       }
     );
 
+    socket.on('join-room', (roomId: string) => {
+      socket.join(roomId);
+    });
+
     socket.on('disconnect', async () => {
       if (user) {
         const userDocument = await UserCollection.findById(user);
