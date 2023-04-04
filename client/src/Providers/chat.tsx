@@ -267,6 +267,17 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
         return room;
       });
     });
+
+    setRoomData((prev) => {
+      const next = [...prev];
+      const matchIndex = next.findIndex(
+        (room) => room.roomId === `${message.roomId}`
+      );
+      if (!matchIndex) return prev;
+
+      next[matchIndex].unreadMessageCount += 1;
+      return next;
+    });
   };
 
   const updateUnreadMessageCount = async (roomId: string) => {
