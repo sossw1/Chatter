@@ -131,8 +131,8 @@ export default function Chat() {
       socket.emit('user-data', user);
     }
 
-    socket.on('message', (message: IMessageDoc) => {
-      newMessage(message);
+    socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
+      newMessage(message, room);
 
       if (isChatComponentMounted.current)
         messageRef?.current?.lastElementChild?.scrollIntoView(true);

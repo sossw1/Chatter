@@ -1,6 +1,6 @@
 import http from 'http';
 import { Server } from 'socket.io';
-import { IMessageDoc } from '../models/Room';
+import { IMessageDoc, RoomCollection } from '../models/Room';
 import {
   UserCollection,
   IUserDoc,
@@ -74,8 +74,10 @@ export const setupSocketIO = (server: http.Server) => {
       }
     });
 
-    socket.on('message', (message: IMessageDoc) => {
-      io.to(message.roomId + '').emit('message', message);
+    socket.on('message', async (message: IMessageDoc) => {
+      const room = await RoomCollection.findById(message.roomId);
+      if (!room) return;
+      io.to(message.roomId + '').emit('message', message, room);
     });
 
     socket.on(

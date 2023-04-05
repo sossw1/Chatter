@@ -49,8 +49,8 @@ export default function Friend() {
       }
     );
 
-    socket.on('message', (message: IMessageDoc) => {
-      newMessage(message);
+    socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
+      newMessage(message, room);
     });
 
     return () => {
