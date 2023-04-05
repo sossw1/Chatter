@@ -19,14 +19,11 @@ import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
 
 export default function Chat() {
-  // refs
   const isChatComponentMounted = useRef(true);
   const messageRef = useRef<null | HTMLDivElement>(null);
-  // styling
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const drawerWidth = smDown ? '15rem' : mdDown ? '20rem' : '30rem';
-  // hooks
   const { user } = useAuth();
   const socket = useSocket();
   const {
@@ -40,7 +37,6 @@ export default function Chat() {
     updateFriendStatus,
     updateUnreadMessageCount
   } = useChat();
-  // state
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<IRoomDoc | null>(null);
