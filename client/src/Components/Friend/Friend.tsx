@@ -18,7 +18,8 @@ export default function Friend() {
     addRoom,
     addFriendInvite,
     updateFriendStatus,
-    newMessage
+    newMessage,
+    incrementUnreadMessageCount
   } = useChat();
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function Friend() {
 
     socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
       newMessage(message, room);
+      incrementUnreadMessageCount(room._id);
     });
 
     return () => {
