@@ -59,7 +59,7 @@ interface ChatContextProps {
   removeFriend: (username: string) => void;
   addFriendInvite: (username: string) => void;
   removeFriendInvite: (username: string) => void;
-  newMessage: (message: IMessageDoc, room: IRoomDoc) => void;
+  newMessage: (message: IMessageDoc) => void;
   updateUnreadMessageCount: (roomId: string) => void;
   incrementUnreadMessageCount: (roomId: string) => void;
 }
@@ -259,17 +259,17 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
-  const newMessage = (newMessage: IMessageDoc, room: IRoomDoc) => {
-    setRooms((prev) => {
-      const next = [...prev];
-      const matchIndex = prev.findIndex(
-        (room) => room._id === newMessage.roomId
-      );
-      if (matchIndex === -1) return prev;
+  const newMessage = (newMessage: IMessageDoc) => {
+    setRooms((prev) =>
+      prev.map((room) => {
+        if (room._id !== newMessage.roomId) return room;
 
-      next[matchIndex] = room;
-      return next;
-    });
+        const newRoom: IRoomDoc = Object.assign({}, room, {
+          messages: room.messages.concat(newMessage)
+        });
+        return newRoom;
+      })
+    );
   };
 
   const updateUnreadMessageCount = async (roomId: string) => {

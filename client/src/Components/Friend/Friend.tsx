@@ -50,9 +50,9 @@ export default function Friend() {
       }
     );
 
-    socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
-      newMessage(message, room);
-      incrementUnreadMessageCount(room._id);
+    socket.on('message', (message: IMessageDoc) => {
+      newMessage(message);
+      incrementUnreadMessageCount(`${message.roomId}`);
     });
 
     return () => {

@@ -75,9 +75,7 @@ export const setupSocketIO = (server: http.Server) => {
     });
 
     socket.on('message', async (message: IMessageDoc) => {
-      const room = await RoomCollection.findById(message.roomId);
-      if (!room) return;
-      io.to(message.roomId + '').emit('message', message, room);
+      io.to(message.roomId + '').emit('message', message);
     });
 
     socket.on(

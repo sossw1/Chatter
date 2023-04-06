@@ -189,10 +189,11 @@ export default function Chat() {
   useEffect(() => {
     updateUnreadMessageCount(selectedChatId || '');
 
-    socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
-      newMessage(message, room);
+    socket.on('message', (message: IMessageDoc) => {
+      newMessage(message);
 
-      if (selectedChatId !== room._id) incrementUnreadMessageCount(room._id);
+      if (selectedChatId !== `${message.roomId}`)
+        incrementUnreadMessageCount(`${message.roomId}`);
 
       if (isChatComponentMounted.current)
         messageRef?.current?.lastElementChild?.scrollIntoView(true);
