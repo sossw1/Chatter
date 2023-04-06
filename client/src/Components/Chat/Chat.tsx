@@ -35,7 +35,8 @@ export default function Chat() {
     addFriendInvite,
     newMessage,
     updateFriendStatus,
-    updateUnreadMessageCount
+    updateUnreadMessageCount,
+    incrementUnreadMessageCount
   } = useChat();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -131,13 +132,6 @@ export default function Chat() {
       socket.emit('user-data', user);
     }
 
-    socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
-      newMessage(message, room);
-
-      if (isChatComponentMounted.current)
-        messageRef?.current?.lastElementChild?.scrollIntoView(true);
-    });
-
     socket.on(
       'friend-request',
       (username: string, notification: INotificationDoc) => {
@@ -194,6 +188,19 @@ export default function Chat() {
 
   useEffect(() => {
     updateUnreadMessageCount(selectedChatId || '');
+
+    socket.on('message', (message: IMessageDoc, room: IRoomDoc) => {
+      newMessage(message, room);
+
+      if (selectedChatId !== room._id) incrementUnreadMessageCount(room._id);
+
+      if (isChatComponentMounted.current)
+        messageRef?.current?.lastElementChild?.scrollIntoView(true);
+    });
+
+    return () => {
+      socket.off('message');
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChatId]);
 
