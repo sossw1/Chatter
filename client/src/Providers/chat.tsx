@@ -61,6 +61,7 @@ interface ChatContextProps {
   removeFriendInvite: (username: string) => void;
   newMessage: (message: IMessageDoc, room: IRoomDoc) => void;
   updateUnreadMessageCount: (roomId: string) => void;
+  incrementUnreadMessageCount: (roomId: string) => void;
 }
 
 export const getStatusColor = (
@@ -297,6 +298,19 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setRoomData(next);
   };
 
+  const incrementUnreadMessageCount = (roomId: string) => {
+    setRoomData((prev) => {
+      return prev.map((room) =>
+        room.roomId === roomId
+          ? {
+              ...room,
+              unreadMessageCount: room.unreadMessageCount + 1
+            }
+          : room
+      );
+    });
+  };
+
   let value = {
     isInitialDataLoaded,
     roomData,
@@ -322,7 +336,8 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     addFriendInvite,
     removeFriendInvite,
     newMessage,
-    updateUnreadMessageCount
+    updateUnreadMessageCount,
+    incrementUnreadMessageCount
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
