@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "start:dev": "concurrently \"tsc -w\" \"env-cmd -f ./config/dev.env nodemon dist/index.js\"",
     "start:client": "cd client/ & npm start",
+    "seed:users": "node dist/db/seed/seedUsers.js",
     "postinstall": "tsc"
   },
   "keywords": [],
