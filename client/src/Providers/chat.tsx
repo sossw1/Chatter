@@ -263,10 +263,20 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setRooms((prev) =>
       prev.map((room) => {
         if (room._id !== newMessage.roomId) return room;
-
         const newRoom: IRoomDoc = Object.assign({}, room, {
           messages: room.messages.concat(newMessage)
         });
+
+        const url = `/api/rooms/${newMessage.roomId}/last-read`;
+        const token = localStorage.getItem('token');
+        const parsedToken = token ? JSON.parse(token) : '';
+        fetch(url, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${parsedToken}`
+          }
+        });
+
         return newRoom;
       })
     );
