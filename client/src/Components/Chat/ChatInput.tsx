@@ -16,7 +16,7 @@ export default function ChatInput({ selectedRoom }: Props) {
     event.preventDefault();
     const inputEl = messageRef.current;
     const message = inputEl ? inputEl.value : '';
-    const roomId: string = selectedRoom ? selectedRoom._id : '';
+    const roomId = selectedRoom ? `${selectedRoom._id}` : '';
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
 
