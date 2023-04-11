@@ -3,12 +3,13 @@ import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
 import { IMessageDoc, INotificationDoc, IRoomDoc } from '../../types/Rooms';
 import { sortByName, sortByFriendName } from '../../utils/sort';
-import { useAuth } from '../../Providers/auth';
+import { useAuth, IUserDoc } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import {
   useChat,
   getStatusColor,
   getUnreadMessageCount,
+  ChatData,
   RoomData,
   FriendStatusText,
   FriendStatus
@@ -17,6 +18,82 @@ import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';
 import ChatInput from './ChatInput';
+
+export const fetchInitialData = async (
+  user: IUserDoc
+): Promise<ChatData | undefined> => {
+  if (!user) return;
+
+  const token = localStorage.getItem('token');
+  const parsedToken = token ? JSON.parse(token) : '';
+  let fetchedRooms: IRoomDoc[] = [];
+  let fetchedFriendStatuses: FriendStatus[] = [];
+
+  await Promise.all(
+    user.rooms
+      .map(async (room) => {
+        const response = await fetch(`/api/rooms/${room.roomId}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${parsedToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const roomDocument: IRoomDoc = await response.json();
+          fetchedRooms.push(roomDocument);
+        }
+      })
+      .concat(
+        user.friends.map(async (friend) => {
+          const response = await fetch(`/api/users/friend/status`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${parsedToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: friend })
+          });
+          if (response.ok) {
+            const { status }: { status: FriendStatusText } =
+              await response.json();
+            const friendStatus = {
+              username: friend,
+              status,
+              statusColor: getStatusColor(status)
+            };
+            fetchedFriendStatuses.push(friendStatus);
+          }
+        })
+      )
+  );
+
+  const status = user.status === 'Invisible' ? 'Invisible' : 'Online';
+
+  const roomData: RoomData[] = user.rooms.map((userRoom) => {
+    const matchingRoom = fetchedRooms.find(
+      (room) => room._id === userRoom.roomId
+    );
+    const unreadMessageCount = matchingRoom
+      ? getUnreadMessageCount(userRoom.lastReadAt, matchingRoom)
+      : 0;
+    return {
+      ...userRoom,
+      unreadMessageCount
+    };
+  });
+
+  return {
+    roomData: roomData,
+    userStatus: status,
+    notifications: user.notifications,
+    friendStatuses: fetchedFriendStatuses,
+    rooms: fetchedRooms,
+    roomInvites: user.roomInvites,
+    friends: user.friends,
+    friendInvites: user.friendInvites
+  };
+};
 
 export default function Chat() {
   const isChatComponentMounted = useRef(true);
@@ -47,83 +124,11 @@ export default function Chat() {
     setDrawerOpen(!drawerOpen);
   };
 
-  const fetchInitialData = async () => {
-    if (!user) return;
-
-    const token = localStorage.getItem('token');
-    const parsedToken = token ? JSON.parse(token) : '';
-    let fetchedRooms: IRoomDoc[] = [];
-    let fetchedFriendStatuses: FriendStatus[] = [];
-
-    await Promise.all(
-      user.rooms
-        .map(async (room) => {
-          const response = await fetch(`/api/rooms/${room.roomId}`, {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${parsedToken}`,
-              'Content-Type': 'application/json'
-            }
-          });
-          if (response.ok) {
-            const roomDocument: IRoomDoc = await response.json();
-            fetchedRooms.push(roomDocument);
-          }
-        })
-        .concat(
-          user.friends.map(async (friend) => {
-            const response = await fetch(`/api/users/friend/status`, {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${parsedToken}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ username: friend })
-            });
-            if (response.ok) {
-              const { status }: { status: FriendStatusText } =
-                await response.json();
-              const friendStatus = {
-                username: friend,
-                status,
-                statusColor: getStatusColor(status)
-              };
-              fetchedFriendStatuses.push(friendStatus);
-            }
-          })
-        )
-    );
-
-    const status = user.status === 'Invisible' ? 'Invisible' : 'Online';
-
-    const roomData: RoomData[] = user.rooms.map((userRoom) => {
-      const matchingRoom = fetchedRooms.find(
-        (room) => room._id === userRoom.roomId
-      );
-      const unreadMessageCount = matchingRoom
-        ? getUnreadMessageCount(userRoom.lastReadAt, matchingRoom)
-        : 0;
-      return {
-        ...userRoom,
-        unreadMessageCount
-      };
-    });
-
-    loadInitialData({
-      roomData: roomData,
-      userStatus: status,
-      notifications: user.notifications,
-      friendStatuses: fetchedFriendStatuses,
-      rooms: fetchedRooms,
-      roomInvites: user.roomInvites,
-      friends: user.friends,
-      friendInvites: user.friendInvites
-    });
-  };
-
   useEffect(() => {
-    if (!isInitialDataLoaded) {
-      fetchInitialData();
+    if (!isInitialDataLoaded && user) {
+      fetchInitialData(user).then((data) => {
+        if (data) loadInitialData(data);
+      });
     }
 
     if (socket.disconnected) socket.connect();
