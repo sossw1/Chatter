@@ -22,7 +22,7 @@ export interface FriendStatus {
   statusColor: StatusColor;
 }
 
-interface ChatData {
+export interface ChatData {
   roomData: RoomData[];
   userStatus: UserStatusText;
   notifications: INotificationDoc[];
