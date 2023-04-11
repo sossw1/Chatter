@@ -8,12 +8,15 @@ import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat, FriendStatusText } from '../../Providers/chat';
+import { fetchInitialData } from '../Chat/Chat';
 
 export default function Friend() {
   const isFriendComponentMounted = useRef(true);
   const { user } = useAuth();
   const socket = useSocket();
   const {
+    isInitialDataLoaded,
+    loadInitialData,
     addNotification,
     addRoom,
     addFriendInvite,
@@ -23,6 +26,12 @@ export default function Friend() {
   } = useChat();
 
   useEffect(() => {
+    if (!isInitialDataLoaded && user) {
+      fetchInitialData(user).then((data) => {
+        if (data) loadInitialData(data);
+      });
+    }
+
     if (socket.disconnected) socket.connect();
 
     if (user) socket.emit('user-data', user);
