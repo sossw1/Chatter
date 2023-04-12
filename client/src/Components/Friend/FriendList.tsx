@@ -19,7 +19,7 @@ export default function FriendList() {
       <Typography variant='h3'>Friends List</Typography>
       <List>
         <Divider />
-        {friends.map((friend) => (
+        {friends.sort().map((friend) => (
           <>
             <ListItem key={uuid()}>
               <ListItemAvatar>
