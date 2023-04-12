@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   Avatar,
   Box,
@@ -20,15 +21,15 @@ export default function FriendList() {
       <List>
         <Divider />
         {friends.sort().map((friend) => (
-          <>
-            <ListItem key={uuid()}>
+          <Fragment key={uuid()}>
+            <ListItem>
               <ListItemAvatar>
                 <Avatar sx={{ width: '2rem', height: '2rem' }} />
               </ListItemAvatar>
               <ListItemText primary={friend}></ListItemText>
             </ListItem>
             <Divider />
-          </>
+          </Fragment>
         ))}
       </List>
     </Box>
