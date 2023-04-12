@@ -101,18 +101,21 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
                   <Avatar
                     sx={{ width: '2.5rem', height: '2.5rem', mr: '1.5rem' }}
                   />
-                  <Typography variant='h5' mr='1rem'>
+                  <Typography variant='body1' mr='1rem'>
                     {username}
                   </Typography>
                   <Button
-                    sx={{ color: theme.palette.success.main }}
+                    sx={{
+                      color: theme.palette.success.main,
+                      minWidth: 'unset'
+                    }}
                     disabled={disabledRequests.includes(username)}
                     onClick={() => replyFriendRequest(username, true)}
                   >
                     <Check />
                   </Button>
                   <Button
-                    sx={{ color: theme.palette.error.main }}
+                    sx={{ color: theme.palette.error.main, minWidth: 'unset' }}
                     disabled={disabledRequests.includes(username)}
                     onClick={() => replyFriendRequest(username, false)}
                   >
