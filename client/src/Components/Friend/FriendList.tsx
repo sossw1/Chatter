@@ -17,7 +17,9 @@ export default function FriendList() {
 
   return (
     <Box ml='3rem' mt='3rem'>
-      <Typography variant='h3'>Friends List</Typography>
+      <Typography variant='h3' pb='1rem'>
+        Friends List
+      </Typography>
       <List>
         <Divider />
         {friends.sort().map((friend) => (
