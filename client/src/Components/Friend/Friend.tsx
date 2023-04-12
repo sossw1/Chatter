@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import FriendRequest from './FriendRequest';
-import FriendRequestList from './FriendRequestList';
 import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat, FriendStatusText } from '../../Providers/chat';
 import { fetchInitialData } from '../Chat/Chat';
+import FriendRequest from './FriendRequest';
+import FriendRequestList from './FriendRequestList';
+import FriendList from './FriendList';
 
 export default function Friend() {
   const isFriendComponentMounted = useRef(true);
@@ -89,6 +90,7 @@ export default function Friend() {
           isFriendComponentMounted={isFriendComponentMounted}
         />
       </Box>
+      <FriendList />
     </Box>
   );
 }
