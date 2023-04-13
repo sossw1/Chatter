@@ -20,6 +20,7 @@ export default function Friend() {
     loadInitialData,
     addNotification,
     addRoom,
+    addFriend,
     addFriendInvite,
     updateFriendStatus,
     newMessage,
@@ -49,12 +50,13 @@ export default function Friend() {
       'friend-request-accepted',
       (
         newRoom: IRoomDoc,
-        friendUsername: string,
-        friendStatus: FriendStatusText,
+        newFriendUsername: string,
+        newFriendStatus: FriendStatusText,
         notification: INotificationDoc
       ) => {
         addRoom(newRoom);
-        updateFriendStatus(friendUsername, friendStatus);
+        addFriend(newFriendUsername);
+        updateFriendStatus(newFriendUsername, newFriendStatus);
         if (notification) addNotification(notification);
         socket.emit('join-room', newRoom._id);
       }

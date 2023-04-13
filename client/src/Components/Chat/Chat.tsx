@@ -109,6 +109,7 @@ export default function Chat() {
     loadInitialData,
     addNotification,
     addRoom,
+    addFriend,
     addFriendInvite,
     newMessage,
     updateFriendStatus,
@@ -149,12 +150,13 @@ export default function Chat() {
       'friend-request-accepted',
       (
         newRoom: IRoomDoc,
-        friendUsername: string,
-        friendStatus: FriendStatusText,
+        newFriendUsername: string,
+        newFriendStatus: FriendStatusText,
         notification: INotificationDoc
       ) => {
         addRoom(newRoom);
-        updateFriendStatus(friendUsername, friendStatus);
+        addFriend(newFriendUsername);
+        updateFriendStatus(newFriendUsername, newFriendStatus);
         if (notification) addNotification(notification);
         socket.emit('join-room', newRoom._id);
       }
