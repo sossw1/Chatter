@@ -1,4 +1,4 @@
-import { Fragment, MouseEvent } from 'react';
+import { Fragment } from 'react';
 import {
   Avatar,
   Box,
