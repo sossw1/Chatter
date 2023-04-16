@@ -15,9 +15,25 @@ import { v4 as uuid } from 'uuid';
 import { useChat } from '../../Providers/chat';
 
 export default function FriendList() {
-  const { friends } = useChat();
+  const { friends, removeFriend } = useChat();
 
-  const handleDeleteFriend = (username: string) => {};
+  const handleDeleteFriend = async (username: string) => {
+    const url = '/api/users/friend';
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username })
+    });
+
+    if (response.ok) {
+      removeFriend(username);
+    }
+  };
 
   return (
     <Box ml='3rem' mt='3rem'>
