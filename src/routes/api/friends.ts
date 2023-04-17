@@ -1,4 +1,5 @@
 import {
+  INotificationDoc,
   IRoomData,
   NotificationCollection,
   UserCollection
@@ -201,16 +202,43 @@ router.delete('/api/users/friend', auth, async (req, res) => {
       }
     }
 
+    const requesterNotificationsToDelete: string[] = [];
+    const friendNotificationsToDelete: string[] = [];
+
     req.user.friends = req.user.friends.filter((user) => user !== username);
+    req.user.notifications = req.user.notifications.filter((notification) => {
+      if (notification.text === userDocument.username) {
+        requesterNotificationsToDelete.push(notification._id);
+        return false;
+      }
+      return true;
+    });
     await req.user.save();
 
     userDocument.friends = userDocument.friends.filter(
       (user) => user !== req.user.username
     );
+    userDocument.notifications = userDocument.notifications.filter(
+      (notification) => {
+        if (notification.text === req.user.username) {
+          friendNotificationsToDelete.push(notification._id);
+          return false;
+        }
+        return true;
+      }
+    );
     await userDocument.save();
 
     io.to([...req.user.socketIds]).emit('delete-friend', userDocument.username);
+    io.to([...req.user.socketIds]).emit(
+      'delete-notifications',
+      requesterNotificationsToDelete
+    );
     io.to([...userDocument.socketIds]).emit('delete-friend', req.user.username);
+    io.to([...userDocument.socketIds]).emit(
+      'delete-notifications',
+      friendNotificationsToDelete
+    );
 
     res.sendStatus(200);
   } catch (error) {
