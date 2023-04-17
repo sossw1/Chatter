@@ -180,9 +180,9 @@ export default function Chat() {
 
     return () => {
       isChatComponentMounted.current = false;
-      socket.off('message');
       socket.off('friend-request');
       socket.off('friend-request-accepted');
+      socket.off('delete-friend');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
