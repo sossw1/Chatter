@@ -3,6 +3,7 @@ import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
 import { IMessageDoc, INotificationDoc, IRoomDoc } from '../../types/Rooms';
 import { sortByName, sortByFriendName } from '../../utils/sort';
+import { getRoomName } from '../../utils/parse';
 import { useAuth, IUserDoc } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import {
@@ -109,7 +110,9 @@ export default function Chat() {
     loadInitialData,
     addNotification,
     addRoom,
+    removeRoom,
     addFriend,
+    removeFriend,
     addFriendInvite,
     newMessage,
     updateFriendStatus,
@@ -161,6 +164,19 @@ export default function Chat() {
         socket.emit('join-room', newRoom._id);
       }
     );
+
+    socket.on('delete-friend', (username: string) => {
+      removeFriend(username);
+
+      if (!user) return;
+
+      const match = rooms.find((room) => {
+        return room.isDirect && getRoomName(room, user.username) === username;
+      });
+
+      if (!match) return;
+      removeRoom(match._id);
+    });
 
     return () => {
       isChatComponentMounted.current = false;

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { getRoomName } from '../../utils/parse';
 import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
@@ -17,10 +18,13 @@ export default function Friend() {
   const socket = useSocket();
   const {
     isInitialDataLoaded,
+    rooms,
     loadInitialData,
     addNotification,
     addRoom,
+    removeRoom,
     addFriend,
+    removeFriend,
     addFriendInvite,
     updateFriendStatus,
     newMessage,
@@ -67,11 +71,25 @@ export default function Friend() {
       incrementUnreadMessageCount(`${message.roomId}`);
     });
 
+    socket.on('delete-friend', (username: string) => {
+      removeFriend(username);
+
+      if (!user) return;
+
+      const match = rooms.find((room) => {
+        return room.isDirect && getRoomName(room, user.username) === username;
+      });
+
+      if (!match) return;
+      removeRoom(match._id);
+    });
+
     return () => {
       isFriendComponentMounted.current = false;
       socket.off('friend-request');
       socket.off('friend-request-accepted');
       socket.off('message');
+      socket.off('delete-friend');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
