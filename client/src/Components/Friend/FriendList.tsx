@@ -13,18 +13,15 @@ import {
 import { Delete } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
 import { useChat } from '../../Providers/chat';
-import { useAuth } from '../../Providers/auth';
-import { getRoomName } from '../../utils/parse';
 
 export default function FriendList() {
-  const { friends, rooms, removeFriend, removeRoom } = useChat();
-  const { user } = useAuth();
+  const { friends } = useChat();
 
-  const handleDeleteFriend = async (username: string) => {
+  const handleDeleteFriend = (username: string) => {
     const url = '/api/users/friend';
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
-    const response = await fetch(url, {
+    fetch(url, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${parsedToken}`,
@@ -32,17 +29,6 @@ export default function FriendList() {
       },
       body: JSON.stringify({ username })
     });
-
-    if (response.ok) {
-      removeFriend(username);
-      const match = rooms.find((room) => {
-        if (!user) return false;
-        return room.isDirect && getRoomName(room, user.username) === username;
-      });
-
-      if (!match) return;
-      removeRoom(match._id);
-    }
   };
 
   return (
