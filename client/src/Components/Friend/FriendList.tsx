@@ -13,9 +13,12 @@ import {
 import { Delete } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
 import { useChat } from '../../Providers/chat';
+import { useAuth } from '../../Providers/auth';
+import { getRoomName } from '../../utils/parse';
 
 export default function FriendList() {
-  const { friends, removeFriend } = useChat();
+  const { friends, rooms, removeFriend, removeRoom } = useChat();
+  const { user } = useAuth();
 
   const handleDeleteFriend = async (username: string) => {
     const url = '/api/users/friend';
@@ -32,6 +35,13 @@ export default function FriendList() {
 
     if (response.ok) {
       removeFriend(username);
+      const match = rooms.find((room) => {
+        if (!user) return false;
+        return room.isDirect && getRoomName(room, user.username) === username;
+      });
+
+      if (!match) return;
+      removeRoom(match._id);
     }
   };
 
