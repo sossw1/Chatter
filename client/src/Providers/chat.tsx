@@ -47,6 +47,7 @@ interface ChatContextProps {
   clearChatContext: () => void;
   addNotification: (notification: INotificationDoc) => void;
   markNotificationAsRead: (id: string) => void;
+  deleteNotificationById: (id: string) => void;
   deleteNotificationByContent: (
     type: NotificationType,
     username: string
@@ -165,6 +166,12 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
         return next;
       });
     }
+  };
+
+  const deleteNotificationById = (id: string) => {
+    setNotifications((prev) => {
+      return prev.filter((notification) => notification._id !== id);
+    });
   };
 
   const deleteNotificationByContent = async (
@@ -336,6 +343,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     friendInvites,
     addNotification,
     markNotificationAsRead,
+    deleteNotificationById,
     deleteNotificationByContent,
     updateUserStatus,
     updateFriendStatus,
