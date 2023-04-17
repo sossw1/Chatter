@@ -21,6 +21,7 @@ export default function Friend() {
     rooms,
     loadInitialData,
     addNotification,
+    deleteNotificationById,
     addRoom,
     removeRoom,
     addFriend,
@@ -84,12 +85,19 @@ export default function Friend() {
       removeRoom(match._id);
     });
 
+    socket.on('delete-notifications', (notifications: string[]) => {
+      notifications.forEach((notification) =>
+        deleteNotificationById(notification)
+      );
+    });
+
     return () => {
       isFriendComponentMounted.current = false;
       socket.off('friend-request');
       socket.off('friend-request-accepted');
       socket.off('message');
       socket.off('delete-friend');
+      socket.off('delete-notifications');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
