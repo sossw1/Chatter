@@ -209,6 +209,9 @@ router.delete('/api/users/friend', auth, async (req, res) => {
     );
     await userDocument.save();
 
+    io.to([...req.user.socketIds]).emit('delete-friend', userDocument.username);
+    io.to([...userDocument.socketIds]).emit('delete-friend', req.user.username);
+
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(500);
