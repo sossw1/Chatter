@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   Avatar,
   Badge,
@@ -13,8 +12,7 @@ import { IRoomDoc } from '../../types/Rooms';
 import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
-import { useSocket } from '../../Providers/socket';
-import { useChat, FriendStatusText } from '../../Providers/chat';
+import { useChat } from '../../Providers/chat';
 
 interface Props {
   handleDrawerToggle: () => void;
@@ -27,21 +25,10 @@ export default function ChatHeader({
 }: Props) {
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
-  const socket = useSocket();
-  const { findFriendStatus, updateFriendStatus } = useChat();
+  const { findFriendStatus } = useChat();
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
-
-  useEffect(() => {
-    socket.on('status-update', (username: string, status: FriendStatusText) => {
-      updateFriendStatus(username, status);
-    });
-
-    return () => {
-      socket.off('status-update');
-    };
-  });
 
   return (
     <Box
