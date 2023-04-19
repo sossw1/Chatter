@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   Divider,
@@ -13,9 +14,10 @@ import {
 import { Delete } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
 import { useChat } from '../../Providers/chat';
+import theme from '../../Providers/theme';
 
 export default function FriendList() {
-  const { friends } = useChat();
+  const { friends, findFriendStatus } = useChat();
 
   const handleDeleteFriend = (username: string) => {
     const url = '/api/users/friend';
@@ -42,7 +44,19 @@ export default function FriendList() {
           <Fragment key={uuid()}>
             <ListItem>
               <ListItemAvatar>
-                <Avatar sx={{ width: '2rem', height: '2rem' }} />
+                <Badge
+                  overlap='circular'
+                  variant='dot'
+                  color={findFriendStatus(friend)?.statusColor || 'neutral'}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+                    }
+                  }}
+                >
+                  <Avatar sx={{ width: '2rem', height: '2rem' }} />
+                </Badge>
               </ListItemAvatar>
               <ListItemText sx={{ mr: '1rem' }} primary={friend}></ListItemText>
               <Button
