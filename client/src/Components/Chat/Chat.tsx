@@ -217,7 +217,7 @@ export default function Chat() {
     const roomSelection = rooms.find((room) => room._id === selectedChatId);
     if (roomSelection && isChatComponentMounted.current) {
       setSelectedRoom(roomSelection);
-      setDisplayMessages(selectedRoom ? selectedRoom.messages : []);
+      setDisplayMessages(selectedRoom?.messages || []);
       messageRef?.current?.lastElementChild?.scrollIntoView(false);
     }
   }, [rooms, user, selectedChatId, selectedRoom, displayMessages]);
