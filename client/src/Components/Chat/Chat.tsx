@@ -166,6 +166,10 @@ export default function Chat() {
       }
     );
 
+    socket.on('status-update', (username: string, status: FriendStatusText) => {
+      updateFriendStatus(username, status);
+    });
+
     socket.on('delete-friend', (username: string) => {
       removeFriend(username);
 
@@ -189,6 +193,7 @@ export default function Chat() {
       isChatComponentMounted.current = false;
       socket.off('friend-request');
       socket.off('friend-request-accepted');
+      socket.off('status-update');
       socket.off('delete-friend');
       socket.off('delete-notifications');
     };

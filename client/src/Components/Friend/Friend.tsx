@@ -72,6 +72,10 @@ export default function Friend() {
       incrementUnreadMessageCount(`${message.roomId}`);
     });
 
+    socket.on('status-update', (username: string, status: FriendStatusText) => {
+      updateFriendStatus(username, status);
+    });
+
     socket.on('delete-friend', (username: string) => {
       removeFriend(username);
 
@@ -96,6 +100,7 @@ export default function Friend() {
       socket.off('friend-request');
       socket.off('friend-request-accepted');
       socket.off('message');
+      socket.off('status-update');
       socket.off('delete-friend');
       socket.off('delete-notifications');
     };
