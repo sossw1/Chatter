@@ -242,7 +242,7 @@ export default function Chat() {
   }, [selectedChatId]);
 
   return (
-    <Box sx={{ display: 'flex', backgroundColor: theme.palette.grey[100] }}>
+    <Box display='flex' bgcolor={theme.palette.grey[100]}>
       <ChatDrawer
         drawerWidth={drawerWidth}
         drawerOpen={drawerOpen}
