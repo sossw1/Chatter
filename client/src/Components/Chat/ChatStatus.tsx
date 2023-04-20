@@ -18,9 +18,15 @@ import { ArrowDropDown, ArrowDropUp, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
-import { useChat, getStatusColor, UserStatusText } from '../../Providers/chat';
+import {
+  useChat,
+  getStatusColor,
+  UserStatusText,
+  StatusColor
+} from '../../Providers/chat';
 
 const statusOptions: UserStatusText[] = ['Online', 'Away', 'Invisible'];
+const statusOptionColors: StatusColor[] = ['success', 'warning', 'neutral'];
 
 interface Props {
   setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -126,11 +132,23 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                       'aria-labelledby': 'status-button'
                     }}
                   >
-                    {statusOptions.map((status) => (
+                    {statusOptions.map((status, index) => (
                       <MenuItem
                         key={status}
                         onClick={() => handleClose(status)}
                       >
+                        <Badge
+                          variant='dot'
+                          color={statusOptionColors[index]}
+                          sx={{
+                            mr: '0.5rem',
+                            border: '7px solid #ddd',
+                            borderRadius: '7px',
+                            '& .MuiBadge-badge': {
+                              boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+                            }
+                          }}
+                        />
                         {status}
                       </MenuItem>
                     ))}
