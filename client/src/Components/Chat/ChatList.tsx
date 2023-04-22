@@ -42,7 +42,7 @@ export default function ChatList({
           <Typography variant='h5' color='primary' sx={{ ml: '1rem' }}>
             Chats
           </Typography>
-          <List sx={{ mb: '1rem' }}>
+          <List>
             {groupRooms.map((room) => (
               <ChatListItem
                 room={room}
