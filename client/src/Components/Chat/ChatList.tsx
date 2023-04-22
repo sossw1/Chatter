@@ -25,6 +25,11 @@ export default function ChatList({
   const user = useAuth().user;
   const { rooms } = useChat();
 
+  const groupRooms = rooms.filter((room) => !room.isDirect).sort(sortByName);
+  const directRooms = rooms
+    .filter((room) => room.isDirect)
+    .sort((a, b) => sortByFriendName(a, b, user));
+
   const handleChatSelection = (event: MouseEvent<HTMLDivElement>) => {
     const id = event.currentTarget.id;
     setSelectedChatId(id);
@@ -38,17 +43,14 @@ export default function ChatList({
             Chats
           </Typography>
           <List sx={{ mb: '1rem' }}>
-            {rooms
-              .filter((room) => !room.isDirect)
-              .sort(sortByName)
-              .map((room) => (
-                <ChatListItem
-                  room={room}
-                  selectedChatId={selectedChatId}
-                  handleChatSelection={handleChatSelection}
-                  key={room._id}
-                />
-              ))}
+            {groupRooms.map((room) => (
+              <ChatListItem
+                room={room}
+                selectedChatId={selectedChatId}
+                handleChatSelection={handleChatSelection}
+                key={room._id}
+              />
+            ))}
           </List>
         </Grid>
         <Grid item>
@@ -56,17 +58,14 @@ export default function ChatList({
             Friends
           </Typography>
           <List>
-            {rooms
-              .filter((room) => room.isDirect)
-              .sort((a, b) => sortByFriendName(a, b, user))
-              .map((room) => (
-                <ChatListItem
-                  room={room}
-                  selectedChatId={selectedChatId}
-                  handleChatSelection={handleChatSelection}
-                  key={room._id}
-                />
-              ))}
+            {directRooms.map((room) => (
+              <ChatListItem
+                room={room}
+                selectedChatId={selectedChatId}
+                handleChatSelection={handleChatSelection}
+                key={room._id}
+              />
+            ))}
           </List>
         </Grid>
       </Grid>
