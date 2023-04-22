@@ -39,9 +39,14 @@ export default function ChatList({
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
       <Grid container direction='column'>
         <Grid item sx={{ width: '100%' }}>
-          <Typography variant='h5' color='primary' sx={{ ml: '1rem' }}>
-            Chats
-          </Typography>
+          <Grid container direction='row' alignItems='center'>
+            <Typography variant='h5' color='primary' sx={{ ml: '1rem' }}>
+              Chats
+            </Typography>
+            <Typography variant='subtitle1' color='primary' p='2px 0 0 0.5rem'>
+              [{groupRooms.length}]
+            </Typography>
+          </Grid>
           <List>
             {groupRooms.map((room) => (
               <ChatListItem
@@ -54,9 +59,14 @@ export default function ChatList({
           </List>
         </Grid>
         <Grid item>
-          <Typography variant='h5' color='primary' sx={{ ml: '1rem' }}>
-            Friends
-          </Typography>
+          <Grid container direction='row' alignItems='center'>
+            <Typography variant='h5' color='primary' sx={{ ml: '1rem' }}>
+              Friends
+            </Typography>
+            <Typography variant='subtitle1' color='primary' p='2px 0 0 0.5rem'>
+              [{directRooms.length}]
+            </Typography>
+          </Grid>
           <List>
             {directRooms.map((room) => (
               <ChatListItem
