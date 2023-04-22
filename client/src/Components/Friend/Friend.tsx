@@ -7,7 +7,7 @@ import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat, FriendStatusText } from '../../Providers/chat';
-import { fetchInitialData } from '../Chat/Chat';
+import { fetchInitialData } from '../../utils/fetch';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
 import FriendList from './FriendList';
