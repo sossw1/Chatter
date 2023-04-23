@@ -21,22 +21,7 @@ export default function Chat() {
   const drawerWidth = smDown ? '15rem' : mdDown ? '20rem' : '30rem';
   const { user } = useAuth();
   const socket = useSocket();
-  const {
-    isInitialDataLoaded,
-    rooms,
-    loadInitialData,
-    addNotification,
-    deleteNotificationById,
-    addRoom,
-    removeRoom,
-    addFriend,
-    removeFriend,
-    addFriendInvite,
-    newMessage,
-    updateFriendStatus,
-    updateUnreadMessageCount,
-    incrementUnreadMessageCount
-  } = useChat();
+  const chat = useChat();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<IRoomDoc | null>(null);
@@ -47,9 +32,9 @@ export default function Chat() {
   };
 
   useEffect(() => {
-    if (!isInitialDataLoaded && user) {
+    if (!chat.isInitialDataLoaded && user) {
       fetchInitialData(user).then((data) => {
-        if (data) loadInitialData(data);
+        if (data) chat.loadInitialData(data);
       });
     }
 
@@ -62,8 +47,8 @@ export default function Chat() {
     socket.on(
       'friend-request',
       (username: string, notification: INotificationDoc) => {
-        addFriendInvite(username);
-        if (notification) addNotification(notification);
+        chat.addFriendInvite(username);
+        if (notification) chat.addNotification(notification);
       }
     );
 
@@ -75,34 +60,34 @@ export default function Chat() {
         newFriendStatus: FriendStatusText,
         notification: INotificationDoc
       ) => {
-        addRoom(newRoom);
-        addFriend(newFriendUsername);
-        updateFriendStatus(newFriendUsername, newFriendStatus);
-        if (notification) addNotification(notification);
+        chat.addRoom(newRoom);
+        chat.addFriend(newFriendUsername);
+        chat.updateFriendStatus(newFriendUsername, newFriendStatus);
+        if (notification) chat.addNotification(notification);
         socket.emit('join-room', newRoom._id);
       }
     );
 
     socket.on('status-update', (username: string, status: FriendStatusText) => {
-      updateFriendStatus(username, status);
+      chat.updateFriendStatus(username, status);
     });
 
     socket.on('delete-friend', (username: string) => {
-      removeFriend(username);
+      chat.removeFriend(username);
 
       if (!user) return;
 
-      const match = rooms.find((room) => {
+      const match = chat.rooms.find((room) => {
         return room.isDirect && getRoomName(room, user.username) === username;
       });
 
       if (!match) return;
-      removeRoom(match._id);
+      chat.removeRoom(match._id);
     });
 
     socket.on('delete-notifications', (notifications: string[]) => {
       notifications.forEach((notification) =>
-        deleteNotificationById(notification)
+        chat.deleteNotificationById(notification)
       );
     });
 
@@ -118,35 +103,37 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    if (selectedChatId === null && rooms.length > 0) {
-      const groups = rooms.filter((room) => !room.isDirect);
+    if (selectedChatId === null && chat.rooms.length > 0) {
+      const groups = chat.rooms.filter((room) => !room.isDirect);
       if (isChatComponentMounted.current) {
         if (groups.length > 0) {
           setSelectedChatId(groups.sort(sortByName)[0]._id);
         } else {
           setSelectedChatId(
-            rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
+            chat.rooms.sort((a, b) => sortByFriendName(a, b, user))[0]._id
           );
         }
       }
     }
 
-    const roomSelection = rooms.find((room) => room._id === selectedChatId);
+    const roomSelection = chat.rooms.find(
+      (room) => room._id === selectedChatId
+    );
     if (roomSelection && isChatComponentMounted.current) {
       setSelectedRoom(roomSelection);
       setDisplayMessages(selectedRoom?.messages || []);
       messageRef?.current?.lastElementChild?.scrollIntoView(false);
     }
-  }, [rooms, user, selectedChatId, selectedRoom, displayMessages]);
+  }, [chat.rooms, user, selectedChatId, selectedRoom, displayMessages]);
 
   useEffect(() => {
-    updateUnreadMessageCount(selectedChatId || '');
+    chat.updateUnreadMessageCount(selectedChatId || '');
 
     socket.on('message', (message: IMessageDoc) => {
-      newMessage(message);
+      chat.newMessage(message);
 
       if (selectedChatId !== `${message.roomId}`)
-        incrementUnreadMessageCount(`${message.roomId}`);
+        chat.incrementUnreadMessageCount(`${message.roomId}`);
 
       if (isChatComponentMounted.current)
         messageRef?.current?.lastElementChild?.scrollIntoView(true);

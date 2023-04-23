@@ -28,7 +28,7 @@ export default function ChatListItem({
   const smDown = useMediaQuery(theme.breakpoints.down('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const { user } = useAuth();
-  const { findFriendStatus, roomData } = useChat();
+  const chat = useChat();
   let username: string = '';
   if (user) username = user.username;
 
@@ -36,10 +36,10 @@ export default function ChatListItem({
     ? room.users.find((user) => user !== username)
     : '';
   const friendStatus = friendUsername
-    ? findFriendStatus(friendUsername)
+    ? chat.findFriendStatus(friendUsername)
     : undefined;
 
-  const roomDataMatch = roomData.find((r) => r.roomId === room._id);
+  const roomDataMatch = chat.roomData.find((r) => r.roomId === room._id);
 
   return (
     <ListItem sx={{ p: 0 }}>

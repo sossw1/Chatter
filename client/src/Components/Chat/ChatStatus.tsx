@@ -37,8 +37,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const mdDown = useMediaQuery(theme.breakpoints.down('lg'));
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const navigate = useNavigate();
-  const { isInitialDataLoaded, notifications, userStatus, updateUserStatus } =
-    useChat();
+  const chat = useChat();
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
@@ -50,14 +49,14 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
 
   const handleClose = (selectedStatus: UserStatusText | null) => {
     if (selectedStatus) {
-      updateUserStatus(selectedStatus);
+      chat.updateUserStatus(selectedStatus);
       socket.emit('status-update', selectedStatus);
     }
 
     setMenuAnchorEl(null);
   };
 
-  const unreadNotificationCount = notifications.reduce((acc, current) => {
+  const unreadNotificationCount = chat.notifications.reduce((acc, current) => {
     const value = current.isRead ? 0 : 1;
     return acc + value;
   }, 0);
@@ -74,7 +73,11 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
           <Badge
             overlap='circular'
             variant='dot'
-            color={isInitialDataLoaded ? getStatusColor(userStatus) : 'neutral'}
+            color={
+              chat.isInitialDataLoaded
+                ? getStatusColor(chat.userStatus)
+                : 'neutral'
+            }
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             sx={{
               '& .MuiBadge-badge': {
@@ -101,7 +104,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
               </Typography>
             </Grid>
             <Grid item>
-              {isInitialDataLoaded ? (
+              {chat.isInitialDataLoaded ? (
                 <>
                   <Button
                     variant='text'
@@ -119,7 +122,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                     }}
                     onClick={handleClick}
                   >
-                    {userStatus}
+                    {chat.userStatus}
                     {open && <ArrowDropUp />}
                     {!open && <ArrowDropDown />}
                   </Button>

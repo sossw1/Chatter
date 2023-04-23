@@ -17,7 +17,7 @@ import { useChat } from '../../Providers/chat';
 import theme from '../../Providers/theme';
 
 export default function FriendList() {
-  const { friends, findFriendStatus } = useChat();
+  const chat = useChat();
 
   const handleDeleteFriend = (username: string) => {
     const url = '/api/users/friend';
@@ -40,14 +40,16 @@ export default function FriendList() {
       </Typography>
       <List>
         <Divider />
-        {friends.sort().map((friend) => (
+        {chat.friends.sort().map((friend) => (
           <Fragment key={uuid()}>
             <ListItem>
               <ListItemAvatar>
                 <Badge
                   overlap='circular'
                   variant='dot'
-                  color={findFriendStatus(friend)?.statusColor || 'neutral'}
+                  color={
+                    chat.findFriendStatus(friend)?.statusColor || 'neutral'
+                  }
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   sx={{
                     '& .MuiBadge-badge': {

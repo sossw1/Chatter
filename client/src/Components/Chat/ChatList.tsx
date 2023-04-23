@@ -23,10 +23,12 @@ export default function ChatList({
   sortByFriendName
 }: Props) {
   const user = useAuth().user;
-  const { rooms } = useChat();
+  const chat = useChat();
 
-  const groupRooms = rooms.filter((room) => !room.isDirect).sort(sortByName);
-  const directRooms = rooms
+  const groupRooms = chat.rooms
+    .filter((room) => !room.isDirect)
+    .sort(sortByName);
+  const directRooms = chat.rooms
     .filter((room) => room.isDirect)
     .sort((a, b) => sortByFriendName(a, b, user));
 

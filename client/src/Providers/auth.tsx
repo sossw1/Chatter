@@ -164,7 +164,7 @@ const auth = Auth.getInstance();
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: JSX.Element }) => {
-  const { userStatus, clearChatContext, updateUserStatus } = useChat();
+  const chat = useChat();
   const socket = useSocket();
   const [user, setUser] = useState<IUserDoc | null>(null);
 
@@ -181,9 +181,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       const user = await response.json();
       setUser(user);
 
-      if (userStatus !== 'Invisible') {
+      if (chat.userStatus !== 'Invisible') {
         socket.emit('status-update', 'Online');
-        updateUserStatus('Online');
+        chat.updateUserStatus('Online');
       }
 
       return {
@@ -206,7 +206,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
       setUser(user);
 
       socket.emit('status-update', 'Online');
-      updateUserStatus('Online');
+      chat.updateUserStatus('Online');
 
       localStorage.setItem('token', JSON.stringify(token));
       return {
@@ -227,9 +227,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         await response.json();
       setUser(user);
 
-      if (userStatus !== 'Invisible') {
+      if (chat.userStatus !== 'Invisible') {
         socket.emit('status-update', 'Online');
-        updateUserStatus('Online');
+        chat.updateUserStatus('Online');
       }
 
       localStorage.setItem('token', JSON.stringify(token));
@@ -243,14 +243,14 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   const logout = async () => {
-    clearChatContext();
+    chat.clearChatContext();
 
     const response = await auth.postLogout();
     setUser(null);
 
-    if (userStatus !== 'Invisible') {
+    if (chat.userStatus !== 'Invisible') {
       socket.emit('status-update', 'Offline');
-      updateUserStatus('Offline');
+      chat.updateUserStatus('Offline');
     }
 
     if (response?.ok) {

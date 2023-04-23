@@ -25,7 +25,7 @@ export default function ChatHeader({
 }: Props) {
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
-  const { findFriendStatus } = useChat();
+  const chat = useChat();
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
@@ -60,7 +60,7 @@ export default function ChatHeader({
                   variant='dot'
                   color={
                     selectedRoom?.isDirect
-                      ? findFriendStatus(selectedRoomName)?.statusColor
+                      ? chat.findFriendStatus(selectedRoomName)?.statusColor
                       : 'neutral'
                   }
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -94,7 +94,7 @@ export default function ChatHeader({
                   <Grid item>
                     <Typography variant='body2' color='text.secondary'>
                       {selectedRoom?.isDirect
-                        ? findFriendStatus(selectedRoomName)?.status
+                        ? chat.findFriendStatus(selectedRoomName)?.status
                         : 'Loading'}
                     </Typography>
                   </Grid>

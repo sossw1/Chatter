@@ -31,7 +31,7 @@ export default function ChatNotificationList({
   setSelectedChatId
 }: Props) {
   const navigate = useNavigate();
-  const { rooms, notifications, markNotificationAsRead } = useChat();
+  const chat = useChat();
   const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -45,18 +45,18 @@ export default function ChatNotificationList({
 
   const handleNotificationClick = (event: MouseEvent<HTMLElement>) => {
     const notificationId = event.currentTarget.id;
-    const notification = notifications.find(
+    const notification = chat.notifications.find(
       (notification) => notification._id === notificationId
     );
     if (notification) {
       const { type } = notification;
       if (type === 'friend-request-received') {
-        markNotificationAsRead(notificationId);
+        chat.markNotificationAsRead(notificationId);
         navigate('/friend');
       } else if (type === 'friend-request-accepted' && user) {
-        markNotificationAsRead(notificationId);
+        chat.markNotificationAsRead(notificationId);
         const newFriendUsername = notification.text;
-        const match = rooms.find(
+        const match = chat.rooms.find(
           (room) =>
             room.isDirect &&
             getRoomName(room, user.username) === newFriendUsername
@@ -88,9 +88,9 @@ export default function ChatNotificationList({
         </Tooltip>
         <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1201 }}>
           <Paper>
-            {notifications.length ? (
+            {chat.notifications.length ? (
               <List sx={{ p: '0.25rem' }}>
-                {notifications.map((notification, index) => {
+                {chat.notifications.map((notification, index) => {
                   const durationSinceNotification = formatDistance(
                     new Date(notification.createdAt),
                     Date.now(),
@@ -102,7 +102,10 @@ export default function ChatNotificationList({
                       key={uuid()}
                       sx={{
                         p: 0,
-                        mb: index === notifications.length - 1 ? 0 : '0.25rem'
+                        mb:
+                          index === chat.notifications.length - 1
+                            ? 0
+                            : '0.25rem'
                       }}
                     >
                       <ListItemButton

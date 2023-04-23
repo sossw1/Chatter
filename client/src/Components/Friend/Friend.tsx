@@ -16,26 +16,12 @@ export default function Friend() {
   const isFriendComponentMounted = useRef(true);
   const { user } = useAuth();
   const socket = useSocket();
-  const {
-    isInitialDataLoaded,
-    rooms,
-    loadInitialData,
-    addNotification,
-    deleteNotificationById,
-    addRoom,
-    removeRoom,
-    addFriend,
-    removeFriend,
-    addFriendInvite,
-    updateFriendStatus,
-    newMessage,
-    incrementUnreadMessageCount
-  } = useChat();
+  const chat = useChat();
 
   useEffect(() => {
-    if (!isInitialDataLoaded && user) {
+    if (!chat.isInitialDataLoaded && user) {
       fetchInitialData(user).then((data) => {
-        if (data) loadInitialData(data);
+        if (data) chat.loadInitialData(data);
       });
     }
 
@@ -46,8 +32,8 @@ export default function Friend() {
     socket.on(
       'friend-request',
       (username: string, notification: INotificationDoc) => {
-        addFriendInvite(username);
-        if (notification) addNotification(notification);
+        chat.addFriendInvite(username);
+        if (notification) chat.addNotification(notification);
       }
     );
 
@@ -59,39 +45,39 @@ export default function Friend() {
         newFriendStatus: FriendStatusText,
         notification: INotificationDoc
       ) => {
-        addRoom(newRoom);
-        addFriend(newFriendUsername);
-        updateFriendStatus(newFriendUsername, newFriendStatus);
-        if (notification) addNotification(notification);
+        chat.addRoom(newRoom);
+        chat.addFriend(newFriendUsername);
+        chat.updateFriendStatus(newFriendUsername, newFriendStatus);
+        if (notification) chat.addNotification(notification);
         socket.emit('join-room', newRoom._id);
       }
     );
 
     socket.on('message', (message: IMessageDoc) => {
-      newMessage(message);
-      incrementUnreadMessageCount(`${message.roomId}`);
+      chat.newMessage(message);
+      chat.incrementUnreadMessageCount(`${message.roomId}`);
     });
 
     socket.on('status-update', (username: string, status: FriendStatusText) => {
-      updateFriendStatus(username, status);
+      chat.updateFriendStatus(username, status);
     });
 
     socket.on('delete-friend', (username: string) => {
-      removeFriend(username);
+      chat.removeFriend(username);
 
       if (!user) return;
 
-      const match = rooms.find((room) => {
+      const match = chat.rooms.find((room) => {
         return room.isDirect && getRoomName(room, user.username) === username;
       });
 
       if (!match) return;
-      removeRoom(match._id);
+      chat.removeRoom(match._id);
     });
 
     socket.on('delete-notifications', (notifications: string[]) => {
       notifications.forEach((notification) =>
-        deleteNotificationById(notification)
+        chat.deleteNotificationById(notification)
       );
     });
 

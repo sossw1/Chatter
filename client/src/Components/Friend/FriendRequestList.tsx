@@ -18,8 +18,7 @@ interface Props {
 }
 
 export default function FriendRequestList({ isFriendComponentMounted }: Props) {
-  const { deleteNotificationByContent, friendInvites, removeFriendInvite } =
-    useChat();
+  const chat = useChat();
   const [friendRequestMessage, setFriendRequestMessage] = useState<{
     message: string;
     username: string;
@@ -45,7 +44,7 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
     }
 
     setTimeout(() => {
-      removeFriendInvite(username);
+      chat.removeFriendInvite(username);
       if (!isFriendComponentMounted.current) return;
       setFriendRequestMessage(null);
       if (!error) {
@@ -79,7 +78,7 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
     }
 
     handleResponse(username, accept, error);
-    deleteNotificationByContent('friend-request-received', username);
+    chat.deleteNotificationByContent('friend-request-received', username);
   };
 
   return (
@@ -89,7 +88,7 @@ export default function FriendRequestList({ isFriendComponentMounted }: Props) {
       </Typography>
       <Divider />
       <List>
-        {friendInvites.map((username) => (
+        {chat.friendInvites.map((username) => (
           <Fragment key={uuid()}>
             <ListItem>
               <Box display='flex' flexDirection='column'>
