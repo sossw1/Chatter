@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
-import { Box, Grid, List, Typography } from '@mui/material';
+import { Box, Button, Grid, List, Tooltip, Typography } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import ChatListItem from './ChatListItem';
 import { IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
@@ -37,6 +38,8 @@ export default function ChatList({
     setSelectedChatId(id);
   };
 
+  const handleCreateRoomClick = () => {};
+
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
       <Grid container direction='column'>
@@ -48,6 +51,16 @@ export default function ChatList({
             <Typography variant='subtitle1' color='primary' p='2px 0 0 0.5rem'>
               [{groupRooms.length}]
             </Typography>
+            <Tooltip title='Create room'>
+              <Button
+                variant='outlined'
+                size='small'
+                sx={{ ml: 'auto', mr: '0.625rem', p: 0, minWidth: 'unset' }}
+                onClick={handleCreateRoomClick}
+              >
+                <Add />
+              </Button>
+            </Tooltip>
           </Grid>
           <List>
             {groupRooms.map((room) => (
