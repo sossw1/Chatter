@@ -58,7 +58,7 @@ export default function ChatList({
                 sx={{ ml: 'auto', mr: '0.625rem', p: 0, minWidth: 'unset' }}
                 onClick={handleCreateRoomClick}
               >
-                <Add />
+                <Add sx={{ width: '1.25rem', height: '1.25rem' }} />
               </Button>
             </Tooltip>
           </Grid>
