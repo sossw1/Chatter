@@ -1,5 +1,14 @@
-import { MouseEvent } from 'react';
-import { Box, Button, Grid, List, Tooltip, Typography } from '@mui/material';
+import { useState, MouseEvent } from 'react';
+import {
+  Box,
+  Button,
+  Grid,
+  List,
+  Modal,
+  Paper,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import { Add } from '@mui/icons-material';
 import ChatListItem from './ChatListItem';
 import { IRoomDoc } from '../../types/Rooms';
@@ -26,6 +35,10 @@ export default function ChatList({
   const user = useAuth().user;
   const chat = useChat();
 
+  const [open, setOpen] = useState(false);
+  const handleModalOpen = () => setOpen(true);
+  const handleModalClose = () => setOpen(false);
+
   const groupRooms = chat.rooms
     .filter((room) => !room.isDirect)
     .sort(sortByName);
@@ -37,8 +50,6 @@ export default function ChatList({
     const id = event.currentTarget.id;
     setSelectedChatId(id);
   };
-
-  const handleCreateRoomClick = () => {};
 
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
@@ -56,11 +67,27 @@ export default function ChatList({
                 variant='outlined'
                 size='small'
                 sx={{ ml: 'auto', mr: '0.625rem', p: 0, minWidth: 'unset' }}
-                onClick={handleCreateRoomClick}
+                onClick={handleModalOpen}
               >
                 <Add sx={{ width: '1.25rem', height: '1.25rem' }} />
               </Button>
             </Tooltip>
+            <Modal
+              open={open}
+              onClose={handleModalClose}
+              aria-labelledby='modal-form'
+              aria-describedby='modal-create-room-form'
+            >
+              <Paper
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  boxShadow: 12,
+                  p: '2rem'
+                }}
+              ></Paper>
+            </Modal>
           </Grid>
           <List>
             {groupRooms.map((room) => (
