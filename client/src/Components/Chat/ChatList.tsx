@@ -7,7 +7,6 @@ import {
   Modal,
   Paper,
   TextField,
-  Tooltip,
   Typography
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
@@ -68,16 +67,15 @@ export default function ChatList({
             <Typography variant='subtitle1' color='primary' p='2px 0 0 0.5rem'>
               [{groupRooms.length}]
             </Typography>
-            <Tooltip title='Create room'>
-              <Button
-                variant='outlined'
-                size='small'
-                sx={{ ml: 'auto', mr: '0.625rem', p: 0, minWidth: 'unset' }}
-                onClick={handleModalOpen}
-              >
-                <Add sx={{ width: '1.25rem', height: '1.25rem' }} />
-              </Button>
-            </Tooltip>
+            <Button
+              variant='outlined'
+              size='small'
+              focusRipple={false}
+              sx={{ ml: 'auto', mr: '0.625rem', p: 0, minWidth: 'unset' }}
+              onClick={handleModalOpen}
+            >
+              <Add sx={{ width: '1.25rem', height: '1.25rem' }} />
+            </Button>
             <Modal
               open={open}
               onClose={handleModalClose}
