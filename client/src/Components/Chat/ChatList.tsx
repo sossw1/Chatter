@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from 'react';
+import { useState, MouseEvent, FormEvent } from 'react';
 import {
   Box,
   Button,
@@ -6,6 +6,7 @@ import {
   List,
   Modal,
   Paper,
+  TextField,
   Tooltip,
   Typography
 } from '@mui/material';
@@ -51,6 +52,11 @@ export default function ChatList({
     setSelectedChatId(id);
   };
 
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleModalClose();
+  };
+
   return (
     <Box sx={{ padding: '1.5rem .75rem .75rem' }}>
       <Grid container direction='column'>
@@ -87,7 +93,29 @@ export default function ChatList({
                   boxShadow: 12,
                   p: '2rem'
                 }}
-              ></Paper>
+              >
+                <Box
+                  component='form'
+                  title='create-room-form'
+                  display='flex'
+                  flexDirection='column'
+                  onSubmit={handleFormSubmit}
+                >
+                  <Typography variant='h5' mb='1rem'>
+                    Create a New Chat Room
+                  </Typography>
+                  <TextField
+                    id='room-name'
+                    label='Room Name'
+                    variant='outlined'
+                    autoFocus
+                    sx={{ mb: '0.5rem' }}
+                  />
+                  <Button variant='contained' type='submit'>
+                    Submit
+                  </Button>
+                </Box>
+              </Paper>
             </Modal>
           </Grid>
           <List>
