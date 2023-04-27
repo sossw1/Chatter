@@ -35,6 +35,7 @@ export default function ChatList({
   const user = useAuth().user;
   const chat = useChat();
 
+  const [roomNameInput, setRoomNameInput] = useState<string>('');
   const [open, setOpen] = useState(false);
   const handleModalOpen = () => setOpen(true);
   const handleModalClose = () => setOpen(false);
@@ -53,6 +54,10 @@ export default function ChatList({
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const name = roomNameInput;
+    setRoomNameInput('');
+
     handleModalClose();
   };
 
@@ -107,6 +112,7 @@ export default function ChatList({
                     label='Room Name'
                     variant='outlined'
                     autoFocus
+                    onChange={(e) => setRoomNameInput(e.target.value)}
                     sx={{ mb: '0.5rem' }}
                   />
                   <Button variant='contained' type='submit'>
