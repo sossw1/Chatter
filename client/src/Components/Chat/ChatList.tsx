@@ -36,6 +36,7 @@ export default function ChatList({
   const chat = useChat();
 
   const [roomNameInput, setRoomNameInput] = useState<string>('');
+  const [formErrorText, setFormErrorText] = useState<string>('');
   const [open, setOpen] = useState(false);
   const handleModalOpen = () => setOpen(true);
   const handleModalClose = () => setOpen(false);
@@ -74,6 +75,9 @@ export default function ChatList({
       const room: IRoomDoc = await response.json();
       chat.addRoom(room);
       handleModalClose();
+    } else {
+      const { error } = await response.json();
+      setFormErrorText(error);
     }
   };
 
@@ -128,9 +132,22 @@ export default function ChatList({
                     label='Room Name'
                     variant='outlined'
                     autoFocus
-                    onChange={(e) => setRoomNameInput(e.target.value)}
+                    onChange={(e) => {
+                      setRoomNameInput(e.target.value);
+                      setFormErrorText('');
+                    }}
                     sx={{ mb: '0.5rem' }}
                   />
+                  {formErrorText && (
+                    <Typography
+                      variant='caption'
+                      color='error'
+                      fontSize='0.85rem'
+                      mb='0.5rem'
+                    >
+                      {formErrorText}
+                    </Typography>
+                  )}
                   <Button variant='contained' type='submit'>
                     Submit
                   </Button>
