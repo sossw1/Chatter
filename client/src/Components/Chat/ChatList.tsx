@@ -52,13 +52,29 @@ export default function ChatList({
     setSelectedChatId(id);
   };
 
-  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const name = roomNameInput;
     setRoomNameInput('');
 
-    handleModalClose();
+    const url = '/api/rooms';
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name })
+    });
+
+    if (response.ok) {
+      const room: IRoomDoc = await response.json();
+      chat.addRoom(room);
+      handleModalClose();
+    }
   };
 
   return (
