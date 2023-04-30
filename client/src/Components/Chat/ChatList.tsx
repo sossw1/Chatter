@@ -14,6 +14,7 @@ import ChatListItem from './ChatListItem';
 import { IRoomDoc } from '../../types/Rooms';
 import { useAuth, IUserDoc } from '../../Providers/auth';
 import { useChat } from '../../Providers/chat';
+import { useSocket } from '../../Providers/socket';
 
 interface Props {
   selectedChatId: string | null;
@@ -34,6 +35,7 @@ export default function ChatList({
 }: Props) {
   const user = useAuth().user;
   const chat = useChat();
+  const socket = useSocket();
 
   const [roomNameInput, setRoomNameInput] = useState<string>('');
   const [formErrorText, setFormErrorText] = useState<string>('');
@@ -74,6 +76,7 @@ export default function ChatList({
     if (response.ok) {
       const room: IRoomDoc = await response.json();
       chat.addRoom(room);
+      socket.emit('join-room', room._id);
       handleModalClose();
     } else {
       const { error } = await response.json();
