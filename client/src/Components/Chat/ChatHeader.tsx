@@ -1,13 +1,14 @@
 import {
   Avatar,
   Badge,
+  Button,
   Box,
   Grid,
   IconButton,
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, PersonAdd } from '@mui/icons-material';
 import { IRoomDoc } from '../../types/Rooms';
 import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
@@ -101,6 +102,13 @@ export default function ChatHeader({
                 )}
               </Grid>
             </Grid>
+            {!selectedRoom?.isDirect && (
+              <Grid item ml='auto'>
+                <Button sx={{ minWidth: 'unset' }}>
+                  <PersonAdd />
+                </Button>
+              </Grid>
+            )}
           </>
         )}
         {!selectedRoomName && <Box height='2.5rem'></Box>}
