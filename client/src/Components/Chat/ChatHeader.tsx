@@ -8,6 +8,7 @@ import {
   IconButton,
   Modal,
   Paper,
+  TextField,
   Typography,
   useMediaQuery
 } from '@mui/material';
@@ -131,7 +132,28 @@ export default function ChatHeader({
                       boxShadow: 12,
                       p: '2rem'
                     }}
-                  ></Paper>
+                  >
+                    <Box
+                      component='form'
+                      title='invite-form'
+                      display='flex'
+                      flexDirection='column'
+                    >
+                      <Typography variant='h5' mb='1rem'>
+                        Invite friend to {selectedRoomName}
+                      </Typography>
+                      <TextField
+                        id='username'
+                        label='Username'
+                        variant='outlined'
+                        autoFocus
+                        sx={{ mb: '0.5rem' }}
+                      />
+                      <Button variant='contained' type='submit'>
+                        Submit
+                      </Button>
+                    </Box>
+                  </Paper>
                 </Modal>
               </>
             )}
