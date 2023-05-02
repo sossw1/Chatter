@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -5,6 +6,8 @@ import {
   Box,
   Grid,
   IconButton,
+  Modal,
+  Paper,
   Typography,
   useMediaQuery
 } from '@mui/material';
@@ -27,6 +30,7 @@ export default function ChatHeader({
   const down400 = useMediaQuery(theme.breakpoints.down(400));
   const { user } = useAuth();
   const chat = useChat();
+  const [open, setOpen] = useState(false);
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
@@ -103,11 +107,33 @@ export default function ChatHeader({
               </Grid>
             </Grid>
             {!selectedRoom?.isDirect && (
-              <Grid item ml='auto'>
-                <Button sx={{ minWidth: 'unset' }}>
-                  <PersonAdd />
-                </Button>
-              </Grid>
+              <>
+                <Grid item ml='auto'>
+                  <Button
+                    onClick={() => setOpen(true)}
+                    sx={{ minWidth: 'unset' }}
+                  >
+                    <PersonAdd />
+                  </Button>
+                </Grid>
+                <Modal
+                  onClose={() => setOpen(false)}
+                  open={open}
+                  aria-labelledby='modal-form'
+                  aria-describedby='modal-invite-form'
+                >
+                  <Paper
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      boxShadow: 12,
+                      p: '2rem'
+                    }}
+                  ></Paper>
+                </Modal>
+              </>
             )}
           </>
         )}
