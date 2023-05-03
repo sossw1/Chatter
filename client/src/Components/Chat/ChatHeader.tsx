@@ -32,6 +32,7 @@ export default function ChatHeader({
   const { user } = useAuth();
   const chat = useChat();
   const [open, setOpen] = useState(false);
+  const [inviteUsername, setInviteUsername] = useState('');
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
@@ -147,6 +148,7 @@ export default function ChatHeader({
                         label='Username'
                         variant='outlined'
                         autoFocus
+                        onChange={(e) => setInviteUsername(e.target.value)}
                         sx={{ mb: '0.5rem' }}
                       />
                       <Button variant='contained' type='submit'>
