@@ -33,6 +33,7 @@ export default function ChatHeader({
   const chat = useChat();
   const [open, setOpen] = useState(false);
   const [inviteUsername, setInviteUsername] = useState('');
+  const [formErrorText, setFormErrorText] = useState('');
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
@@ -59,6 +60,11 @@ export default function ChatHeader({
       },
       body: JSON.stringify({ username })
     });
+
+    if (!response.ok) {
+      const { error } = await response.json();
+      setFormErrorText(error);
+    }
   };
 
   return (
@@ -174,9 +180,22 @@ export default function ChatHeader({
                         variant='outlined'
                         value={inviteUsername}
                         autoFocus
-                        onChange={(e) => setInviteUsername(e.target.value)}
+                        onChange={(e) => {
+                          setInviteUsername(e.target.value);
+                          setFormErrorText('');
+                        }}
                         sx={{ mb: '0.5rem' }}
                       />
+                      {formErrorText && (
+                        <Typography
+                          variant='caption'
+                          color='error'
+                          fontSize='0.85rem'
+                          mb='0.5rem'
+                        >
+                          {formErrorText}
+                        </Typography>
+                      )}
                       <Button variant='contained' type='submit'>
                         Submit
                       </Button>
