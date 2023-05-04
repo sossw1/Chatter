@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import {
   Avatar,
   Badge,
@@ -36,6 +36,30 @@ export default function ChatHeader({
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
+
+  const handleInviteFormSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!selectedRoom) {
+      setInviteUsername('');
+      return;
+    }
+
+    const username = inviteUsername;
+    setInviteUsername('');
+
+    const url = `api/rooms/${selectedRoom._id}/invite`;
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username })
+    });
+  };
 
   return (
     <Box
@@ -139,6 +163,7 @@ export default function ChatHeader({
                       title='invite-form'
                       display='flex'
                       flexDirection='column'
+                      onSubmit={handleInviteFormSubmit}
                     >
                       <Typography variant='h5' mb='1rem'>
                         Invite friend to {selectedRoomName}
@@ -147,6 +172,7 @@ export default function ChatHeader({
                         id='username'
                         label='Username'
                         variant='outlined'
+                        value={inviteUsername}
                         autoFocus
                         onChange={(e) => setInviteUsername(e.target.value)}
                         sx={{ mb: '0.5rem' }}
