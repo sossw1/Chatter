@@ -122,12 +122,12 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
     )
       return res.status(400).send({ error: 'Must be friends with user' });
 
-    if (room.invitedUsers) {
+    if (room.invitedUsers && !room.invitedUsers.includes(newRoomMember)) {
       room.invitedUsers.push(newRoomMember);
       await room.save();
     }
 
-    user.roomInvites.push(room._id);
+    if (!user.roomInvites.includes(room._id)) user.roomInvites.push(room._id);
     await user.save();
 
     res.sendStatus(200);
