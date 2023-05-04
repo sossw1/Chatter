@@ -114,13 +114,13 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
       return res.status(400).send({ error: 'User already member of room' });
 
     const user = await UserCollection.findOne({ username: newRoomMember });
-    if (!user) return res.sendStatus(404);
+    if (!user) return res.status(404).send({ error: 'Friend not found' });
 
     if (
       !req.user.friends.includes(newRoomMember) ||
       !user.friends.includes(req.user.username)
     )
-      return res.status(400).send({ error: 'Must be friends with user' });
+      return res.status(404).send({ error: 'Friend not found' });
 
     if (room.invitedUsers && !room.invitedUsers.includes(newRoomMember)) {
       room.invitedUsers.push(newRoomMember);
