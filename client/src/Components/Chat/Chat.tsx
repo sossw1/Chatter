@@ -91,6 +91,14 @@ export default function Chat() {
       );
     });
 
+    socket.on(
+      'room-invite',
+      (roomId: string, notification: INotificationDoc) => {
+        chat.addRoomInvite(roomId);
+        chat.addNotification(notification);
+      }
+    );
+
     return () => {
       isChatComponentMounted.current = false;
       socket.off('friend-request');
@@ -98,6 +106,7 @@ export default function Chat() {
       socket.off('status-update');
       socket.off('delete-friend');
       socket.off('delete-notifications');
+      socket.off('room-invite');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

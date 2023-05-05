@@ -81,6 +81,14 @@ export default function Friend() {
       );
     });
 
+    socket.on(
+      'room-invite',
+      (roomId: string, notification: INotificationDoc) => {
+        chat.addRoomInvite(roomId);
+        chat.addNotification(notification);
+      }
+    );
+
     return () => {
       isFriendComponentMounted.current = false;
       socket.off('friend-request');
@@ -89,6 +97,7 @@ export default function Friend() {
       socket.off('status-update');
       socket.off('delete-friend');
       socket.off('delete-notifications');
+      socket.off('room-invite');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
