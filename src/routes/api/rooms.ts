@@ -1,5 +1,6 @@
 import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import express from 'express';
+import { io } from '../../index';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
 import { IRoomData, UserCollection } from '../../models/User';
@@ -129,6 +130,8 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
 
     if (!user.roomInvites.includes(room._id)) user.roomInvites.push(room._id);
     await user.save();
+
+    io.to([...user.socketIds]).emit('room-invite', req.params.roomId);
 
     res.sendStatus(200);
   } catch (error) {
