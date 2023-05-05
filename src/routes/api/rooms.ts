@@ -5,6 +5,7 @@ import auth from '../../middleware/auth';
 import Filter from 'bad-words';
 import { IRoomData, UserCollection } from '../../models/User';
 import inRoom from '../../middleware/inRoom';
+import { NotificationCollection } from '../../models/User';
 
 const router = express.Router();
 
@@ -128,11 +129,26 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
       await room.save();
     }
 
-    if (!user.roomInvites.includes(room._id)) user.roomInvites.push(room._id);
+    if (!user.roomInvites.includes(room._id)) {
+      user.roomInvites.push(room._id);
+
+      const notification = new NotificationCollection({
+        type: 'room-invite-received',
+        text: `${room.name}`,
+        isRead: false
+      });
+
+      user.notifications.unshift(notification);
+      await notification.save();
+
+      io.to([...user.socketIds]).emit(
+        'room-invite',
+        req.params.roomId,
+        notification
+      );
+    }
+
     await user.save();
-
-    io.to([...user.socketIds]).emit('room-invite', req.params.roomId);
-
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(500);
