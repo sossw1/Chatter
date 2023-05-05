@@ -59,6 +59,7 @@ interface ChatContextProps {
   ) => { status: FriendStatusText; statusColor: StatusColor } | undefined;
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
+  addRoomInvite: (roomInvite: string) => void;
   addFriend: (username: string) => void;
   removeFriend: (username: string) => void;
   addFriendInvite: (username: string) => void;
@@ -246,6 +247,10 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
+  const addRoomInvite = (newRoomInvite: string) => {
+    setRoomInvites((roomInvites) => [...roomInvites, newRoomInvite]);
+  };
+
   const addFriend = (username: string) => {
     if (username) setFriends((prev) => [...prev, username]);
   };
@@ -352,6 +357,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     clearChatContext,
     addRoom,
     removeRoom,
+    addRoomInvite,
     addFriend,
     removeFriend,
     addFriendInvite,
