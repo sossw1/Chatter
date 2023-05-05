@@ -137,6 +137,8 @@ export default function ChatNotificationList({
                               {notification.type ===
                                 'friend-request-accepted' &&
                                 `${notification.text} has accepted your friend request.`}
+                              {notification.type === 'room-invite-received' &&
+                                `You have been invited to join a room: ${notification.text}`}
                             </Typography>
                             <Typography
                               component='p'
