@@ -25,7 +25,7 @@ export type NotificationType =
   | 'system'
   | 'friend-request-received'
   | 'friend-request-accepted'
-  | 'group-invite-received';
+  | 'room-invite-received';
 
 export interface INotification {
   type: NotificationType;
