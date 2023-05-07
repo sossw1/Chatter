@@ -29,8 +29,11 @@ router.patch(
         return res.status(404).send({ error: 'Not authorized' });
 
       if (
-        notificationDoc.type === 'friend-request-received' ||
-        notificationDoc.type === 'friend-request-accepted'
+        [
+          'friend-request-received',
+          'friend-request-accepted',
+          'room-invite-received'
+        ].includes(notificationDoc.type)
       ) {
         await notificationDoc.delete();
 
