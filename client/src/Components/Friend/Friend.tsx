@@ -11,6 +11,7 @@ import { fetchInitialData } from '../../utils/fetch';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
 import FriendList from './FriendList';
+import FriendRoomInviteList from './FriendRoomInviteList';
 
 export default function Friend() {
   const isFriendComponentMounted = useRef(true);
@@ -117,6 +118,7 @@ export default function Friend() {
         <FriendRequestList
           isFriendComponentMounted={isFriendComponentMounted}
         />
+        <FriendRoomInviteList />
       </Box>
       <FriendList />
     </Box>
