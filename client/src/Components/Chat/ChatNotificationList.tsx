@@ -62,6 +62,9 @@ export default function ChatNotificationList({
             getRoomName(room, user.username) === newFriendUsername
         );
         if (match) setSelectedChatId(match._id);
+      } else if (type === 'room-invite-received') {
+        chat.markNotificationAsRead(notificationId);
+        navigate('/friend');
       }
     }
   };
