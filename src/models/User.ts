@@ -34,6 +34,11 @@ interface IToken extends Document {
   token: string;
 }
 
+export interface RoomInvite {
+  roomId: mongoose.Types.ObjectId;
+  roomName: string;
+}
+
 export interface IUser {
   username: string;
   password: string;
@@ -41,7 +46,7 @@ export interface IUser {
   status: Status;
   rooms: IRoomData[];
   notifications: INotificationDoc[];
-  roomInvites: mongoose.Types.ObjectId[];
+  roomInvites: RoomInvite[];
   friendInvites: string[];
   friends: string[];
   socketIds: string[];
@@ -124,7 +129,12 @@ const UserSchemaFields: Record<keyof IUser, SchemaDefinitionProperty> = {
       lastReadAt: String
     }
   ],
-  roomInvites: [mongoose.Types.ObjectId],
+  roomInvites: [
+    {
+      roomId: mongoose.Types.ObjectId,
+      roomName: String
+    }
+  ],
   notifications: [NotificationSchema],
   friendInvites: [
     {

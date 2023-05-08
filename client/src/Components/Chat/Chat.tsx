@@ -7,7 +7,7 @@ import { fetchInitialData } from '../../utils/fetch';
 import { getRoomName } from '../../utils/parse';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
-import { useChat, FriendStatusText } from '../../Providers/chat';
+import { useChat, FriendStatusText, RoomInvite } from '../../Providers/chat';
 import ChatDrawer from './ChatDrawer';
 import ChatHeader from './ChatHeader';
 import ChatHistory from './ChatHistory';
@@ -93,8 +93,8 @@ export default function Chat() {
 
     socket.on(
       'room-invite',
-      (roomId: string, notification: INotificationDoc) => {
-        chat.addRoomInvite(roomId);
+      (roomInvite: RoomInvite, notification: INotificationDoc) => {
+        chat.addRoomInvite(roomInvite);
         chat.addNotification(notification);
       }
     );

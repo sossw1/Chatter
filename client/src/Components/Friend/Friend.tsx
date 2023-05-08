@@ -6,7 +6,7 @@ import { getRoomName } from '../../utils/parse';
 import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
-import { useChat, FriendStatusText } from '../../Providers/chat';
+import { useChat, FriendStatusText, RoomInvite } from '../../Providers/chat';
 import { fetchInitialData } from '../../utils/fetch';
 import FriendRequest from './FriendRequest';
 import FriendRequestList from './FriendRequestList';
@@ -84,8 +84,8 @@ export default function Friend() {
 
     socket.on(
       'room-invite',
-      (roomId: string, notification: INotificationDoc) => {
-        chat.addRoomInvite(roomId);
+      (roomInvite: RoomInvite, notification: INotificationDoc) => {
+        chat.addRoomInvite(roomInvite);
         chat.addNotification(notification);
       }
     );

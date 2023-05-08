@@ -22,7 +22,7 @@ export default function FriendRoomInviteList() {
       </Typography>
       <Divider />
       <List>
-        {chat.roomInvites.map((room) => (
+        {chat.roomInvites.map((invite) => (
           <Fragment key={uuid()}>
             <ListItem>
               <Box display='flex' flexDirection='column'>
@@ -33,7 +33,7 @@ export default function FriendRoomInviteList() {
                   p='0.25rem 0'
                 >
                   <Typography variant='body1' mr='1rem'>
-                    {room}
+                    {invite.roomName}
                   </Typography>
                   <Button
                     sx={{

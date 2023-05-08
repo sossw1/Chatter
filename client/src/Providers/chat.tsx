@@ -12,6 +12,11 @@ export interface RoomData extends IRoomData {
   unreadMessageCount: number;
 }
 
+export interface RoomInvite {
+  roomId: string;
+  roomName: string;
+}
+
 export type UserStatusText = 'Online' | 'Away' | 'Offline' | 'Invisible';
 export type FriendStatusText = 'Online' | 'Away' | 'Offline' | 'Loading';
 export type StatusColor = 'success' | 'warning' | 'neutral' | 'error';
@@ -28,7 +33,7 @@ export interface ChatData {
   notifications: INotificationDoc[];
   friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
-  roomInvites: string[];
+  roomInvites: RoomInvite[];
   friends: string[];
   friendInvites: string[];
 }
@@ -40,7 +45,7 @@ interface ChatContextProps {
   userStatus: UserStatusText;
   friendStatuses: FriendStatus[];
   rooms: IRoomDoc[];
-  roomInvites: string[];
+  roomInvites: RoomInvite[];
   friends: string[];
   friendInvites: string[];
   loadInitialData: (data: ChatData) => void;
@@ -59,7 +64,7 @@ interface ChatContextProps {
   ) => { status: FriendStatusText; statusColor: StatusColor } | undefined;
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
-  addRoomInvite: (roomInvite: string) => void;
+  addRoomInvite: (roomInvite: RoomInvite) => void;
   addFriend: (username: string) => void;
   removeFriend: (username: string) => void;
   addFriendInvite: (username: string) => void;
@@ -104,7 +109,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
   const [userStatus, setUserStatus] = useState<UserStatusText>('Offline');
   const [friendStatuses, setFriendStatuses] = useState<FriendStatus[]>([]);
   const [rooms, setRooms] = useState<IRoomDoc[]>([]);
-  const [roomInvites, setRoomInvites] = useState<string[]>([]);
+  const [roomInvites, setRoomInvites] = useState<RoomInvite[]>([]);
   const [friends, setFriends] = useState<string[]>([]);
   const [friendInvites, setFriendInvites] = useState<string[]>([]);
   const [notifications, setNotifications] = useState<INotificationDoc[]>([]);
@@ -247,7 +252,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     });
   };
 
-  const addRoomInvite = (newRoomInvite: string) => {
+  const addRoomInvite = (newRoomInvite: RoomInvite) => {
     setRoomInvites((roomInvites) => [...roomInvites, newRoomInvite]);
   };
 

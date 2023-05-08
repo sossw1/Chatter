@@ -4,7 +4,7 @@ import { Jwt } from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import { INotificationDoc } from '../types/Rooms';
 import { useSocket } from './socket';
-import { useChat, UserStatusText } from './chat';
+import { RoomInvite, useChat, UserStatusText } from './chat';
 
 export interface IRoomData {
   roomId: string;
@@ -21,7 +21,7 @@ export interface IUser {
   email: string;
   status: UserStatusText;
   rooms: IRoomData[];
-  roomInvites: string[];
+  roomInvites: RoomInvite[];
   notifications: INotificationDoc[];
   friendInvites: string[];
   friends: string[];

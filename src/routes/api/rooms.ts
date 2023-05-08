@@ -3,7 +3,7 @@ import express from 'express';
 import { io } from '../../index';
 import auth from '../../middleware/auth';
 import Filter from 'bad-words';
-import { IRoomData, UserCollection } from '../../models/User';
+import { IRoomData, UserCollection, RoomInvite } from '../../models/User';
 import inRoom from '../../middleware/inRoom';
 import { NotificationCollection } from '../../models/User';
 
@@ -129,8 +129,17 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
       await room.save();
     }
 
-    if (!user.roomInvites.includes(room._id)) {
-      user.roomInvites.push(room._id);
+    const duplicateInvite = user.roomInvites.find((invite) =>
+      invite.roomId.equals(room._id)
+    );
+
+    if (!duplicateInvite) {
+      const newInvite: RoomInvite = {
+        roomName: room.name || '',
+        roomId: room._id
+      };
+
+      user.roomInvites.push(newInvite);
 
       const notification = new NotificationCollection({
         type: 'room-invite-received',
@@ -141,11 +150,7 @@ router.patch('/api/rooms/:roomId/invite', auth, inRoom, async (req, res) => {
       user.notifications.unshift(notification);
       await notification.save();
 
-      io.to([...user.socketIds]).emit(
-        'room-invite',
-        req.params.roomId,
-        notification
-      );
+      io.to([...user.socketIds]).emit('room-invite', newInvite, notification);
     }
 
     await user.save();
@@ -170,7 +175,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
 
     if (room.disabled) {
       req.user.roomInvites = req.user.roomInvites.filter(
-        (invite) => !invite.equals(room._id)
+        (invite) => !invite.roomId.equals(room._id)
       );
       req.user.save();
       return res.status(400).send({ error: 'Invalid invite' });
@@ -178,7 +183,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
 
     if (!accept) {
       req.user.roomInvites = req.user.roomInvites.filter(
-        (invite) => !invite.equals(room._id)
+        (invite) => !invite.roomId.equals(room._id)
       );
       await req.user.save();
 
@@ -193,13 +198,13 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
     }
 
     if (
-      !req.user.roomInvites.includes(room._id) ||
+      !req.user.roomInvites.find((invite) => invite.roomId.equals(room._id)) ||
       (room.invitedUsers && !room.invitedUsers.includes(req.user.username))
     )
       return res.sendStatus(401);
 
     req.user.roomInvites = req.user.roomInvites.filter(
-      (invite) => !invite.equals(room._id)
+      (invite) => !invite.roomId.equals(room._id)
     );
 
     const newRoomData: IRoomData = {
@@ -243,16 +248,6 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
         req.room.disabled = true;
         req.room.invitedUsers = [];
         await req.room.save();
-
-        const usersWithInvites = await UserCollection.find()
-          .where('roomInvites')
-          .all([req.room._id]);
-        for (let user of usersWithInvites) {
-          user.roomInvites = user.roomInvites.filter(
-            (invite) => !invite.equals(req.room._id)
-          );
-          await user.save();
-        }
       }
     } else {
       await req.room.save();
