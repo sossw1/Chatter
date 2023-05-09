@@ -15,6 +15,22 @@ import { useChat } from '../../Providers/chat';
 export default function FriendRoomInviteList() {
   const chat = useChat();
 
+  const replyRoomInvite = async (roomId: string, accept: boolean) => {
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+
+    const url = `/api/rooms/${roomId}/respond-invite`;
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + parsedToken,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({ accept })
+    });
+  };
+
   return (
     <Box display='flex' flexDirection='column'>
       <Typography variant='h3' mb='1.5rem'>
@@ -36,6 +52,7 @@ export default function FriendRoomInviteList() {
                     {invite.roomName}
                   </Typography>
                   <Button
+                    onClick={() => replyRoomInvite(invite.roomId, true)}
                     sx={{
                       color: theme.palette.success.main,
                       minWidth: 'unset'
@@ -44,6 +61,7 @@ export default function FriendRoomInviteList() {
                     <Check />
                   </Button>
                   <Button
+                    onClick={() => replyRoomInvite(invite.roomId, false)}
                     sx={{ color: theme.palette.error.main, minWidth: 'unset' }}
                   >
                     <Close />
