@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
+import { IRoomDoc } from '../../types/Rooms';
 import theme from '../../Providers/theme';
 import { useChat, RoomInvite } from '../../Providers/chat';
 
@@ -33,6 +34,11 @@ export default function FriendRoomInviteList() {
     if (response.ok) {
       chat.removeRoomInvite(invite.roomId);
       chat.deleteNotificationByContent('room-invite-received', invite.roomName);
+
+      if (accept) {
+        const room: IRoomDoc = await response.json();
+        chat.addRoom(room);
+      }
     }
   };
 
