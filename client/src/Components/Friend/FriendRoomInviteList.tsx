@@ -29,6 +29,11 @@ export default function FriendRoomInviteList() {
       },
       body: JSON.stringify({ accept })
     });
+
+    if (response.ok) {
+      chat.removeRoomInvite(invite.roomId);
+      chat.deleteNotificationByContent('room-invite-received', invite.roomName);
+    }
   };
 
   return (
