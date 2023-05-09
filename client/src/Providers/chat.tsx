@@ -65,6 +65,7 @@ interface ChatContextProps {
   addRoom: (room: IRoomDoc) => void;
   removeRoom: (room: string) => void;
   addRoomInvite: (roomInvite: RoomInvite) => void;
+  removeRoomInvite: (roomId: string) => void;
   addFriend: (username: string) => void;
   removeFriend: (username: string) => void;
   addFriendInvite: (username: string) => void;
@@ -182,11 +183,11 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   const deleteNotificationByContent = async (
     type: NotificationType,
-    username: string
+    text: string
   ) => {
     const matchIndex = notifications.findIndex(
       (notification) =>
-        notification.text === `${username}` && notification.type === type
+        notification.text === `${text}` && notification.type === type
     );
 
     if (matchIndex === -1) return;
@@ -254,6 +255,12 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   const addRoomInvite = (newRoomInvite: RoomInvite) => {
     setRoomInvites((roomInvites) => [...roomInvites, newRoomInvite]);
+  };
+
+  const removeRoomInvite = (roomId: string) => {
+    setRoomInvites((roomInvites) => {
+      return roomInvites.filter((invite) => invite.roomId !== roomId);
+    });
   };
 
   const addFriend = (username: string) => {
@@ -363,6 +370,7 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     addRoom,
     removeRoom,
     addRoomInvite,
+    removeRoomInvite,
     addFriend,
     removeFriend,
     addFriendInvite,
