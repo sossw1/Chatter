@@ -12,9 +12,11 @@ import { v4 as uuid } from 'uuid';
 import { IRoomDoc } from '../../types/Rooms';
 import theme from '../../Providers/theme';
 import { useChat, RoomInvite } from '../../Providers/chat';
+import { useSocket } from '../../Providers/socket';
 
 export default function FriendRoomInviteList() {
   const chat = useChat();
+  const socket = useSocket();
 
   const replyRoomInvite = async (invite: RoomInvite, accept: boolean) => {
     const token = localStorage.getItem('token');
@@ -38,6 +40,7 @@ export default function FriendRoomInviteList() {
       if (accept) {
         const room: IRoomDoc = await response.json();
         chat.addRoom(room);
+        socket.emit('join-room', room._id);
       }
     }
   };
