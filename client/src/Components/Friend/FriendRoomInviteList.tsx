@@ -10,16 +10,16 @@ import {
 import { Check, Close } from '@mui/icons-material';
 import { v4 as uuid } from 'uuid';
 import theme from '../../Providers/theme';
-import { useChat } from '../../Providers/chat';
+import { useChat, RoomInvite } from '../../Providers/chat';
 
 export default function FriendRoomInviteList() {
   const chat = useChat();
 
-  const replyRoomInvite = async (roomId: string, accept: boolean) => {
+  const replyRoomInvite = async (invite: RoomInvite, accept: boolean) => {
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
 
-    const url = `/api/rooms/${roomId}/respond-invite`;
+    const url = `/api/rooms/${invite.roomId}/respond-invite`;
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
@@ -52,7 +52,7 @@ export default function FriendRoomInviteList() {
                     {invite.roomName}
                   </Typography>
                   <Button
-                    onClick={() => replyRoomInvite(invite.roomId, true)}
+                    onClick={() => replyRoomInvite(invite, true)}
                     sx={{
                       color: theme.palette.success.main,
                       minWidth: 'unset'
@@ -61,7 +61,7 @@ export default function FriendRoomInviteList() {
                     <Check />
                   </Button>
                   <Button
-                    onClick={() => replyRoomInvite(invite.roomId, false)}
+                    onClick={() => replyRoomInvite(invite, false)}
                     sx={{ color: theme.palette.error.main, minWidth: 'unset' }}
                   >
                     <Close />
