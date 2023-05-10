@@ -171,7 +171,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
       return res.status(400).send({ error: 'Invalid updates' });
 
     const room = await RoomCollection.findById(roomId);
-    if (!room) return res.sendStatus(404);
+    if (!room) return res.status(404).send({ error: 'Room not found' });
 
     if (room.disabled) {
       req.user.roomInvites = req.user.roomInvites.filter(
@@ -201,7 +201,7 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
       !req.user.roomInvites.find((invite) => invite.roomId.equals(room._id)) ||
       (room.invitedUsers && !room.invitedUsers.includes(req.user.username))
     )
-      return res.sendStatus(401);
+      return res.status(400).send({ error: 'Invalid invite' });
 
     req.user.roomInvites = req.user.roomInvites.filter(
       (invite) => !invite.roomId.equals(room._id)
