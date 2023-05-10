@@ -214,6 +214,10 @@ router.delete('/api/users/me', auth, async (req, res) => {
         roomDocument.users = roomDocument.users.filter(
           (user) => user !== req.user.username
         );
+        if (roomDocument.users.length === 0) {
+          roomDocument.invitedUsers = [];
+          roomDocument.disabled = true;
+        }
       }
 
       await roomDocument.save();
