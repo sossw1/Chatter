@@ -214,13 +214,17 @@ router.delete('/api/users/me', auth, async (req, res) => {
         roomDocument.users = roomDocument.users.filter(
           (user) => user !== req.user.username
         );
+
         if (roomDocument.users.length === 0) {
-          roomDocument.invitedUsers = [];
-          roomDocument.disabled = true;
+          if (roomDocument.messages.length === 0) {
+            await roomDocument.remove();
+          } else {
+            roomDocument.disabled = true;
+            roomDocument.invitedUsers = [];
+            await roomDocument.save();
+          }
         }
       }
-
-      await roomDocument.save();
     }
 
     const roomInvites = req.user.roomInvites;
