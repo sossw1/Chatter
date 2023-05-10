@@ -61,6 +61,9 @@ export default function FriendRoomInviteList({
         if (isFriendComponentMounted.current)
           setRoomInviteMessage({ text: 'Invite declined', invite });
       }
+    } else {
+      const { error } = await response.json();
+      setRoomInviteMessage({ text: `Error: ${error}`, invite, error });
     }
 
     setTimeout(() => {
