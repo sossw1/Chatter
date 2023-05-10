@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,9 +14,18 @@ import theme from '../../Providers/theme';
 import { useChat, RoomInvite } from '../../Providers/chat';
 import { useSocket } from '../../Providers/socket';
 
+interface Message {
+  text: string;
+  invite: RoomInvite;
+  error?: any;
+}
+
 export default function FriendRoomInviteList() {
   const chat = useChat();
   const socket = useSocket();
+  const [roomInviteMessage, setRoomInviteMessage] = useState<Message | null>(
+    null
+  );
 
   const replyRoomInvite = async (invite: RoomInvite, accept: boolean) => {
     const token = localStorage.getItem('token');
@@ -34,15 +43,22 @@ export default function FriendRoomInviteList() {
     });
 
     if (response.ok) {
-      chat.removeRoomInvite(invite.roomId);
       chat.deleteNotificationByContent('room-invite-received', invite.roomName);
 
       if (accept) {
+        setRoomInviteMessage({ text: 'Invite accepted!', invite });
         const room: IRoomDoc = await response.json();
         chat.addRoom(room);
         socket.emit('join-room', room._id);
+      } else {
+        setRoomInviteMessage({ text: 'Invite declined', invite });
       }
     }
+
+    setTimeout(() => {
+      setRoomInviteMessage(null);
+      chat.removeRoomInvite(invite.roomId);
+    }, 3000);
   };
 
   return (
@@ -81,6 +97,22 @@ export default function FriendRoomInviteList() {
                     <Close />
                   </Button>
                 </Box>
+                {roomInviteMessage && (
+                  <Box>
+                    <Typography
+                      variant='h6'
+                      color={
+                        roomInviteMessage.error
+                          ? theme.palette.error.main
+                          : theme.palette.success.main
+                      }
+                    >
+                      {invite.roomId === roomInviteMessage.invite.roomId
+                        ? roomInviteMessage.text
+                        : ''}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </ListItem>
             <Divider />
