@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, MutableRefObject } from 'react';
 import {
   Box,
   Button,
@@ -20,7 +20,13 @@ interface Message {
   error?: any;
 }
 
-export default function FriendRoomInviteList() {
+interface Props {
+  isFriendComponentMounted: MutableRefObject<boolean>;
+}
+
+export default function FriendRoomInviteList({
+  isFriendComponentMounted
+}: Props) {
   const chat = useChat();
   const socket = useSocket();
   const [roomInviteMessage, setRoomInviteMessage] = useState<Message | null>(
@@ -46,17 +52,19 @@ export default function FriendRoomInviteList() {
       chat.deleteNotificationByContent('room-invite-received', invite.roomName);
 
       if (accept) {
-        setRoomInviteMessage({ text: 'Invite accepted!', invite });
+        if (isFriendComponentMounted.current)
+          setRoomInviteMessage({ text: 'Invite accepted!', invite });
         const room: IRoomDoc = await response.json();
         chat.addRoom(room);
         socket.emit('join-room', room._id);
       } else {
-        setRoomInviteMessage({ text: 'Invite declined', invite });
+        if (isFriendComponentMounted.current)
+          setRoomInviteMessage({ text: 'Invite declined', invite });
       }
     }
 
     setTimeout(() => {
-      setRoomInviteMessage(null);
+      if (isFriendComponentMounted.current) setRoomInviteMessage(null);
       chat.removeRoomInvite(invite.roomId);
     }, 3000);
   };

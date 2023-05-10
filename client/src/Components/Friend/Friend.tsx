@@ -118,7 +118,9 @@ export default function Friend() {
         <FriendRequestList
           isFriendComponentMounted={isFriendComponentMounted}
         />
-        <FriendRoomInviteList />
+        <FriendRoomInviteList
+          isFriendComponentMounted={isFriendComponentMounted}
+        />
       </Box>
       <FriendList />
     </Box>
