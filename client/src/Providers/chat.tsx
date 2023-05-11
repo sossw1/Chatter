@@ -150,29 +150,27 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     setNotifications((prev) => [notification, ...prev]);
   };
 
-  const markNotificationAsRead = async (id: string) => {
+  const markNotificationAsRead = (id: string) => {
+    setNotifications((prev) => {
+      const matchIndex = prev.findIndex(
+        (notification) => notification._id === id
+      );
+      if (matchIndex === -1) return prev;
+      const next = [...prev];
+      next[matchIndex].isRead = true;
+      return next;
+    });
+
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
     const url = `/api/notifications/${id}/mark-read`;
-    const response = await fetch(url, {
+    fetch(url, {
       method: 'PATCH',
       headers: {
         Authorization: 'Bearer ' + parsedToken,
         Accept: 'application/json'
       }
     });
-
-    if (response.ok) {
-      setNotifications((prev) => {
-        const matchIndex = prev.findIndex(
-          (notification) => notification._id === id
-        );
-        if (matchIndex === -1) return prev;
-        const next = [...prev];
-        next[matchIndex].isRead = true;
-        return next;
-      });
-    }
   };
 
   const deleteNotificationById = (id: string) => {
