@@ -34,6 +34,8 @@ export default function FriendRoomInviteList({
   );
 
   const replyRoomInvite = async (invite: RoomInvite, accept: boolean) => {
+    chat.deleteNotificationByContent('room-invite-received', invite.roomName);
+
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
 
@@ -49,8 +51,6 @@ export default function FriendRoomInviteList({
     });
 
     if (response.ok) {
-      chat.deleteNotificationByContent('room-invite-received', invite.roomName);
-
       if (accept) {
         if (isFriendComponentMounted.current)
           setRoomInviteMessage({ text: 'Invite accepted!', invite });
