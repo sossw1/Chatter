@@ -16,11 +16,6 @@ router.patch(
         notificationId
       );
 
-      if (!notificationDoc)
-        return res.status(404).send({
-          error: `Notification not found`
-        });
-
       const matchingDoc = req.user.notifications.find((notification) =>
         notification._id.equals(notificationId)
       );
@@ -28,27 +23,29 @@ router.patch(
       if (!matchingDoc)
         return res.status(404).send({ error: 'Not authorized' });
 
-      if (
-        [
-          'friend-request-received',
-          'friend-request-accepted',
-          'room-invite-received'
-        ].includes(notificationDoc.type)
-      ) {
-        await notificationDoc.delete();
+      const isDeletableType = [
+        'friend-request-received',
+        'friend-request-accepted',
+        'room-invite-received'
+      ].includes(matchingDoc.type);
+
+      if (isDeletableType) {
+        await notificationDoc?.delete();
 
         req.user.notifications = req.user.notifications.filter(
           (notification) => !notification._id.equals(notificationId)
         );
-        await req.user.save();
 
+        await req.user.save();
         return res.sendStatus(200);
       }
 
-      notificationDoc.isRead = true;
-      await notificationDoc.save();
       matchingDoc.isRead = true;
       await req.user.save();
+      if (notificationDoc) {
+        notificationDoc.isRead = true;
+        await notificationDoc?.save();
+      }
 
       res.sendStatus(200);
     } catch (error) {
