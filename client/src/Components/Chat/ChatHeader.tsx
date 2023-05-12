@@ -12,7 +12,7 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Menu as MenuIcon, PersonAdd } from '@mui/icons-material';
+import { Delete, Menu as MenuIcon, PersonAdd } from '@mui/icons-material';
 import { IRoomDoc } from '../../types/Rooms';
 import { getRoomName } from '../../utils/parse';
 import theme from '../../Providers/theme';
@@ -28,7 +28,10 @@ export default function ChatHeader({
   handleDrawerToggle,
   selectedRoom
 }: Props) {
-  const down400 = useMediaQuery(theme.breakpoints.down(400));
+  const downSM = useMediaQuery(theme.breakpoints.down('sm'));
+  const downMD = useMediaQuery(theme.breakpoints.down('md'));
+  const downLG = useMediaQuery(theme.breakpoints.down('lg'));
+
   const { user } = useAuth();
   const chat = useChat();
   const [open, setOpen] = useState(false);
@@ -119,7 +122,13 @@ export default function ChatHeader({
                 <Typography
                   variant='body1'
                   sx={{
-                    width: down400 ? '9rem' : undefined,
+                    width: downSM
+                      ? 'calc(100vw - 15rem)'
+                      : downMD
+                      ? 'calc(100vw - 27rem)'
+                      : downLG
+                      ? 'calc(100vw - 32rem)'
+                      : 'calc(100vw - 42rem)',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap'
@@ -141,6 +150,9 @@ export default function ChatHeader({
             {!selectedRoom?.isDirect && (
               <>
                 <Grid item ml='auto'>
+                  <Button sx={{ minWidth: 'unset' }}>
+                    <Delete />
+                  </Button>
                   <Button
                     onClick={() => setOpen(true)}
                     sx={{ minWidth: 'unset' }}
