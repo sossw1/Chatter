@@ -21,7 +21,7 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
     <Box
       sx={{
         p: '1.25rem 1.25rem 0',
-        height: `calc(100vh - 5.5rem - 94px - ${xs ? '56' : '64'}px)`,
+        height: `calc(100vh - 5rem - 94px - ${xs ? '56' : '64'}px)`,
         overflowY: 'scroll'
       }}
       ref={messageRef}
