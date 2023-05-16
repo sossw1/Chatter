@@ -73,7 +73,7 @@ export default function ChatHeader({
   return (
     <Box
       sx={{
-        padding: '1.25rem 1.25rem',
+        padding: selectedRoom?.isDirect ? '1.125rem 1.25rem' : '1.25rem',
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
       }}
     >
