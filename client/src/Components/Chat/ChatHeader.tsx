@@ -123,12 +123,12 @@ export default function ChatHeader({
                   variant='body1'
                   sx={{
                     width: downSM
-                      ? 'calc(100vw - 15rem)'
+                      ? 'calc(100vw - 15.5rem)'
                       : downMD
-                      ? 'calc(100vw - 27rem)'
+                      ? 'calc(100vw - 27.5rem)'
                       : downLG
-                      ? 'calc(100vw - 32rem)'
-                      : 'calc(100vw - 42rem)',
+                      ? 'calc(100vw - 32.5rem)'
+                      : 'calc(100vw - 42.5rem)',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap'
