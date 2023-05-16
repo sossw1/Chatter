@@ -134,6 +134,7 @@ export default function ChatList({
                     id='room-name'
                     label='Room Name'
                     variant='outlined'
+                    inputProps={{ maxLength: 30 }}
                     autoFocus
                     onChange={(e) => {
                       setRoomNameInput(e.target.value);
