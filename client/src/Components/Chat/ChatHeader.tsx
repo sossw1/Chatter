@@ -70,6 +70,21 @@ export default function ChatHeader({
     }
   };
 
+  const handleLeaveRoom = (roomId?: string) => {
+    if (!roomId) return;
+
+    const url = `api/rooms/${roomId}/leave`;
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+    fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -150,7 +165,10 @@ export default function ChatHeader({
             {!selectedRoom?.isDirect && (
               <>
                 <Grid item ml='auto'>
-                  <Button sx={{ minWidth: 'unset' }}>
+                  <Button
+                    onClick={() => handleLeaveRoom(selectedRoom?._id)}
+                    sx={{ minWidth: 'unset' }}
+                  >
                     <Delete />
                   </Button>
                   <Button
