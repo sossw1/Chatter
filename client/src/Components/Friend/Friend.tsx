@@ -90,6 +90,10 @@ export default function Friend() {
       }
     );
 
+    socket.on('leave-room', (roomId: string) => {
+      chat.removeRoom(roomId);
+    });
+
     return () => {
       isFriendComponentMounted.current = false;
       socket.off('friend-request');
@@ -99,6 +103,7 @@ export default function Friend() {
       socket.off('delete-friend');
       socket.off('delete-notifications');
       socket.off('room-invite');
+      socket.off('leave-room');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
