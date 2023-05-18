@@ -269,6 +269,8 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
     );
     await req.user.save();
 
+    io.to([...req.user.socketIds]).emit('leave-room', req.params.roomId);
+
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(500);
