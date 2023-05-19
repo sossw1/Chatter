@@ -34,7 +34,7 @@ export default function ChatHeader({
 
   const { user } = useAuth();
   const chat = useChat();
-  const [open, setOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [inviteUsername, setInviteUsername] = useState('');
   const [formErrorText, setFormErrorText] = useState('');
 
@@ -172,15 +172,15 @@ export default function ChatHeader({
                     <Delete />
                   </Button>
                   <Button
-                    onClick={() => setOpen(true)}
+                    onClick={() => setIsInviteModalOpen(true)}
                     sx={{ minWidth: 'unset' }}
                   >
                     <PersonAdd />
                   </Button>
                 </Grid>
                 <Modal
-                  onClose={() => setOpen(false)}
-                  open={open}
+                  onClose={() => setIsInviteModalOpen(false)}
+                  open={isInviteModalOpen}
                   aria-labelledby='modal-form'
                   aria-describedby='modal-invite-form'
                 >
