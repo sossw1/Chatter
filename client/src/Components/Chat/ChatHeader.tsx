@@ -37,6 +37,7 @@ export default function ChatHeader({
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [inviteUsername, setInviteUsername] = useState('');
   const [formErrorText, setFormErrorText] = useState('');
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   const selectedRoomName =
     selectedRoom && user ? getRoomName(selectedRoom, user.username) : '';
@@ -68,6 +69,11 @@ export default function ChatHeader({
       const { error } = await response.json();
       setFormErrorText(error);
     }
+  };
+
+  const handleLeaveConfirm = (roomId?: string) => {
+    if (!roomId) return;
+    setIsLeaveModalOpen(true);
   };
 
   const handleLeaveRoom = (roomId?: string) => {
@@ -166,7 +172,7 @@ export default function ChatHeader({
               <>
                 <Grid item ml='auto'>
                   <Button
-                    onClick={() => handleLeaveRoom(selectedRoom?._id)}
+                    onClick={() => handleLeaveConfirm(selectedRoom?._id)}
                     sx={{ minWidth: 'unset' }}
                   >
                     <Delete />
@@ -178,6 +184,49 @@ export default function ChatHeader({
                     <PersonAdd />
                   </Button>
                 </Grid>
+                <Modal
+                  onClose={() => setIsLeaveModalOpen(false)}
+                  open={isLeaveModalOpen}
+                  aria-labelledby='modal-form'
+                  aria-describedby='modal-leave-form'
+                >
+                  <Paper
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      boxShadow: 12,
+                      p: '2rem'
+                    }}
+                  >
+                    <Typography variant='h6' mb='1rem'>
+                      Are you sure you want to leave this room?
+                    </Typography>
+                    <Box
+                      display='flex'
+                      flexDirection='row'
+                      justifyContent='center'
+                    >
+                      <Button
+                        variant='contained'
+                        sx={{ mr: '2rem' }}
+                        onClick={() => {
+                          handleLeaveRoom(selectedRoom?._id || '');
+                          setIsLeaveModalOpen(false);
+                        }}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        variant='contained'
+                        onClick={() => setIsLeaveModalOpen(false)}
+                      >
+                        No
+                      </Button>
+                    </Box>
+                  </Paper>
+                </Modal>
                 <Modal
                   onClose={() => setIsInviteModalOpen(false)}
                   open={isInviteModalOpen}
