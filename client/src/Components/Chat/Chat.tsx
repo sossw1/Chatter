@@ -101,6 +101,7 @@ export default function Chat() {
 
     socket.on('leave-room', (roomId: string) => {
       chat.removeRoom(roomId);
+      setSelectedChatId(null);
     });
 
     return () => {
