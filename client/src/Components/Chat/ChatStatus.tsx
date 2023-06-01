@@ -41,11 +41,12 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
-  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [statusMenuAnchorEl, setStatusMenuAnchorEl] =
+    useState<HTMLElement | null>(null);
 
-  const open = Boolean(menuAnchorEl);
+  const isStatusMenuOpen = Boolean(statusMenuAnchorEl);
   const handleClick = (event: MouseEvent<HTMLButtonElement>) =>
-    setMenuAnchorEl(event.currentTarget);
+    setStatusMenuAnchorEl(event.currentTarget);
 
   const handleClose = (selectedStatus: UserStatusText | null) => {
     if (selectedStatus) {
@@ -53,7 +54,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
       socket.emit('status-update', selectedStatus);
     }
 
-    setMenuAnchorEl(null);
+    setStatusMenuAnchorEl(null);
   };
 
   const unreadNotificationCount = chat.notifications.reduce((acc, current) => {
@@ -109,9 +110,9 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                   <Button
                     variant='text'
                     id='status-button'
-                    aria-controls={open ? 'status-menu' : undefined}
+                    aria-controls={isStatusMenuOpen ? 'status-menu' : undefined}
                     aria-haspopup='true'
-                    aria-expanded={open ? 'true' : undefined}
+                    aria-expanded={isStatusMenuOpen ? 'true' : undefined}
                     color='primary'
                     disableRipple
                     sx={{
@@ -123,13 +124,13 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                     onClick={handleClick}
                   >
                     {chat.userStatus}
-                    {open && <ArrowDropUp />}
-                    {!open && <ArrowDropDown />}
+                    {isStatusMenuOpen && <ArrowDropUp />}
+                    {!isStatusMenuOpen && <ArrowDropDown />}
                   </Button>
                   <Menu
                     id='status-menu'
-                    anchorEl={menuAnchorEl}
-                    open={open}
+                    anchorEl={statusMenuAnchorEl}
+                    open={isStatusMenuOpen}
                     onClose={() => handleClose(null)}
                     MenuListProps={{
                       'aria-labelledby': 'status-button'
