@@ -13,6 +13,7 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
+import { v4 as uuid } from 'uuid';
 import ChatNotificationList from './ChatNotificationList';
 import { ArrowDropDown, ArrowDropUp, Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
@@ -41,20 +42,44 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
+
+  const userMenuOptions = [
+    'My Account',
+    'Avatar',
+    'Security',
+    'Settings',
+    'Log Out'
+  ];
+
   const [statusMenuAnchorEl, setStatusMenuAnchorEl] =
     useState<HTMLElement | null>(null);
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(
+    null
+  );
 
   const isStatusMenuOpen = Boolean(statusMenuAnchorEl);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) =>
+  const isUserMenuOpen = Boolean(userMenuAnchorEl);
+
+  const handleStatusMenuClick = (event: MouseEvent<HTMLButtonElement>) =>
     setStatusMenuAnchorEl(event.currentTarget);
 
-  const handleClose = (selectedStatus: UserStatusText | null) => {
+  const handleUserMenuClick = (event: MouseEvent<HTMLButtonElement>) =>
+    setUserMenuAnchorEl(event.currentTarget);
+
+  const handleStatusMenuClose = (selectedStatus: UserStatusText | null) => {
     if (selectedStatus) {
       chat.updateUserStatus(selectedStatus);
       socket.emit('status-update', selectedStatus);
     }
 
     setStatusMenuAnchorEl(null);
+  };
+
+  const handleUserMenuClose = (selectedMenuItem: string | null) => {
+    if (selectedMenuItem) {
+    }
+
+    setUserMenuAnchorEl(null);
   };
 
   const unreadNotificationCount = chat.notifications.reduce((acc, current) => {
@@ -71,23 +96,51 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
     >
       <Grid container direction='row' alignItems='center' spacing={1}>
         <Grid item xs={3} md={2} lg={2}>
-          <Badge
-            overlap='circular'
-            variant='dot'
-            color={
-              chat.isInitialDataLoaded
-                ? getStatusColor(chat.userStatus)
-                : 'neutral'
-            }
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            sx={{
-              '& .MuiBadge-badge': {
-                boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
-              }
-            }}
+          <Button
+            id='user-menu-button'
+            aria-controls={isUserMenuOpen ? 'user-menu' : undefined}
+            aria-haspopup='true'
+            aria-expanded={isUserMenuOpen ? 'true' : undefined}
+            sx={{ p: 0, minWidth: 'unset' }}
+            onClick={handleUserMenuClick}
           >
-            <Avatar />
-          </Badge>
+            <Badge
+              overlap='circular'
+              variant='dot'
+              color={
+                chat.isInitialDataLoaded
+                  ? getStatusColor(chat.userStatus)
+                  : 'neutral'
+              }
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              sx={{
+                '& .MuiBadge-badge': {
+                  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
+                }
+              }}
+            >
+              <Avatar />
+            </Badge>
+          </Button>
+          <Menu
+            id='user-menu'
+            anchorEl={userMenuAnchorEl}
+            open={isUserMenuOpen}
+            MenuListProps={{
+              'aria-labelledby': 'user-menu-button'
+            }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+            onClose={() => handleUserMenuClose(null)}
+          >
+            {userMenuOptions.map((option) => (
+              <MenuItem
+                key={uuid()}
+                onClick={() => handleUserMenuClose(option)}
+              >
+                {option}
+              </MenuItem>
+            ))}
+          </Menu>
         </Grid>
         <Grid item xs={5} md={7} lg={8}>
           <Grid container direction='column'>
@@ -121,7 +174,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                       minWidth: 'unset',
                       textTransform: 'none'
                     }}
-                    onClick={handleClick}
+                    onClick={handleStatusMenuClick}
                   >
                     {chat.userStatus}
                     {isStatusMenuOpen && <ArrowDropUp />}
@@ -131,7 +184,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                     id='status-menu'
                     anchorEl={statusMenuAnchorEl}
                     open={isStatusMenuOpen}
-                    onClose={() => handleClose(null)}
+                    onClose={() => handleStatusMenuClose(null)}
                     MenuListProps={{
                       'aria-labelledby': 'status-button'
                     }}
@@ -139,7 +192,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
                     {statusOptions.map((status, index) => (
                       <MenuItem
                         key={status}
-                        onClick={() => handleClose(status)}
+                        onClick={() => handleStatusMenuClose(status)}
                       >
                         <Badge
                           variant='dot'
