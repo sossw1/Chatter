@@ -146,8 +146,9 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
             MenuListProps={{
               'aria-labelledby': 'user-menu-button'
             }}
-            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             onClose={() => handleUserMenuClose(null)}
+            sx={{ ml: '1rem' }}
           >
             {userMenuOptions.map((option) => (
               <MenuItem
