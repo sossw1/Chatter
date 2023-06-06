@@ -39,6 +39,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const betweenMdLg = useMediaQuery(theme.breakpoints.between('md', 'lg'));
   const navigate = useNavigate();
   const chat = useChat();
+  const auth = useAuth();
   const { user } = useAuth();
   const username = user?.username;
   const socket = useSocket();
@@ -75,8 +76,18 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
     setStatusMenuAnchorEl(null);
   };
 
-  const handleUserMenuClose = (selectedMenuItem: string | null) => {
+  const handleUserMenuClose = async (selectedMenuItem: string | null) => {
     if (selectedMenuItem) {
+      switch (selectedMenuItem) {
+        case 'Log Out':
+          try {
+            const response = await auth.logout();
+            if (response.type === 'confirmation') socket.disconnect();
+          } catch (error) {}
+          break;
+        default:
+          break;
+      }
     }
 
     setUserMenuAnchorEl(null);
