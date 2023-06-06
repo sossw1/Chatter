@@ -112,7 +112,13 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
             aria-controls={isUserMenuOpen ? 'user-menu' : undefined}
             aria-haspopup='true'
             aria-expanded={isUserMenuOpen ? 'true' : undefined}
-            sx={{ p: 0, minWidth: 'unset' }}
+            sx={{
+              p: 0,
+              minWidth: 'unset',
+              ':hover': {
+                opacity: 0.8
+              }
+            }}
             onClick={handleUserMenuClick}
           >
             <Badge
