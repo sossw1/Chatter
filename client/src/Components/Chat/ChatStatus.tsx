@@ -33,8 +33,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const navigate = useNavigate();
   const chat = useChat();
   const auth = useAuth();
-  const { user } = useAuth();
-  const username = user?.username;
+  const username = auth.user?.username;
   const socket = useSocket();
 
   const userMenuOptions = [
