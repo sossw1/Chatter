@@ -15,19 +15,12 @@ import {
 } from '@mui/material';
 import { v4 as uuid } from 'uuid';
 import ChatNotificationList from './ChatNotificationList';
-import { ArrowDropDown, ArrowDropUp, Person } from '@mui/icons-material';
+import { Person } from '@mui/icons-material';
 import { useAuth } from '../../Providers/auth';
 import theme from '../../Providers/theme';
 import { useSocket } from '../../Providers/socket';
-import {
-  useChat,
-  getStatusColor,
-  UserStatusText,
-  StatusColor
-} from '../../Providers/chat';
-
-const statusOptions: UserStatusText[] = ['Online', 'Away', 'Invisible'];
-const statusOptionColors: StatusColor[] = ['success', 'warning', 'neutral'];
+import { useChat, getStatusColor } from '../../Providers/chat';
+import StatusMenu from '../StatusMenu';
 
 interface Props {
   setSelectedChatId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -52,29 +45,14 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
     'Log Out'
   ];
 
-  const [statusMenuAnchorEl, setStatusMenuAnchorEl] =
-    useState<HTMLElement | null>(null);
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(
     null
   );
 
-  const isStatusMenuOpen = Boolean(statusMenuAnchorEl);
   const isUserMenuOpen = Boolean(userMenuAnchorEl);
-
-  const handleStatusMenuClick = (event: MouseEvent<HTMLButtonElement>) =>
-    setStatusMenuAnchorEl(event.currentTarget);
 
   const handleUserMenuClick = (event: MouseEvent<HTMLButtonElement>) =>
     setUserMenuAnchorEl(event.currentTarget);
-
-  const handleStatusMenuClose = (selectedStatus: UserStatusText | null) => {
-    if (selectedStatus) {
-      chat.updateUserStatus(selectedStatus);
-      socket.emit('status-update', selectedStatus);
-    }
-
-    setStatusMenuAnchorEl(null);
-  };
 
   const handleUserMenuClose = async (selectedMenuItem: string | null) => {
     if (selectedMenuItem) {
@@ -177,58 +155,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
             </Grid>
             <Grid item>
               {chat.isInitialDataLoaded ? (
-                <>
-                  <Button
-                    variant='text'
-                    id='status-button'
-                    aria-controls={isStatusMenuOpen ? 'status-menu' : undefined}
-                    aria-haspopup='true'
-                    aria-expanded={isStatusMenuOpen ? 'true' : undefined}
-                    color='primary'
-                    disableRipple
-                    sx={{
-                      fontSize: '0.875rem',
-                      p: '0',
-                      minWidth: 'unset',
-                      textTransform: 'none'
-                    }}
-                    onClick={handleStatusMenuClick}
-                  >
-                    {chat.userStatus}
-                    {isStatusMenuOpen && <ArrowDropUp />}
-                    {!isStatusMenuOpen && <ArrowDropDown />}
-                  </Button>
-                  <Menu
-                    id='status-menu'
-                    anchorEl={statusMenuAnchorEl}
-                    open={isStatusMenuOpen}
-                    onClose={() => handleStatusMenuClose(null)}
-                    MenuListProps={{
-                      'aria-labelledby': 'status-button'
-                    }}
-                  >
-                    {statusOptions.map((status, index) => (
-                      <MenuItem
-                        key={status}
-                        onClick={() => handleStatusMenuClose(status)}
-                      >
-                        <Badge
-                          variant='dot'
-                          color={statusOptionColors[index]}
-                          sx={{
-                            mr: '0.5rem',
-                            border: '7px solid #ddd',
-                            borderRadius: '7px',
-                            '& .MuiBadge-badge': {
-                              boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
-                            }
-                          }}
-                        />
-                        {status}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </>
+                <StatusMenu />
               ) : (
                 <CircularProgress size='1rem' sx={{ mt: '0.125rem' }} />
               )}
