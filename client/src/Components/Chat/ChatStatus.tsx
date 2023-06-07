@@ -36,13 +36,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const username = auth.user?.username;
   const socket = useSocket();
 
-  const userMenuOptions = [
-    'My Account',
-    'Avatar',
-    'Security',
-    'Settings',
-    'Log Out'
-  ];
+  const userMenuOptions = ['Account', 'Settings', 'Log Out'];
 
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(
     null
