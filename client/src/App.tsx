@@ -10,6 +10,7 @@ import SignUp from './Components/Auth/SignUp';
 import Navigation from './Components/Navigation';
 import Chat from './Components/Chat/Chat';
 import Friend from './Components/Friend/Friend';
+import Account from './Components/Account/Account';
 import NoMatch from './Components/NoMatch';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                   >
                     <Route path='/chat' element={<Chat />} />
                     <Route path='/friend' element={<Friend />} />
+                    <Route path='/account' element={<Account />} />
                   </Route>
                   <Route path='*' element={<NoMatch />} />
                 </Routes>
