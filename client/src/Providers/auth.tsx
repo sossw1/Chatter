@@ -27,6 +27,7 @@ export interface IUser {
   friends: string[];
   currentSocketId: string;
   tokens: IToken[];
+  createdAt: string;
 }
 
 export interface IUserDoc extends IUser, Document {
