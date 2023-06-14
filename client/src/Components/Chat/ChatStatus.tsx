@@ -50,6 +50,9 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   const handleUserMenuClose = async (selectedMenuItem: string | null) => {
     if (selectedMenuItem) {
       switch (selectedMenuItem) {
+        case 'Account':
+          navigate('/account');
+          break;
         case 'Log Out':
           try {
             const response = await auth.logout();
