@@ -75,7 +75,7 @@ export default function ChatStatus({ setSelectedChatId }: Props) {
   return (
     <Box
       sx={{
-        padding: '1rem',
+        padding: '1rem 1rem calc(1rem - 1px)',
         borderBottom: '1px solid rgba(0, 0, 0, 0.1)'
       }}
     >
