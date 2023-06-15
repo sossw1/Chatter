@@ -6,7 +6,8 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { ArrowBack, Edit } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
@@ -17,14 +18,22 @@ export default function Account() {
 
   return (
     <Box
-      display='flex'
-      flexDirection='column'
-      alignItems='center'
-      p='5%'
+      p='2rem'
       bgcolor={theme.palette.grey[100]}
       height={`calc(100vh - ${xs ? '56' : '64'}px)`}
     >
-      <Paper sx={{ width: '100%' }}>
+      <Link to='/chat'>
+        <Box display='flex' flexDirection='row' alignItems='center' mb='1rem'>
+          <ArrowBack sx={{ width: '1.5rem', height: '1.5rem', mr: '0.5rem' }} />
+          <Typography variant='h6'>Go back to Chat</Typography>
+        </Box>
+      </Link>
+      <Paper
+        sx={{
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         <Box
           display='flex'
           flexDirection='column'
