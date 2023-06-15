@@ -1,4 +1,12 @@
-import { Avatar, Box, Paper, Typography, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Paper,
+  Typography,
+  useMediaQuery
+} from '@mui/material';
+import { Edit } from '@mui/icons-material';
 import { format } from 'date-fns';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
@@ -48,6 +56,19 @@ export default function Account() {
               ? format(new Date(auth.user?.createdAt), 'M/d/yyyy')
               : ''}
           </Typography>
+          <Box
+            display='flex'
+            flexDirection='row'
+            alignItems='center'
+            mb='0.5rem'
+          >
+            <Typography variant='body1' fontSize='1.25rem' mr='0.5rem'>
+              Email: {auth.user?.email}
+            </Typography>
+            <Button sx={{ minWidth: 'unset' }}>
+              <Edit />
+            </Button>
+          </Box>
         </Box>
       </Paper>
     </Box>
