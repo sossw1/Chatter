@@ -69,6 +69,7 @@ export default function Account() {
               <Edit />
             </Button>
           </Box>
+          <Button sx={{ fontSize: '1rem' }}>Change Password</Button>
         </Box>
       </Paper>
     </Box>
