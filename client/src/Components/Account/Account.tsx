@@ -1,8 +1,11 @@
-import { Avatar, Box, Paper, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Paper, Typography, useMediaQuery } from '@mui/material';
+import { format } from 'date-fns';
 import theme from '../../Providers/theme';
+import { useAuth } from '../../Providers/auth';
 
 export default function Account() {
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
+  const auth = useAuth();
 
   return (
     <Box
@@ -25,7 +28,27 @@ export default function Account() {
         >
           <Avatar sx={{ width: '6rem', height: '6rem' }} />
         </Box>
-        <Box p='5rem 2rem 2rem'></Box>
+        <Box
+          p='4rem 2rem 2rem'
+          display='flex'
+          flexDirection='column'
+          alignItems='center'
+        >
+          <Typography variant='h5' component='p'>
+            {auth.user?.username}
+          </Typography>
+          <Typography
+            variant='subtitle2'
+            component='p'
+            mb='1rem'
+            fontWeight={300}
+          >
+            Joined:{' '}
+            {auth.user
+              ? format(new Date(auth.user?.createdAt), 'M/d/yyyy')
+              : ''}
+          </Typography>
+        </Box>
       </Paper>
     </Box>
   );
