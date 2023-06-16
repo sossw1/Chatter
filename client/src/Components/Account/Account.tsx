@@ -28,59 +28,63 @@ export default function Account() {
           <Typography variant='h6'>Go back to Chat</Typography>
         </Box>
       </Link>
-      <Paper
-        sx={{
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Box
-          display='flex'
-          flexDirection='column'
-          alignItems='center'
-          bgcolor={theme.palette.primary.main}
-          height='6rem'
-          pt='3rem'
-          sx={{ borderTopLeftRadius: '5px', borderTopRightRadius: '5px' }}
+      <Box display='flex' flexDirection='column' alignItems='center'>
+        <Paper
+          sx={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}
         >
-          <Avatar sx={{ width: '6rem', height: '6rem' }} />
-        </Box>
-        <Box
-          p='4rem 2rem 2rem'
-          display='flex'
-          flexDirection='column'
-          alignItems='center'
-        >
-          <Typography variant='h5' component='p'>
-            {auth.user?.username}
-          </Typography>
-          <Typography
-            variant='subtitle2'
-            component='p'
-            mb='1rem'
-            fontWeight={300}
-          >
-            Joined:{' '}
-            {auth.user
-              ? format(new Date(auth.user?.createdAt), 'M/d/yyyy')
-              : ''}
-          </Typography>
           <Box
             display='flex'
-            flexDirection='row'
+            flexDirection='column'
             alignItems='center'
-            mb='0.5rem'
+            bgcolor={theme.palette.primary.main}
+            height='5rem'
+            pt='2rem'
+            sx={{ borderTopLeftRadius: '5px', borderTopRightRadius: '5px' }}
           >
-            <Typography variant='body1' fontSize='1.25rem' mr='0.5rem'>
-              Email: {auth.user?.email}
-            </Typography>
-            <Button sx={{ minWidth: 'unset' }}>
-              <Edit />
-            </Button>
+            <Avatar sx={{ width: '6rem', height: '6rem' }} />
           </Box>
-          <Button sx={{ fontSize: '1rem' }}>Change Password</Button>
-        </Box>
-      </Paper>
+          <Box
+            p='3.5rem 4rem 2rem'
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+          >
+            <Typography variant='h5' component='p'>
+              {auth.user?.username}
+            </Typography>
+            <Typography
+              variant='subtitle2'
+              component='p'
+              mb='1.5rem'
+              fontWeight={300}
+            >
+              Joined:{' '}
+              {auth.user
+                ? format(new Date(auth.user?.createdAt), 'M/d/yyyy')
+                : ''}
+            </Typography>
+            <Box display='flex' flexDirection='row' alignItems='center'>
+              <Typography variant='h6' component='p' mr='1rem'>
+                Email
+              </Typography>
+              <Typography
+                variant='body1'
+                component='p'
+                fontSize='1.25rem'
+                mr='0.5rem'
+              >
+                {auth.user?.email}
+              </Typography>
+              <Button sx={{ minWidth: 'unset' }}>
+                <Edit />
+              </Button>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
     </Box>
   );
 }
