@@ -32,7 +32,8 @@ export default function Account() {
         <Paper
           sx={{
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            width: xs ? '100%' : undefined
           }}
         >
           <Box
@@ -66,21 +67,36 @@ export default function Account() {
                 ? format(new Date(auth.user?.createdAt), 'M/d/yyyy')
                 : ''}
             </Typography>
-            <Box display='flex' flexDirection='row' alignItems='center'>
-              <Typography variant='h6' component='p' mr='1rem'>
+            <Box
+              display='flex'
+              flexDirection={xs ? 'column' : 'row'}
+              alignItems='center'
+              justifyContent='center'
+            >
+              <Typography
+                variant='h6'
+                component='p'
+                mr={xs ? 0 : '1rem'}
+                fontSize={xs ? '1.5rem' : undefined}
+              >
                 Email
               </Typography>
               <Typography
                 variant='body1'
                 component='p'
                 fontSize='1.25rem'
-                mr='0.5rem'
+                mr={xs ? 0 : '0.5rem'}
+                mb={xs ? '1rem' : 0}
               >
                 {auth.user?.email}
               </Typography>
-              <Button sx={{ minWidth: 'unset' }}>
-                <Edit />
-              </Button>
+              {xs ? (
+                <Button variant='contained'>Edit</Button>
+              ) : (
+                <Button sx={{ minWidth: 'unset' }}>
+                  <Edit />
+                </Button>
+              )}
             </Box>
           </Box>
         </Paper>
