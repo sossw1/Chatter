@@ -33,7 +33,7 @@ export default function Account() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: xs ? '100%' : undefined
+            width: xs ? '90%' : '75%'
           }}
         >
           <Box
