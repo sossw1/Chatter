@@ -18,7 +18,7 @@ export default function Account() {
 
   return (
     <Box
-      p='2rem'
+      p={xs ? '1rem' : '2rem'}
       bgcolor={theme.palette.grey[100]}
       height={`calc(100vh - ${xs ? '56' : '64'}px)`}
     >
@@ -33,7 +33,7 @@ export default function Account() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: xs ? '90%' : '75%'
+            width: xs ? '100%' : '75%'
           }}
         >
           <Box
@@ -48,7 +48,7 @@ export default function Account() {
             <Avatar sx={{ width: '6rem', height: '6rem' }} />
           </Box>
           <Box
-            p='3.5rem 4rem 2rem'
+            p='3.5rem 0 2rem'
             display='flex'
             flexDirection='column'
             alignItems='center'
