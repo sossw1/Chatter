@@ -1,12 +1,14 @@
+import { useState, FormEvent } from 'react';
 import {
   Avatar,
   Box,
   Button,
   Paper,
+  TextField,
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { ArrowBack, Edit } from '@mui/icons-material';
+import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import theme from '../../Providers/theme';
@@ -15,6 +17,18 @@ import { useAuth } from '../../Providers/auth';
 export default function Account() {
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
   const auth = useAuth();
+  const [isUserUpdatingEmail, setIsUserUpdatingEmail] = useState(false);
+  const [emailInput, setEmailInput] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!emailInput) return;
+    const email = emailInput;
+
+    setEmailInput(null);
+    setIsUserUpdatingEmail(false);
+  };
 
   return (
     <Box
@@ -73,29 +87,69 @@ export default function Account() {
               alignItems='center'
               justifyContent='center'
             >
-              <Typography
-                variant='h6'
-                component='p'
-                mr={xs ? 0 : '1rem'}
-                fontSize={xs ? '1.5rem' : undefined}
-              >
-                Email
-              </Typography>
-              <Typography
-                variant='body1'
-                component='p'
-                fontSize='1.25rem'
-                mr={xs ? 0 : '0.5rem'}
-                mb={xs ? '1rem' : 0}
-              >
-                {auth.user?.email}
-              </Typography>
-              {xs ? (
-                <Button variant='contained'>Edit</Button>
+              {isUserUpdatingEmail ? (
+                <Box
+                  component='form'
+                  title='email-form'
+                  display='flex'
+                  flexDirection='column'
+                  alignItems='center'
+                  onSubmit={handleSubmit}
+                >
+                  <TextField
+                    id='email'
+                    label='Email'
+                    variant='outlined'
+                    autoComplete='email'
+                    sx={{ mb: '1rem' }}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                  />
+                  <Box display='flex' flexDirection='row'>
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      sx={{ minWidth: 'unset', mr: '1rem' }}
+                    >
+                      Submit
+                    </Button>
+                    <Button
+                      sx={{ minWidth: 'unset' }}
+                      variant='outlined'
+                      onClick={() => {
+                        setEmailInput(null);
+                        setIsUserUpdatingEmail(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                </Box>
               ) : (
-                <Button sx={{ minWidth: 'unset' }}>
-                  <Edit />
-                </Button>
+                <>
+                  <Typography
+                    variant='h6'
+                    component='p'
+                    mr={xs ? 0 : '1rem'}
+                    fontSize={xs ? '1.5rem' : undefined}
+                  >
+                    Email
+                  </Typography>
+                  <Typography
+                    variant='body1'
+                    component='p'
+                    fontSize='1.25rem'
+                    mr={xs ? 0 : '1rem'}
+                    mb={xs ? '1rem' : 0}
+                  >
+                    {auth.user?.email}
+                  </Typography>
+                  <Button
+                    variant='contained'
+                    onClick={() => setIsUserUpdatingEmail(true)}
+                  >
+                    Edit
+                  </Button>
+                </>
               )}
             </Box>
           </Box>
