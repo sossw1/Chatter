@@ -57,6 +57,7 @@ interface AuthContextProps {
     password: string
   ) => Promise<ApiConfirmation | ApiError>;
   logout: () => Promise<ApiConfirmation | ApiError>;
+  emailChange: (email: string) => Promise<ApiConfirmation | ApiError>;
   passwordChange: (password: string) => Promise<ApiConfirmation | ApiError>;
 }
 
@@ -140,6 +141,21 @@ class Auth {
     });
     localStorage.removeItem('token');
     this.isAuthenticated = false;
+    return response;
+  }
+
+  async patchEmailChange(email: string) {
+    const url = 'api/users/email';
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
     return response;
   }
 
@@ -264,6 +280,31 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
   };
 
+  const emailChange = async (email: string) => {
+    const response = await auth.patchEmailChange(email);
+    if (!response) {
+      return { type: 'error', error: 'Not authenticated' } as ApiError;
+    }
+    if (response.ok) {
+      setUser((prev) => {
+        const next = Object.assign({}, prev);
+        next.email = email;
+        return next;
+      });
+
+      return {
+        type: 'confirmation',
+        confirmation: 'Email changed successfully'
+      } as ApiConfirmation;
+    } else {
+      const error = await response.json();
+      return {
+        type: 'error',
+        error
+      } as ApiError;
+    }
+  };
+
   const passwordChange = async (password: string) => {
     const response = await auth.patchPasswordChange(password);
     if (!response) {
@@ -289,6 +330,7 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     signUp,
     login,
     logout,
+    emailChange,
     passwordChange
   };
 
