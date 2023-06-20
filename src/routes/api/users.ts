@@ -116,6 +116,35 @@ router.post('/api/users/logout/all', auth, async (req, res) => {
   }
 });
 
+// Update email
+
+router.patch('/api/users/email', auth, async (req, res) => {
+  try {
+    const user = req.user;
+    const newEmail = req.body.email;
+
+    if (!newEmail) return res.status(400).send({ error: 'Invalid email' });
+
+    user.email = newEmail;
+    await user.save();
+
+    res.sendStatus(200);
+  } catch (error: any) {
+    if (error.name === 'ValidationError') {
+      let errorMessage = '';
+      const { errors } = error;
+
+      if (errors.email) {
+        errorMessage += errors.email.message;
+      } else {
+        errorMessage = errorMessage.slice(0, -3);
+      }
+
+      return res.status(400).send({ error: errorMessage });
+    }
+  }
+});
+
 // Update email or password
 
 router.patch('/api/users/me', auth, async (req, res) => {
