@@ -26,8 +26,13 @@ export default function Account() {
     if (!emailInput) return;
     const email = emailInput;
 
-    setEmailInput(null);
-    setIsUserUpdatingEmail(false);
+    const response = await auth.emailChange(email);
+
+    if (response.type === 'confirmation') {
+      setEmailInput(null);
+      setIsUserUpdatingEmail(false);
+    } else {
+    }
   };
 
   return (
