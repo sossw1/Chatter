@@ -31,12 +31,16 @@ const router = express.Router();
 const server = http.createServer(app);
 export const io = setupSocketIO(server);
 
-const publicDirectoryPath = path.join(__dirname, '../public');
-
 app.use(express.json());
-app.use(express.static(publicDirectoryPath));
-
 router.use(apiRouter);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  router.get('*', async (_, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  });
+}
+
 app.use(router);
 
 server.listen(PORT, () => {
