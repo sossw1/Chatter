@@ -1,3 +1,4 @@
+import './config';
 import apiRouter from './routes/api';
 import { IUserDoc } from './models/User';
 import './db/mongoose';
