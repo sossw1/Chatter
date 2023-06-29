@@ -10,7 +10,7 @@
     "dev": "set \"NODE_ENV=dev\" && concurrently \"tsc -w\" \"nodemon dist/index.js\"",
     "client": "cd client/ & npm start",
     "seed:users": "node dist/db/seed/seedUsers.js",
-    "build": "tsc && cd client/ & npm run build"
+    "build": "tsc && cd client/ && npm install && npm run build"
   },
   "keywords": [],
   "author": "Bill Soss",
