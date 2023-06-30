@@ -1,5 +1,5 @@
 import { useRef, FormEvent } from 'react';
-import { Button, Grid, Input, Paper } from '@mui/material';
+import { Button, Grid, Paper, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
 import { useSocket } from '../../Providers/socket';
@@ -46,18 +46,20 @@ export default function ChatInput({ selectedRoom }: Props) {
       }}
       onSubmit={handleSubmit}
     >
-      <Grid container direction='row'>
-        <Grid item sx={{ mr: '1rem', width: 'calc(100% - 7rem)' }}>
-          <Input
-            sx={{ width: '100%', '.MuiInput-input': { p: '5px 0' } }}
+      <Grid container direction='row' spacing={2}>
+        <Grid item xs={11}>
+          <TextField
+            sx={{ height: '100%' }}
+            InputProps={{ sx: { height: '100%' } }}
+            fullWidth
             name='message'
             autoComplete='off'
             placeholder='Type a message here...'
+            variant='standard'
             inputRef={messageRef}
-            disableUnderline
           />
         </Grid>
-        <Grid item>
+        <Grid item xs={1}>
           <Button
             variant='contained'
             type='submit'
