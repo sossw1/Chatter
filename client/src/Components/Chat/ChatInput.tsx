@@ -1,4 +1,4 @@
-import { useRef, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { Button, Grid, Paper, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { IRoomDoc, IMessageDoc } from '../../types/Rooms';
@@ -9,13 +9,14 @@ interface Props {
 }
 
 export default function ChatInput({ selectedRoom }: Props) {
-  const messageRef = useRef<HTMLInputElement>(null);
+  const [messageInput, setMessageInput] = useState<string>('');
   const socket = useSocket();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    const inputEl = messageRef.current;
-    const message = inputEl ? inputEl.value : '';
+    if (!messageInput) return;
+    const text = messageInput;
+    setMessageInput('');
     const roomId = selectedRoom ? `${selectedRoom._id}` : '';
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
@@ -26,14 +27,12 @@ export default function ChatInput({ selectedRoom }: Props) {
         Authorization: `Bearer ${parsedToken}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ text: message })
+      body: JSON.stringify({ text })
     });
 
     const responseMessage: IMessageDoc = await response.json();
 
     socket.emit('message', responseMessage);
-
-    if (inputEl) inputEl.value = '';
   };
 
   return (
@@ -56,7 +55,8 @@ export default function ChatInput({ selectedRoom }: Props) {
             autoComplete='off'
             placeholder='Type a message here...'
             variant='standard'
-            inputRef={messageRef}
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.currentTarget.value)}
           />
         </Grid>
         <Grid item xs={1}>
