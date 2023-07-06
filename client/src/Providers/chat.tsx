@@ -240,6 +240,12 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
 
   const addRoom = (newRoom: IRoomDoc) => {
     setRooms((rooms) => [...rooms, newRoom]);
+    const newRoomData: RoomData = {
+      roomId: newRoom._id,
+      lastReadAt: JSON.stringify(Date.now()),
+      unreadMessageCount: 0
+    };
+    setRoomData((prev) => [...prev, newRoomData]);
   };
 
   const removeRoom = (roomId: string) => {
