@@ -45,8 +45,8 @@ export default function ChatInput({ selectedRoom }: Props) {
       }}
       onSubmit={handleSubmit}
     >
-      <Grid container direction='row' spacing={2}>
-        <Grid item xs={11}>
+      <Grid container direction='row'>
+        <Grid item sx={{ mr: '1rem', width: 'calc(100% - 7rem)' }}>
           <TextField
             sx={{ height: '100%' }}
             InputProps={{ sx: { height: '100%' } }}
@@ -59,7 +59,7 @@ export default function ChatInput({ selectedRoom }: Props) {
             onChange={(e) => setMessageInput(e.currentTarget.value)}
           />
         </Grid>
-        <Grid item xs={1}>
+        <Grid item>
           <Button
             variant='contained'
             type='submit'
