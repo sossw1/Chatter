@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import theme from '../../Providers/theme';
 import { useAuth } from '../../Providers/auth';
+import AccountChangePassword from './AccountChangePassword';
 
 export default function Account() {
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -52,7 +53,8 @@ export default function Account() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: xs ? '100%' : '75%'
+            width: xs ? '100%' : '75%',
+            mb: '1rem'
           }}
         >
           <Box
@@ -159,6 +161,7 @@ export default function Account() {
             </Box>
           </Box>
         </Paper>
+        <AccountChangePassword />
       </Box>
     </Box>
   );
