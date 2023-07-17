@@ -1,6 +1,7 @@
 import { UserCollection, IUser, IUserDoc } from '../../models/User';
 import auth from '../../middleware/auth';
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import Filter from 'bad-words';
 import { RoomCollection } from '../../models/Room';
 
@@ -145,47 +146,31 @@ router.patch('/api/users/email', auth, async (req, res) => {
   }
 });
 
-// Update email or password
+// Update password
 
-router.patch('/api/users/me', auth, async (req, res) => {
+router.patch('/api/users/password', auth, async (req, res) => {
   try {
     const user = req.user;
-    const updates = Object.keys(req.body);
+    const { currentPassword, newPassword } = req.body;
 
-    const allowedUpdates = ['email', 'password'];
-    const isValidOperation = updates.every((update) =>
-      allowedUpdates.includes(update)
+    if (!currentPassword || !newPassword || currentPassword === newPassword)
+      return res.status(400).send({ error: 'Invalid update' });
+
+    const isMatchingPassword = await bcrypt.compare(
+      currentPassword,
+      req.user.password
     );
-    if (!isValidOperation) {
-      return res.status(400).send({ error: 'Invalid updates' });
-    }
+    if (!isMatchingPassword) return res.sendStatus(401);
 
-    const { email, password }: IUser = req.body;
-    if (email || email === '') {
-      user.email = email;
-    }
-    if (password || password === '') {
-      user.password = password;
-    }
+    if (newPassword.length < 8 || newPassword.length > 20)
+      return res.status(400).send({ error: 'Invalid new password length' });
+
+    req.user.password = newPassword;
 
     await user.save();
 
-    res.send(user);
-  } catch (error: any) {
-    if (error.name === 'ValidationError') {
-      let errorMessage = 'Invalid user data provided - ';
-      const { errors } = error;
-
-      if (errors.email) {
-        errorMessage += errors.email.message;
-      } else if (errors.password) {
-        errorMessage += errors.password.message;
-      } else {
-        errorMessage = errorMessage.slice(0, -3);
-      }
-
-      return res.status(400).send({ error: errorMessage });
-    }
+    res.sendStatus(200);
+  } catch (error) {
     res.sendStatus(500);
   }
 });
