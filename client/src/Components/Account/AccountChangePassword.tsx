@@ -41,6 +41,7 @@ export default function AccountChangePassword() {
         <TextField
           id='current-password'
           label='Current Password'
+          type='password'
           value={currentPassword}
           sx={{ mb: '1rem' }}
           onChange={(e) => setCurrentPassword(e.target.value)}
@@ -48,6 +49,7 @@ export default function AccountChangePassword() {
         <TextField
           id='new-password'
           label='New Password'
+          type='password'
           value={newPassword}
           sx={{ mb: '1rem' }}
           onChange={(e) => setNewPassword(e.target.value)}
@@ -55,6 +57,7 @@ export default function AccountChangePassword() {
         <TextField
           id='new-password-confirm'
           label='Re-enter New Password'
+          type='password'
           value={newPasswordConfirm}
           sx={{ mb: '1rem' }}
           onChange={(e) => setNewPasswordConfirm(e.target.value)}
