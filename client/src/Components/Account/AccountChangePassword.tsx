@@ -15,14 +15,29 @@ export default function AccountChangePassword() {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (!currentPassword || !newPassword || !newPasswordConfirm) return;
+    if (newPassword !== newPasswordConfirm) return;
+
+    const data = { currentPassword, newPassword };
 
     setCurrentPassword('');
     setNewPassword('');
     setNewPasswordConfirm('');
+
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+
+    const response = await fetch('/api/users/password', {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
   };
 
   return (
