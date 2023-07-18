@@ -1,19 +1,40 @@
 import { useState, FormEvent } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Paper,
+  Snackbar,
   TextField,
   Typography,
   useMediaQuery
 } from '@mui/material';
 import theme from '../../Providers/theme';
 
+interface SnackbarData {
+  isOpen: boolean;
+  severity: 'success' | 'error' | 'info';
+  contents: string;
+}
+
+const defaultSnackbarData: SnackbarData = {
+  isOpen: false,
+  severity: 'info',
+  contents: ''
+};
+
 export default function AccountChangePassword() {
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [snackbarData, setSnackbarData] =
+    useState<SnackbarData>(defaultSnackbarData);
+
+  const handleClose = (_: any, reason?: string) => {
+    if (reason === 'clickaway') return;
+    setSnackbarData(defaultSnackbarData);
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -38,10 +59,39 @@ export default function AccountChangePassword() {
       },
       body: JSON.stringify(data)
     });
+
+    if (response.ok) {
+      setSnackbarData({
+        isOpen: true,
+        severity: 'success',
+        contents: 'Successfully changed password'
+      });
+    } else {
+      const { error } = await response.json();
+      setSnackbarData({
+        isOpen: true,
+        severity: 'error',
+        contents: 'Error: ' + error
+      });
+    }
   };
 
   return (
     <Paper sx={{ p: '2rem', width: xs ? '100%' : '75%', mb: '1rem' }}>
+      <Snackbar
+        open={snackbarData.isOpen}
+        autoHideDuration={4000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={snackbarData.severity}
+          elevation={6}
+          variant='filled'
+        >
+          {snackbarData.contents}
+        </Alert>
+      </Snackbar>
       <Box
         component='form'
         title='password-change-form'
