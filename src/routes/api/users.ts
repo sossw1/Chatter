@@ -160,7 +160,8 @@ router.patch('/api/users/password', auth, async (req, res) => {
       currentPassword,
       req.user.password
     );
-    if (!isMatchingPassword) return res.sendStatus(401);
+    if (!isMatchingPassword)
+      return res.status(401).send({ error: 'Invalid password' });
 
     if (newPassword.length < 8 || newPassword.length > 20)
       return res.status(400).send({ error: 'Invalid new password length' });
