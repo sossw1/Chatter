@@ -80,6 +80,8 @@ export default function AccountChangePassword() {
     if (!currentPassword || !newPassword || !newPasswordConfirm) return;
     if (newPassword !== newPasswordConfirm) return;
 
+    if (newPasswordError.error || confirmPasswordError.error) return;
+
     const data = { currentPassword, newPassword };
 
     setCurrentPassword('');
