@@ -7,19 +7,20 @@ import {
   Snackbar,
   TextField,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  AlertColor
 } from '@mui/material';
 import theme from '../../Providers/theme';
 
 interface SnackbarData {
   isOpen: boolean;
-  severity: 'success' | 'error' | 'info';
+  severity: AlertColor | undefined;
   contents: string;
 }
 
 const defaultSnackbarData: SnackbarData = {
   isOpen: false,
-  severity: 'info',
+  severity: undefined,
   contents: ''
 };
 
@@ -33,8 +34,7 @@ export default function AccountChangePassword() {
   const [newPasswordError, setNewPasswordError] = useState(defaultError);
   const [confirmPasswordError, setConfirmPasswordError] =
     useState(defaultError);
-  const [snackbarData, setSnackbarData] =
-    useState<SnackbarData>(defaultSnackbarData);
+  const [snackbarData, setSnackbarData] = useState(defaultSnackbarData);
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const input = event.target.value;
