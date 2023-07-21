@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import {
   Alert,
   Box,
@@ -23,13 +23,51 @@ const defaultSnackbarData: SnackbarData = {
   contents: ''
 };
 
+const defaultError = { error: false, text: '' };
+
 export default function AccountChangePassword() {
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState(defaultError);
+  const [confirmPasswordError, setConfirmPasswordError] =
+    useState(defaultError);
   const [snackbarData, setSnackbarData] =
     useState<SnackbarData>(defaultSnackbarData);
+
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const input = event.target.value;
+    switch (event.target.id) {
+      case 'current-password':
+        setCurrentPassword(input);
+        break;
+      case 'new-password':
+        setNewPassword(input);
+        if (input.length < 8 || input.length > 20) {
+          setNewPasswordError({
+            error: true,
+            text: 'Invalid new password length'
+          });
+        } else {
+          setNewPasswordError(defaultError);
+        }
+        break;
+      case 'new-password-confirm':
+        setNewPasswordConfirm(input);
+        if (input !== newPassword) {
+          setConfirmPasswordError({
+            error: true,
+            text: 'Passwords must match'
+          });
+        } else {
+          setConfirmPasswordError(defaultError);
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleClose = (_: any, reason?: string) => {
     if (reason === 'clickaway') return;
@@ -109,23 +147,27 @@ export default function AccountChangePassword() {
           type='password'
           value={currentPassword}
           sx={{ mb: '1rem' }}
-          onChange={(e) => setCurrentPassword(e.target.value)}
+          onChange={handleChange}
         />
         <TextField
           id='new-password'
           label='New Password'
           type='password'
           value={newPassword}
+          error={newPasswordError.error}
+          helperText={newPasswordError.text}
           sx={{ mb: '1rem' }}
-          onChange={(e) => setNewPassword(e.target.value)}
+          onChange={handleChange}
         />
         <TextField
           id='new-password-confirm'
           label='Re-enter New Password'
           type='password'
           value={newPasswordConfirm}
+          error={confirmPasswordError.error}
+          helperText={confirmPasswordError.text}
           sx={{ mb: '1rem' }}
-          onChange={(e) => setNewPasswordConfirm(e.target.value)}
+          onChange={handleChange}
         />
         <Button variant='contained' type='submit' sx={{ width: '13rem' }}>
           Submit
