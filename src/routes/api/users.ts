@@ -102,14 +102,7 @@ router.post('/api/users/logout', auth, async (req, res) => {
 
 router.post('/api/users/logout/all', auth, async (req, res) => {
   try {
-    if (req.body.allowCurrentLogin === true) {
-      req.user.tokens = req.user.tokens.filter(
-        (token) => token.token === req.token
-      );
-    } else {
-      req.user.tokens = [];
-    }
-
+    req.user.tokens = [];
     await req.user.save();
     res.sendStatus(200);
   } catch (error) {
