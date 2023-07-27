@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import theme from '../../Providers/theme';
 import AccountUserInfo from './AccountUserInfo';
 import AccountChangePassword from './AccountChangePassword';
+import AccountActions from './AccountActions';
 
 export default function Account() {
   const xs = useMediaQuery(theme.breakpoints.down('sm'));
@@ -23,6 +24,7 @@ export default function Account() {
       <Box display='flex' flexDirection='column' alignItems='center'>
         <AccountUserInfo />
         <AccountChangePassword />
+        <AccountActions />
       </Box>
     </Box>
   );
