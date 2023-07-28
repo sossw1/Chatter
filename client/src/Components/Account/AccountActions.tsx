@@ -30,7 +30,20 @@ export default function AccountActions() {
     if (response.ok) auth.logout();
   };
 
-  const handleDeleteAccount = async () => {};
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('token');
+    const parsedToken = token ? JSON.parse(token) : '';
+
+    await fetch('/api/users/me', {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${parsedToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    auth.logout();
+  };
 
   return (
     <Paper sx={{ p: '2rem', width: xs ? '100%' : '75%', mb: '1rem' }}>
