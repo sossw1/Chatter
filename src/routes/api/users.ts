@@ -218,6 +218,7 @@ router.delete('/api/users/me', auth, async (req, res) => {
         }
 
         roomDocument.users = [];
+        await roomDocument.save();
       } else {
         roomDocument.users = roomDocument.users.filter(
           (user) => user !== req.user.username
@@ -231,6 +232,8 @@ router.delete('/api/users/me', auth, async (req, res) => {
             roomDocument.invitedUsers = [];
             await roomDocument.save();
           }
+        } else {
+          await roomDocument.save();
         }
       }
     }
