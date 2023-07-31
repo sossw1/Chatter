@@ -1,4 +1,9 @@
-import { UserCollection, IUser, IUserDoc } from '../../models/User';
+import {
+  UserCollection,
+  IUser,
+  IUserDoc,
+  NotificationCollection
+} from '../../models/User';
 import auth from '../../middleware/auth';
 import express from 'express';
 import bcrypt from 'bcryptjs';
@@ -253,6 +258,12 @@ router.delete('/api/users/me', auth, async (req, res) => {
         }
       }
     }
+
+    const notifications = req.user.notifications;
+    const deleteRequests = notifications.map((notification) =>
+      NotificationCollection.findByIdAndDelete(notification._id)
+    );
+    await Promise.all(deleteRequests);
 
     await req.user.remove();
 
