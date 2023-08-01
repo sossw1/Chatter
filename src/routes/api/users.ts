@@ -9,6 +9,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import Filter from 'bad-words';
 import { RoomCollection } from '../../models/Room';
+import { io } from '../../index';
 
 const router = express.Router();
 
@@ -187,6 +188,11 @@ router.delete('/api/users/me', auth, async (req, res) => {
         (user) => user !== req.user.username
       );
       await friendDocument.save();
+
+      io.to([...friendDocument.socketIds]).emit(
+        'delete-friend',
+        req.user.username
+      );
     }
 
     const usersInvitedToBeFriends = await UserCollection.find()
