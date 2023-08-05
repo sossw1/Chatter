@@ -2,7 +2,8 @@ import {
   UserCollection,
   IUser,
   IUserDoc,
-  NotificationCollection
+  NotificationCollection,
+  INotificationDoc
 } from '../../models/User';
 import auth from '../../middleware/auth';
 import express from 'express';
@@ -187,12 +188,33 @@ router.delete('/api/users/me', auth, async (req, res) => {
       friendDocument.friends = friendDocument.friends.filter(
         (user) => user !== req.user.username
       );
+
+      const notificationsToDelete: INotificationDoc[] = [];
+      const filteredNotifications: INotificationDoc[] = [];
+
+      friendDocument.notifications.forEach((notification) => {
+        if (
+          notification.text === req.user.username &&
+          notification.type === 'friend-request-accepted'
+        ) {
+          notificationsToDelete.push(notification);
+        } else {
+          filteredNotifications.push(notification);
+        }
+      });
+
+      friendDocument.notifications = filteredNotifications;
       await friendDocument.save();
 
       io.to([...friendDocument.socketIds]).emit(
         'delete-friend',
         req.user.username
       );
+
+      const deleteRequests = notificationsToDelete.map((notification) =>
+        NotificationCollection.findByIdAndDelete(notification._id)
+      );
+      await Promise.all(deleteRequests);
     }
 
     const usersInvitedToBeFriends = await UserCollection.find()
