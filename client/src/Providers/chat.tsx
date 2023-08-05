@@ -275,6 +275,17 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
       const next = prev.filter((user) => user !== username);
       return next;
     });
+
+    setNotifications((prev) => {
+      const next = prev.filter(
+        (notification) =>
+          !(
+            notification.text === username &&
+            notification.type === 'friend-request-accepted'
+          )
+      );
+      return next;
+    });
   };
 
   const addFriendInvite = (username: string) => {
