@@ -293,6 +293,12 @@ router.delete('/api/users/me', auth, async (req, res) => {
     );
     await Promise.all(deleteRequests);
 
+    io.emit(
+      'delete-notification-by-content',
+      'friend-request-received',
+      req.user.username
+    );
+
     await req.user.remove();
 
     res.send(req.user);
