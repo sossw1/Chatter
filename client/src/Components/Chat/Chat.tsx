@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import theme from '../../Providers/theme';
-import { IMessageDoc, INotificationDoc, IRoomDoc } from '../../types/Rooms';
+import {
+  IMessageDoc,
+  INotificationDoc,
+  IRoomDoc,
+  NotificationType
+} from '../../types/Rooms';
 import { sortByName, sortByFriendName } from '../../utils/sort';
 import { fetchInitialData } from '../../utils/fetch';
 import { getRoomName } from '../../utils/parse';
@@ -92,6 +97,16 @@ export default function Chat() {
     });
 
     socket.on(
+      'delete-notification-by-content',
+      (type: NotificationType, text: string) => {
+        if (!(typeof type === 'string') || !(typeof text === 'string')) return;
+        if (type === 'friend-request-received' && text === user?.username)
+          return;
+        chat.deleteNotificationByContent(type, text);
+      }
+    );
+
+    socket.on(
       'room-invite',
       (roomInvite: RoomInvite, notification: INotificationDoc) => {
         chat.addRoomInvite(roomInvite);
@@ -111,6 +126,7 @@ export default function Chat() {
       socket.off('status-update');
       socket.off('delete-friend');
       socket.off('delete-notifications');
+      socket.off('delete-notification-by-content');
       socket.off('room-invite');
       socket.off('leave-room');
     };

@@ -3,7 +3,12 @@ import { Box, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { getRoomName } from '../../utils/parse';
-import { IRoomDoc, IMessageDoc, INotificationDoc } from '../../types/Rooms';
+import {
+  IRoomDoc,
+  IMessageDoc,
+  INotificationDoc,
+  NotificationType
+} from '../../types/Rooms';
 import { useAuth } from '../../Providers/auth';
 import { useSocket } from '../../Providers/socket';
 import { useChat, FriendStatusText, RoomInvite } from '../../Providers/chat';
@@ -83,6 +88,16 @@ export default function Friend() {
     });
 
     socket.on(
+      'delete-notification-by-content',
+      (type: NotificationType, text: string) => {
+        if (!(typeof type === 'string') || !(typeof text === 'string')) return;
+        if (type === 'friend-request-received' && text === user?.username)
+          return;
+        chat.deleteNotificationByContent(type, text);
+      }
+    );
+
+    socket.on(
       'room-invite',
       (roomInvite: RoomInvite, notification: INotificationDoc) => {
         chat.addRoomInvite(roomInvite);
@@ -102,6 +117,7 @@ export default function Friend() {
       socket.off('status-update');
       socket.off('delete-friend');
       socket.off('delete-notifications');
+      socket.off('delete-notification-by-content');
       socket.off('room-invite');
       socket.off('leave-room');
     };
