@@ -183,31 +183,39 @@ export const ChatProvider = ({ children }: { children: JSX.Element }) => {
     type: NotificationType,
     text: string
   ) => {
-    const matchIndex = notifications.findIndex(
-      (notification) =>
-        notification.text === `${text}` && notification.type === type
-    );
-
-    if (matchIndex === -1) return;
+    const notificationIds: string[] = [];
 
     setNotifications((prev) => {
-      const next = prev.filter(
-        (notification) => notification._id !== notifications[matchIndex]._id
-      );
+      const next: INotificationDoc[] = [];
+
+      for (let notification of prev) {
+        if (notification.text === text && notification.type === type) {
+          notificationIds.push(notification._id);
+        } else {
+          next.push(notification);
+        }
+      }
+
       return next;
     });
 
+    if (notificationIds.length === 0) return;
+
     const token = localStorage.getItem('token');
     const parsedToken = token ? JSON.parse(token) : '';
-    const notificationId = notifications[matchIndex]._id;
-    const url = `/api/notifications/${notificationId}`;
-    fetch(url, {
-      method: 'DELETE',
-      headers: {
-        Authorization: 'Bearer ' + parsedToken,
-        Accept: 'application/json'
-      }
+
+    const requests = notificationIds.map((id) => {
+      const url = `/api/notifications/${id}`;
+      return fetch(url, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + parsedToken,
+          Accept: 'application/json'
+        }
+      });
     });
+
+    await Promise.all(requests);
   };
 
   const updateUserStatus = (status: UserStatusText) => {
