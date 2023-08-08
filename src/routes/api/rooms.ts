@@ -252,7 +252,7 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
     req.room.users = req.room.users.filter(
       (user) => user !== req.user.username
     );
-    if (req.room.users.length < 1) {
+    if (req.room.users.length === 0) {
       if (req.room.messages.length === 0) {
         await req.room.remove();
       } else {
