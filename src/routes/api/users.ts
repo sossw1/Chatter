@@ -299,6 +299,8 @@ router.delete('/api/users/me', auth, async (req, res) => {
       req.user.username
     );
 
+    io.emit('delete-friend-request', req.user.username);
+
     await req.user.remove();
 
     res.send(req.user);

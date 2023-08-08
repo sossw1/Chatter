@@ -96,6 +96,10 @@ export default function Account() {
       }
     );
 
+    socket.on('delete-friend-request', (username: string) => {
+      chat.removeFriendInvite(username);
+    });
+
     socket.on(
       'room-invite',
       (roomInvite: RoomInvite, notification: INotificationDoc) => {
@@ -116,6 +120,7 @@ export default function Account() {
       socket.off('delete-friend');
       socket.off('delete-notifications');
       socket.off('delete-notification-by-content');
+      socket.off('delete-friend-request');
       socket.off('room-invite');
       socket.off('leave-room');
     };
