@@ -233,8 +233,6 @@ router.delete('/api/users/me', auth, async (req, res) => {
       if (!roomDocument) continue;
 
       if (roomDocument.isDirect) {
-        roomDocument.disabled = true;
-
         const friend = roomDocument.users.find(
           (user) => user !== req.user.username
         );
@@ -250,8 +248,13 @@ router.delete('/api/users/me', auth, async (req, res) => {
           }
         }
 
-        roomDocument.users = [];
-        await roomDocument.save();
+        if (roomDocument.messages.length === 0) {
+          await roomDocument.remove();
+        } else {
+          roomDocument.users = [];
+          roomDocument.disabled = true;
+          await roomDocument.save();
+        }
       } else {
         roomDocument.users = roomDocument.users.filter(
           (user) => user !== req.user.username
