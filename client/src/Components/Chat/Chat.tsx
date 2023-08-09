@@ -118,6 +118,11 @@ export default function Chat() {
       }
     );
 
+    socket.on('delete-room-invite', (roomId: string, roomName: string) => {
+      chat.removeRoomInvite(roomId);
+      chat.deleteNotificationByContent('room-invite-received', roomName);
+    });
+
     socket.on('leave-room', (roomId: string) => {
       chat.removeRoom(roomId);
       setSelectedChatId(null);
@@ -133,6 +138,7 @@ export default function Chat() {
       socket.off('delete-notification-by-content');
       socket.off('delete-friend-request');
       socket.off('room-invite');
+      socket.off('delete-room-invite');
       socket.off('leave-room');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
