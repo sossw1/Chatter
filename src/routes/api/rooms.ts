@@ -260,6 +260,21 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
         req.room.invitedUsers = [];
         await req.room.save();
       }
+
+      if (req.room.invitedUsers) {
+        for (let invitedUser of req.room.invitedUsers) {
+          const invitedUserDocument = await UserCollection.findOne({
+            username: invitedUser
+          });
+          if (invitedUserDocument) {
+            io.to([...invitedUserDocument.socketIds]).emit(
+              'delete-room-invite',
+              req.room._id,
+              req.room.name
+            );
+          }
+        }
+      }
     } else {
       await req.room.save();
     }
