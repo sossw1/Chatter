@@ -53,10 +53,7 @@ interface ChatContextProps {
   addNotification: (notification: INotificationDoc) => void;
   markNotificationAsRead: (id: string) => void;
   deleteNotificationById: (id: string) => void;
-  deleteNotificationByContent: (
-    type: NotificationType,
-    username: string
-  ) => void;
+  deleteNotificationByContent: (type: NotificationType, text: string) => void;
   updateUserStatus: (status: UserStatusText) => void;
   updateFriendStatus: (username: string, status: FriendStatusText) => void;
   findFriendStatus: (
