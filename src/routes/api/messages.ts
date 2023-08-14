@@ -1,6 +1,5 @@
 import express from 'express';
 import Filter from 'bad-words';
-
 import { MessageCollection, IMessage } from '../../models/Room';
 import auth from '../../middleware/auth';
 import inRoom from '../../middleware/inRoom';
@@ -12,6 +11,7 @@ const router = express.Router();
 router.post('/api/rooms/:roomId/messages', auth, inRoom, async (req, res) => {
   try {
     const message: IMessage = {
+      isSystemMessage: false,
       username: req.user.username,
       text: '' + req.body.text,
       roomId: req.room._id,

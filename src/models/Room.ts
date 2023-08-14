@@ -7,6 +7,7 @@ import mongoose, {
 } from 'mongoose';
 
 export interface IMessage {
+  isSystemMessage: boolean;
   username: string;
   text: string;
   roomId: mongoose.Types.ObjectId;
@@ -27,6 +28,7 @@ export interface IRoom {
 export interface IRoomDoc extends IRoom, Document {}
 
 enum MessagePropertyNames {
+  IS_SYSTEM_MESSAGE = 'isSystemMessage',
   USERNAME = 'username',
   TEXT = 'text',
   ROOM_ID = 'roomId',
@@ -51,6 +53,10 @@ export interface IRoomModel extends Model<IRoomDoc> {
 }
 
 const MessageSchemaFields: Record<keyof IMessage, SchemaDefinitionProperty> = {
+  isSystemMessage: {
+    type: Boolean,
+    required: true
+  },
   username: {
     type: String,
     required: true

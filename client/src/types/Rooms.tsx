@@ -1,6 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 
 export interface IMessage {
+  isSystemMessage: boolean;
   username: string;
   text: string;
   roomId: mongoose.Types.ObjectId;
