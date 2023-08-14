@@ -54,6 +54,9 @@ router.delete(
       if (messageDocument.username !== req.user.username)
         return res.sendStatus(401);
 
+      if (messageDocument.isSystemMessage)
+        return res.status(400).send({ error: 'Cannot delete system messages' });
+
       messageDocument.hidden = true;
       await messageDocument.save();
 
