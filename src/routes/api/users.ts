@@ -1,3 +1,8 @@
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import Filter from 'bad-words';
+import { io } from '../../index';
+import auth from '../../middleware/auth';
 import {
   UserCollection,
   IUser,
@@ -5,12 +10,7 @@ import {
   NotificationCollection,
   INotificationDoc
 } from '../../models/User';
-import auth from '../../middleware/auth';
-import express from 'express';
-import bcrypt from 'bcryptjs';
-import Filter from 'bad-words';
 import { RoomCollection } from '../../models/Room';
-import { io } from '../../index';
 
 const router = express.Router();
 
@@ -24,6 +24,9 @@ router.get('/api/users/me', auth, async (req, res) => {
 
 router.post('/api/users', async (req, res) => {
   try {
+    if (['System', 'system'].includes(req.body.username))
+      return res.status(400).send({ error: 'Username already in use' });
+
     const user: IUser = {
       username: req.body.username,
       email: req.body.email,
