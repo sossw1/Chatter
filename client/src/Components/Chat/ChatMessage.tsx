@@ -2,12 +2,19 @@ import { Box, Typography } from '@mui/material';
 import theme from '../../Providers/theme';
 
 interface Props {
+  isSystemMessage: boolean;
   sentByUser: boolean;
   text: string;
 }
 
-export default function ChatMessage({ sentByUser, text }: Props) {
-  return (
+export default function ChatMessage({
+  isSystemMessage,
+  sentByUser,
+  text
+}: Props) {
+  return isSystemMessage ? (
+    <Typography>{text}</Typography>
+  ) : (
     <Box sx={{ mb: '0.25rem' }}>
       <Typography
         sx={{

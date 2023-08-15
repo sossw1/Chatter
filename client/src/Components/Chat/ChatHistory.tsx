@@ -32,7 +32,25 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
           new Date(groupOfMessages[0].createdAt),
           'M/dd/yy h:mm:ssaaa'
         );
-        return (
+        const isSystemMessageGroup = groupOfMessages[0].isSystemMessage;
+        return isSystemMessageGroup ? (
+          <Box
+            key={uuid()}
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            pb='1rem'
+          >
+            {groupOfMessages.map((message) => (
+              <ChatMessage
+                key={uuid()}
+                isSystemMessage={message.isSystemMessage}
+                sentByUser={sentByUser}
+                text={message.text}
+              />
+            ))}
+          </Box>
+        ) : (
           <Box
             key={uuid()}
             sx={{
@@ -53,6 +71,7 @@ export default function ChatHistory({ displayMessages, messageRef }: Props) {
               {groupOfMessages.map((message) => (
                 <ChatMessage
                   key={message._id}
+                  isSystemMessage={message.isSystemMessage}
                   sentByUser={sentByUser}
                   text={message.text}
                 />
