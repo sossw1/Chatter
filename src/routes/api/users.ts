@@ -10,7 +10,7 @@ import {
   NotificationCollection,
   INotificationDoc
 } from '../../models/User';
-import { RoomCollection } from '../../models/Room';
+import { MessageCollection, RoomCollection } from '../../models/Room';
 
 const router = express.Router();
 
@@ -287,7 +287,24 @@ router.delete('/api/users/me', auth, async (req, res) => {
             }
           }
         } else {
+          const systemMessage = new MessageCollection({
+            isSystemMessage: true,
+            username: 'System',
+            text: `${req.user.username} has left the room.`,
+            roomId: roomDocument._id,
+            hidden: false
+          });
+
+          await systemMessage.save();
+          roomDocument.messages.push(systemMessage);
           await roomDocument.save();
+
+          roomDocument.users.map(async (username) => {
+            const userDocument = await UserCollection.findOne({ username });
+            if (userDocument) {
+              io.to([...userDocument.socketIds]).emit('message', systemMessage);
+            }
+          });
         }
       }
     }
