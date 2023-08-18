@@ -41,6 +41,15 @@ export default function ChatListItem({
 
   const roomDataMatch = chat.roomData.find((r) => r.roomId === room._id);
 
+  const latestMessage =
+    room.messages.length > 0 ? room.messages[room.messages.length - 1] : null;
+  const secondaryTextUsername =
+    latestMessage && latestMessage.username !== 'System'
+      ? latestMessage.username + ': '
+      : '';
+  const secondaryTextMessage = latestMessage ? latestMessage.text : '';
+  const secondaryText = secondaryTextUsername + secondaryTextMessage;
+
   return (
     <ListItem sx={{ p: 0 }}>
       <ListItemButton
@@ -102,10 +111,7 @@ export default function ChatListItem({
                 whiteSpace: 'nowrap'
               }}
             >
-              {room.messages.length > 0 &&
-                `${room.messages[room.messages.length - 1].username}: ${
-                  room.messages[room.messages.length - 1].text
-                }`}
+              {secondaryText}
             </Typography>
           }
         ></ListItemText>
