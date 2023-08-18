@@ -240,8 +240,27 @@ router.patch('/api/rooms/:roomId/respond-invite', auth, async (req, res) => {
         (user) => user !== req.user.username
       );
       room.users.push(req.user.username);
-      await room.save();
     }
+
+    const systemMessage = new MessageCollection({
+      isSystemMessage: true,
+      username: 'System',
+      text: `${req.user.username} has joined the room.`,
+      roomId: room._id,
+      hidden: false
+    });
+
+    await systemMessage.save();
+    room.messages.push(systemMessage);
+    await room.save();
+
+    room.users.map(async (username) => {
+      if (username === req.user.username) return;
+      const userDocument = await UserCollection.findOne({ username });
+      if (userDocument) {
+        io.to([...userDocument.socketIds]).emit('message', systemMessage);
+      }
+    });
 
     res.status(200).send(room);
   } catch (error) {
