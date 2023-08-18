@@ -1,11 +1,20 @@
-import { IRoom, IRoomDoc, RoomCollection } from '../../models/Room';
 import express from 'express';
+import Filter from 'bad-words';
 import { io } from '../../index';
 import auth from '../../middleware/auth';
-import Filter from 'bad-words';
-import { IRoomData, UserCollection, RoomInvite } from '../../models/User';
 import inRoom from '../../middleware/inRoom';
-import { NotificationCollection } from '../../models/User';
+import {
+  IRoom,
+  IRoomDoc,
+  MessageCollection,
+  RoomCollection
+} from '../../models/Room';
+import {
+  IRoomData,
+  NotificationCollection,
+  UserCollection,
+  RoomInvite
+} from '../../models/User';
 
 const router = express.Router();
 
@@ -276,7 +285,25 @@ router.patch('/api/rooms/:roomId/leave', auth, inRoom, async (req, res) => {
         }
       }
     } else {
+      const systemMessage = new MessageCollection({
+        isSystemMessage: true,
+        username: 'System',
+        text: `${req.user.username} has left the room.`,
+        roomId: req.room._id,
+        hidden: false
+      });
+
+      req.room.messages.push(systemMessage);
+
+      await systemMessage.save();
       await req.room.save();
+
+      req.room.users.map(async (username) => {
+        const userDocument = await UserCollection.findOne({ username });
+        if (userDocument) {
+          io.to([...userDocument.socketIds]).emit('message', systemMessage);
+        }
+      });
     }
 
     req.user.rooms = req.user.rooms.filter(
