@@ -88,6 +88,9 @@ export default function Chat() {
 
       if (!match) return;
       chat.removeRoom(match._id);
+      setSelectedChatId(null);
+      setSelectedRoom(null);
+      setDisplayMessages([]);
     });
 
     socket.on('delete-notifications', (notifications: string[]) => {
